@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/auth/store';
 import { initI18n } from '@/i18n';
 import { useLocation } from '@/location/store';
+import { listenForNotificationTaps } from '@/push/register';
 
 // One cache for all server data. Retries once (slow mobile networks) and keeps data 1 minute.
 const queryClient = new QueryClient({
@@ -25,6 +26,9 @@ export default function RootLayout() {
       useLocation.getState().load(),
     ]).then(() => setReady(true));
   }, []);
+
+  // Tapping a notification opens the matching screen.
+  useEffect(() => (ready ? listenForNotificationTaps() : undefined), [ready]);
 
   // Loading takes a few milliseconds; until then the native splash screen stays visible.
   if (!ready) return null;

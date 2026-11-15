@@ -24,7 +24,13 @@
     "CONFLICT": "Bu amalni hozir bajarib bo'lmaydi. Sahifani yangilab, qayta urinib ko'ring.",
     "REGION_NOT_ACTIVE": "Bu hududda hali ishlamaymiz. Raqamingizni qoldiring, ishga tushganimizda xabar beramiz.",
     "TOO_MANY_OPEN_REQUESTS": "Sizda 3 ta ochiq so'rov bor. Yangisini yaratish uchun birini yakunlang yoki bekor qiling.",
-    "UPLOAD_NOT_FOUND": "Fayl yuklanmadi. Rasm yoki ovozni qayta qo'shib ko'ring."
+    "UPLOAD_NOT_FOUND": "Fayl yuklanmadi. Rasm yoki ovozni qayta qo'shib ko'ring.",
+    "NOT_A_MASTER": "Bu bo'lim faqat ustalar uchun. Sozlamalarda usta rejimiga o'ting.",
+    "MASTER_NOT_VERIFIED": "Profilingiz hali tasdiqlanmagan. Tasdiqlangach buyurtmalarni ko'rasiz.",
+    "MASTER_NOT_AVAILABLE": "Buyurtmalarni ko'rish uchun \"Buyurtma qabul qilyapman\" tugmasini yoqing.",
+    "REQUEST_NOT_OPEN": "Bu buyurtma endi ochiq emas: mijoz bekor qilgan yoki usta tanlagan.",
+    "TOO_MANY_OFFERS": "Bu buyurtmaga allaqachon 5 ta taklif yuborilgan.",
+    "OFFER_ALREADY_SENT": "Siz bu buyurtmaga taklif yuborgansiz."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -61,7 +67,35 @@
   },
   "master": {
     "title": "Usta paneli",
-    "comingSoon": "Tez orada bu yerda sizning tumaningizdagi buyurtmalar paydo bo'ladi."
+    "comingSoon": "Tez orada bu yerda sizning tumaningizdagi buyurtmalar paydo bo'ladi.",
+    "pending": "Profilingiz tekshirilmoqda. Administrator pasport va ish namunalaringizni ko'rib chiqadi, odatda 1 kun ichida. Tasdiqlangach shu yerda buyurtmalar paydo bo'ladi.",
+    "rejected": "Profil tasdiqlanmadi. Sabab: {{reason}}. Profilni tuzatib, qayta yuboring.",
+    "editProfile": "Profilni tahrirlash",
+    "accepting": "Buyurtma qabul qilyapman",
+    "acceptingOn": "Yangi buyurtmalar haqida xabar olasiz.",
+    "acceptingOff": "Hozir buyurtmalar ko'rsatilmaydi.",
+    "feedEmpty": "Hozircha sizning tumanlaringizda yangi buyurtma yo'q. Yangisi kelsa, xabar beramiz.",
+    "voiceOnly": "🎤 Ovozli xabar",
+    "photosOnly": "📷 Rasm: {{count}} ta",
+    "myOffers": "Mening takliflarim",
+    "offersEmpty": "Siz hali taklif yubormagansiz.",
+    "offerPrice": "Narx: {{price}} so'm",
+    "requestTitle": "Buyurtma",
+    "usualPrice": "Odatiy narx",
+    "addressHidden": "Aniq manzil mijoz sizni tanlagandan keyin ko'rinadi.",
+    "offerTitle": "Taklifingiz",
+    "priceLabel": "Narx (so'm)",
+    "priceRequired": "Narxni kiriting (kamida 1 000 so'm).",
+    "arrivalLabel": "Qachon bora olasiz?",
+    "arriveIn30": "30 daqiqada",
+    "arriveIn60": "1 soatda",
+    "arriveIn120": "2 soatda",
+    "arriveIn240": "4 soatda",
+    "messageLabel": "Mijozga xabar (ixtiyoriy)",
+    "messagePlaceholder": "Masalan: kerakli ehtiyot qismlar o'zimda bor",
+    "sendOffer": "Taklif yuborish",
+    "withdraw": "Taklifni qaytarib olish",
+    "yourOffer": "Sizning taklifingiz: {{price}} so'm, {{time}}. Holati: {{status}}."
   },
   "settings": {
     "title": "Sozlamalar",
@@ -166,5 +200,33 @@
     "ASSIGNED": "Ish holatini \"Ishlar\" bo'limida kuzating.",
     "CANCELLED": "Kerak bo'lsa, yangi so'rov yuboring.",
     "EXPIRED": "24 soat ichida usta tanlanmadi. Yangi so'rov yuborishingiz mumkin."
+  },
+  "offerStatus": {
+    "SENT": "Yuborilgan",
+    "ACCEPTED": "Qabul qilindi",
+    "REJECTED": "Boshqa usta tanlandi",
+    "WITHDRAWN": "Qaytarib olingan"
+  },
+  "onboarding": {
+    "title": "Usta profili",
+    "stepOf": "{{step}}-qadam, jami {{total}}",
+    "step1Title": "O'zingiz haqingizda",
+    "step2Title": "Nima qilasiz va qayerda?",
+    "step3Title": "Ish namunalari",
+    "nameLabel": "Ism va familiya",
+    "namePlaceholder": "Masalan: Akmal Karimov",
+    "nameRequired": "Ism va familiyangizni yozing.",
+    "photoLabel": "Yuzingiz aniq ko'rinadigan surat (mijozlar ishonchi uchun)",
+    "categoriesLabel": "Qaysi ishlarni bajarasiz?",
+    "categoryRequired": "Kamida bitta yo'nalishni tanlang.",
+    "regionLabel": "Viloyat",
+    "districtsLabel": "Qaysi tuman va shaharlarda ishlaysiz?",
+    "districtRequired": "Kamida bitta tuman yoki shaharni tanlang.",
+    "districtsChosen": "Tanlangan hududlar: {{count}} ta",
+    "workPhotosLabel": "Bajargan ishlaringiz rasmlari (ixtiyoriy)",
+    "bioLabel": "O'zingiz haqingizda qisqacha (ixtiyoriy)",
+    "bioPlaceholder": "Masalan: 10 yillik tajriba, kafolat beraman",
+    "verificationNote": "Yuborganingizdan keyin administrator profilingizni tekshiradi. Pasportingizni tayyorlab qo'ying: biz siz bilan bog'lanamiz.",
+    "finish": "Tekshiruvga yuborish"
   }
 }

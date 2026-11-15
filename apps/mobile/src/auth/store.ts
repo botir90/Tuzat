@@ -7,6 +7,7 @@ import {
   type UserDto,
 } from '@usta/shared';
 import { api, setSessionExpiredHandler } from '@/api/client';
+import { registerForPush, unregisterPush } from '@/push/register';
 import { tokenStorage } from './token-storage';
 
 const MODE_KEY = 'app.mode';
@@ -70,6 +71,7 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
     // Show the app immediately with the cached user; refresh it in the background.
     set({ status: 'signedIn', user: cachedUser, mode });
+    void registerForPush();
     api<UserDto>('/me')
       .then((user) => get().setUser(user))
       .catch(() => undefined); // offline: keep the cached user; expired: handler logs out
@@ -82,10 +84,12 @@ export const useAuth = create<AuthState>((set, get) => ({
     await safeSet(MODE_KEY, mode);
     await safeSet(USER_KEY, JSON.stringify(response.user));
     set({ status: 'signedIn', user: response.user, mode });
+    void registerForPush();
   },
 
   async signOut() {
     const tokens = await tokenStorage.get();
+    await unregisterPush();
     if (tokens) {
       // Tell the server, but log out locally even if we're offline.
       await api('/auth/logout', {

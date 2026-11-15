@@ -13,14 +13,16 @@ import { Notice } from './Notice';
 interface PhotoPickerProps {
   photos: DraftPhoto[];
   onChange: (photos: DraftPhoto[]) => void;
+  /** Maximum number of photos (default: 5, the request limit). */
+  max?: number;
 }
 
 /** Up to 5 photos from the camera or the gallery, compressed on the phone. */
-export function PhotoPicker({ photos, onChange }: PhotoPickerProps) {
+export function PhotoPicker({ photos, onChange, max = MAX_PHOTOS_PER_REQUEST }: PhotoPickerProps) {
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const left = MAX_PHOTOS_PER_REQUEST - photos.length;
+  const left = max - photos.length;
 
   async function add(source: 'camera' | 'gallery') {
     setError(null);
@@ -104,7 +106,7 @@ export function PhotoPicker({ photos, onChange }: PhotoPickerProps) {
           </View>
         </View>
       ) : (
-        <Notice text={t('photos.limit', { max: MAX_PHOTOS_PER_REQUEST })} />
+        <Notice text={t('photos.limit', { max })} />
       )}
       {error ? <Notice tone="error" text={error} /> : null}
     </View>

@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import type { DesiredTime } from '@usta/shared';
 
 export interface DraftPhoto {
-  /** Local, already compressed file. */
+  /** Local compressed file, or a download URL for an already uploaded photo. */
   uri: string;
+  /** Set when the photo is already uploaded (e.g. when editing a profile). */
+  key?: string;
 }
 
 export interface DraftVoice {
