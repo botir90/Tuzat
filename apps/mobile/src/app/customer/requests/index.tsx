@@ -22,12 +22,15 @@ export default function MyRequestsScreen() {
     <Screen
       title={t('requests.myRequests')}
       footer={
-        <BigButton
-          label={t('common.refresh')}
-          variant="outline"
-          loading={requests.isFetching}
-          onPress={() => void requests.refetch()}
-        />
+        <>
+          <BigButton label={t('jobs.myJobs')} onPress={() => router.push('/jobs')} />
+          <BigButton
+            label={t('common.refresh')}
+            variant="outline"
+            loading={requests.isFetching}
+            onPress={() => void requests.refetch()}
+          />
+        </>
       }
     >
       <QueryState

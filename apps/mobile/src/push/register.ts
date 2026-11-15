@@ -57,7 +57,10 @@ export async function unregisterPush(): Promise<void> {
 /** Opens the right screen when a notification is tapped. */
 export function openFromNotification(data: Record<string, unknown> | undefined): void {
   const id = typeof data?.requestId === 'string' ? data.requestId : null;
-  if (data?.type === 'feed' && id) {
+  const jobId = typeof data?.jobId === 'string' ? data.jobId : null;
+  if (data?.type === 'job' && jobId) {
+    router.push({ pathname: '/jobs/[id]', params: { id: jobId } });
+  } else if (data?.type === 'feed' && id) {
     router.push({ pathname: '/master/request/[id]', params: { id } });
   } else if (data?.type === 'request' && id) {
     router.push({ pathname: '/customer/requests/[id]', params: { id } });

@@ -31,22 +31,25 @@ export default function MasterHome() {
   if (data === null) return <Redirect href="/master/onboarding" />;
 
   const footer = (
-    <View style={styles.row}>
-      <View style={styles.flex}>
-        <BigButton
-          label={t('master.myOffers')}
-          variant="outline"
-          onPress={() => router.push('/master/offers')}
-        />
+    <>
+      <BigButton label={t('jobs.myJobs')} onPress={() => router.push('/jobs')} />
+      <View style={styles.row}>
+        <View style={styles.flex}>
+          <BigButton
+            label={t('master.myOffers')}
+            variant="outline"
+            onPress={() => router.push('/master/offers')}
+          />
+        </View>
+        <View style={styles.flex}>
+          <BigButton
+            label={t('common.settings')}
+            variant="outline"
+            onPress={() => router.push('/settings')}
+          />
+        </View>
       </View>
-      <View style={styles.flex}>
-        <BigButton
-          label={t('common.settings')}
-          variant="outline"
-          onPress={() => router.push('/settings')}
-        />
-      </View>
-    </View>
+    </>
   );
 
   if (!data) {

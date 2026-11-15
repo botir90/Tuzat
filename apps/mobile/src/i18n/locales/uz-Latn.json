@@ -30,7 +30,10 @@
     "MASTER_NOT_AVAILABLE": "Buyurtmalarni ko'rish uchun \"Buyurtma qabul qilyapman\" tugmasini yoqing.",
     "REQUEST_NOT_OPEN": "Bu buyurtma endi ochiq emas: mijoz bekor qilgan yoki usta tanlagan.",
     "TOO_MANY_OFFERS": "Bu buyurtmaga allaqachon 5 ta taklif yuborilgan.",
-    "OFFER_ALREADY_SENT": "Siz bu buyurtmaga taklif yuborgansiz."
+    "OFFER_ALREADY_SENT": "Siz bu buyurtmaga taklif yuborgansiz.",
+    "OFFER_NOT_AVAILABLE": "Bu taklif endi mavjud emas: usta uni qaytarib olgan. Boshqa taklifni tanlang.",
+    "JOB_STATUS_NOT_ALLOWED": "Bu amalni hozirgi holatda bajarib bo'lmaydi. Sahifani yangilang.",
+    "PRICE_CHANGE_PENDING": "Avval narx o'zgarishiga javob kerak."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -228,5 +231,75 @@
     "bioPlaceholder": "Masalan: 10 yillik tajriba, kafolat beraman",
     "verificationNote": "Yuborganingizdan keyin administrator profilingizni tekshiradi. Pasportingizni tayyorlab qo'ying: biz siz bilan bog'lanamiz.",
     "finish": "Tekshiruvga yuborish"
+  },
+  "offers": {
+    "title": "Takliflar",
+    "waiting": "Ustalar so'rovingizni ko'rmoqda. Takliflar shu yerda paydo bo'ladi, sizga xabar ham yuboramiz.",
+    "price": "{{price}} so'm",
+    "arrival": "Kelish vaqti: {{time}}",
+    "choose": "Shu ustani tanlash",
+    "rating": "★ {{rating}} ({{count}} ta baho)",
+    "noRating": "Hali baho yo'q",
+    "jobsDone": "{{count}} ta ish bajargan",
+    "verified": "Tekshirilgan usta",
+    "master": "Usta"
+  },
+  "jobStatus": {
+    "ACCEPTED": "Qabul qilindi",
+    "ON_THE_WAY": "Usta yo'lda",
+    "IN_PROGRESS": "Ishlayapti",
+    "DONE": "Tugadi",
+    "CANCELLED": "Bekor qilindi"
+  },
+  "jobStatusHint": {
+    "customer": {
+      "ACCEPTED": "Usta tanlandi. U yo'lga chiqqanda xabar beramiz.",
+      "ON_THE_WAY": "Usta yo'lda, taxminan {{eta}} daqiqada keladi.",
+      "IN_PROGRESS": "Usta ishlayapti. Ish tugagach, natijani tekshiring.",
+      "DONE": "Ish tugadi. Ustaga naqd pul bilan to'lang.",
+      "CANCELLED": "Ish bekor qilindi."
+    },
+    "master": {
+      "ACCEPTED": "Mijoz sizni tanladi! Yo'lga chiqqaningizda tugmani bosing.",
+      "ON_THE_WAY": "Manzilga yetib borgach, \"Ishni boshladim\" tugmasini bosing.",
+      "IN_PROGRESS": "Ishni tugatgach, \"Ish tugadi\" tugmasini bosing.",
+      "DONE": "Ish tugadi. Mijozdan naqd pul oling.",
+      "CANCELLED": "Ish bekor qilindi."
+    }
+  },
+  "jobs": {
+    "title": "Ish",
+    "myJobs": "Mening ishlarim",
+    "empty": "Hali ishlar yo'q.",
+    "open": "Ishni ochish",
+    "customer": "Mijoz",
+    "master": "Usta",
+    "price": "Narx",
+    "som": "so'm",
+    "payCash": "To'lov naqd pulda, ish tugagandan keyin. Oldindan to'lamang.",
+    "collectCash": "Mijozdan shu summani naqd oling.",
+    "guaranteeUntil": "Kafolat: {{date}} gacha. Muammo qaytsa, usta bepul keladi.",
+    "etaLabel": "Qancha vaqtda yetib borasiz?",
+    "minutes": "{{count}} daqiqa",
+    "onTheWay": "Yo'lga chiqdim",
+    "start": "Ishni boshladim",
+    "finish": "Ish tugadi",
+    "confirmDone": "Ish bajarildi, tasdiqlayman",
+    "call": "Qo'ng'iroq qilish: {{phone}}",
+    "arrival": "Kelishilgan vaqt",
+    "changePrice": "Narxni o'zgartirishni taklif qilish",
+    "newPrice": "Yangi narx (so'm)",
+    "reason": "Sabab",
+    "reasonPlaceholder": "Masalan: yangi kran kerak bo'ldi",
+    "sendPriceChange": "Mijozga yuborish",
+    "priceChangeInvalid": "Yangi narx (kamida 1 000 so'm) va sababni yozing.",
+    "priceChangeTitle": "Usta narxni o'zgartirmoqchi",
+    "priceChangeText": "Hozirgi narx: {{old}} so'm. Yangi narx: {{new}} so'm.",
+    "priceChangeWaiting": "Yangi narx ({{price}} so'm) mijoz tasdig'ini kutmoqda.",
+    "approve": "Tasdiqlayman",
+    "decline": "Rad etaman",
+    "cancel": "Ishni bekor qilish",
+    "cancelledByMe": "Siz ishni bekor qildingiz.",
+    "cancelledByOther": "Ish ikkinchi tomon tomonidan bekor qilindi."
   }
 }
