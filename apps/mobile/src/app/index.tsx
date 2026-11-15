@@ -1,45 +1,20 @@
-import { Redirect, router } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { APP_NAME } from '@usta/shared';
-import { BigButton } from '@/components/BigButton';
+import { Redirect } from 'expo-router';
+import { useAuth } from '@/auth/store';
 import { hasChosenLanguage } from '@/i18n';
-import { colors, fontSize, spacing } from '@/theme';
 
-export default function HomeScreen() {
-  const { t } = useTranslation();
+/**
+ * Start screen: decides where the user should go.
+ * language → mode ("I need a master" / "I am a master") → home of that mode.
+ * Masters must log in first; customers can browse without an account.
+ */
+export default function StartScreen() {
+  const mode = useAuth((s) => s.mode);
+  const status = useAuth((s) => s.status);
 
-  // First launch: ask for the language before anything else.
   if (!hasChosenLanguage()) return <Redirect href="/language" />;
-
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.appName} accessibilityRole="header">
-          {APP_NAME}
-        </Text>
-        <Text style={styles.title}>{t('home.welcome')}</Text>
-        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
-      </View>
-      <BigButton
-        label={t('home.changeLanguage')}
-        variant="outline"
-        onPress={() => router.push('/language')}
-      />
-    </SafeAreaView>
-  );
+  if (!mode) return <Redirect href="/welcome" />;
+  if (mode === 'MASTER') {
+    return <Redirect href={status === 'signedIn' ? '/master' : '/login'} />;
+  }
+  return <Redirect href="/customer" />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.background,
-    padding: spacing.lg,
-    justifyContent: 'space-between',
-  },
-  content: { flex: 1, justifyContent: 'center', gap: spacing.md },
-  appName: { fontSize: fontSize.body, color: colors.primary, fontWeight: '700' },
-  title: { fontSize: fontSize.title, color: colors.text, fontWeight: '700' },
-  subtitle: { fontSize: fontSize.body, color: colors.textMuted, lineHeight: 26 },
-});

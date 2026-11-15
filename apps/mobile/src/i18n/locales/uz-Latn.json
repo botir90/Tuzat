@@ -1,12 +1,72 @@
 {
+  "common": {
+    "continue": "Davom etish",
+    "retry": "Qayta urinish",
+    "back": "Orqaga",
+    "settings": "Sozlamalar",
+    "loading": "Yuklanmoqda…"
+  },
+  "errors": {
+    "NETWORK_ERROR": "Internet aloqasi yo'q yoki server javob bermayapti. Aloqani tekshirib, qayta urinib ko'ring.",
+    "VALIDATION_ERROR": "Kiritilgan ma'lumotlarda xato bor. Tekshirib, qayta urinib ko'ring.",
+    "OTP_TOO_SOON": "Yangi kod olish uchun {{seconds}} soniya kuting.",
+    "OTP_TOO_MANY_REQUESTS": "Juda ko'p kod so'raldi. Bir soatdan keyin qayta urinib ko'ring.",
+    "OTP_INVALID": "Kod noto'g'ri. SMSdagi kodni tekshirib, qayta kiriting.",
+    "OTP_EXPIRED": "Kodning muddati tugagan. Yangi kod so'rang.",
+    "OTP_TOO_MANY_ATTEMPTS": "Juda ko'p noto'g'ri urinish. Yangi kod so'rang.",
+    "UNAUTHORIZED": "Sessiya tugagan. Iltimos, qaytadan kiring.",
+    "USER_BLOCKED": "Hisobingiz bloklangan. Yordam uchun qo'llab-quvvatlash xizmatiga murojaat qiling.",
+    "NOT_FOUND": "Ma'lumot topilmadi. U o'chirilgan bo'lishi mumkin.",
+    "INTERNAL_ERROR": "Serverda xatolik yuz berdi. Birozdan keyin qayta urinib ko'ring.",
+    "UNKNOWN": "Kutilmagan xatolik. Qayta urinib ko'ring."
+  },
   "language": {
     "title": "Tilni tanlang",
     "subtitle": "Keyinroq uni istalgan vaqtda o'zgartirishingiz mumkin.",
     "selected": "Tanlangan"
   },
+  "welcome": {
+    "title": "Sizga nima kerak?",
+    "subtitle": "Rejimni keyinroq sozlamalarda o'zgartirishingiz mumkin.",
+    "customer": "Menga usta kerak",
+    "customerHint": "Uy ta'miri uchun ishonchli usta toping",
+    "master": "Men ustaman",
+    "masterHint": "Buyurtmalar oling va daromad qiling"
+  },
+  "login": {
+    "phoneTitle": "Telefon raqamingiz",
+    "phoneSubtitle": "Sizga SMS orqali tasdiqlash kodini yuboramiz.",
+    "phoneLabel": "Telefon raqami",
+    "phoneInvalid": "Raqamni to'liq kiriting: 9 ta raqam, masalan 90 123 45 67.",
+    "sendCode": "Kod olish",
+    "codeTitle": "SMS kodni kiriting",
+    "codeSubtitle": "{{phone}} raqamiga 6 xonali kod yubordik.",
+    "codeLabel": "Tasdiqlash kodi",
+    "verify": "Tasdiqlash",
+    "resend": "Kodni qayta yuborish",
+    "resendIn": "Kodni qayta yuborish: {{seconds}} soniyadan keyin",
+    "changePhone": "Raqamni o'zgartirish"
+  },
   "home": {
     "welcome": "Xush kelibsiz!",
     "subtitle": "Uy ta'miri uchun ishonchli usta toping.",
-    "changeLanguage": "Tilni o'zgartirish"
+    "login": "Kirish",
+    "loggedInAs": "Siz {{phone}} raqami bilan kirgansiz."
+  },
+  "master": {
+    "title": "Usta paneli",
+    "comingSoon": "Tez orada bu yerda sizning tumaningizdagi buyurtmalar paydo bo'ladi."
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "language": "Til",
+    "mode": "Rejim",
+    "modeCustomer": "Mijoz",
+    "modeMaster": "Usta",
+    "switchToMaster": "Usta rejimiga o'tish",
+    "switchToCustomer": "Mijoz rejimiga o'tish",
+    "account": "Hisob",
+    "notLoggedIn": "Siz hali kirmagansiz.",
+    "logout": "Chiqish"
   }
 }

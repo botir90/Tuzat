@@ -1,11 +1,15 @@
-import { Pressable, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { MIN_TOUCH, colors, fontSize, spacing } from '@/theme';
 
 interface BigButtonProps {
   label: string;
   onPress: () => void;
-  variant?: 'primary' | 'outline';
+  variant?: 'primary' | 'outline' | 'danger';
   selected?: boolean;
+  disabled?: boolean;
+  loading?: boolean;
+  /** Smaller second line under the label. */
+  hint?: string;
   accessibilityHint?: string;
 }
 
@@ -15,26 +19,46 @@ export function BigButton({
   onPress,
   variant = 'primary',
   selected = false,
+  disabled = false,
+  loading = false,
+  hint,
   accessibilityHint,
 }: BigButtonProps) {
   const isPrimary = variant === 'primary';
+  const inactive = disabled || loading;
   return (
     <Pressable
       onPress={onPress}
+      disabled={inactive}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={hint ? `${label}. ${hint}` : label}
       accessibilityHint={accessibilityHint}
-      accessibilityState={{ selected }}
+      accessibilityState={{ selected, disabled: inactive, busy: loading }}
       style={({ pressed }) => [
         styles.base,
         isPrimary ? styles.primary : styles.outline,
+        variant === 'danger' && styles.danger,
         selected && styles.selected,
+        inactive && styles.inactive,
         pressed && styles.pressed,
       ]}
     >
-      <Text style={[styles.label, isPrimary ? styles.labelPrimary : styles.labelOutline]}>
-        {label}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={isPrimary ? colors.onPrimary : colors.primary} />
+      ) : (
+        <View style={styles.texts}>
+          <Text
+            style={[
+              styles.label,
+              isPrimary ? styles.labelPrimary : styles.labelOutline,
+              variant === 'danger' && styles.labelDanger,
+            ]}
+          >
+            {label}
+          </Text>
+          {hint ? <Text style={styles.hint}>{hint}</Text> : null}
+        </View>
+      )}
     </Pressable>
   );
 }
@@ -51,9 +75,14 @@ const styles = StyleSheet.create({
   },
   primary: { backgroundColor: colors.primary, borderColor: colors.primary },
   outline: { backgroundColor: colors.background, borderColor: colors.border },
+  danger: { borderColor: colors.danger },
   selected: { borderColor: colors.primary, backgroundColor: colors.surface },
+  inactive: { opacity: 0.5 },
   pressed: { opacity: 0.7 },
-  label: { fontSize: fontSize.button, fontWeight: '600' },
+  texts: { alignItems: 'center', gap: spacing.xs },
+  label: { fontSize: fontSize.button, fontWeight: '600', textAlign: 'center' },
   labelPrimary: { color: colors.onPrimary },
   labelOutline: { color: colors.text },
+  labelDanger: { color: colors.danger },
+  hint: { fontSize: fontSize.small, color: colors.textMuted, textAlign: 'center' },
 });
