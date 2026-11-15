@@ -10,6 +10,7 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "uz.ustaapp.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -21,7 +22,10 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-localization"],
+    "plugins": [
+      "expo-router",
+      "expo-localization"
+    ],
     "scheme": "usta-app",
     "experiments": {
       "typedRoutes": true
