@@ -1,0 +1,10 @@
+// Prisma schema. Models are added milestone by milestone (see CLAUDE.md section 7).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
