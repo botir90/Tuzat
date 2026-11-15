@@ -39,6 +39,8 @@ model User {
   masterProfile MasterProfile?
   offers        Offer[]        @relation("MasterOffers")
   pushTokens    PushToken[]
+  customerJobs  Job[]          @relation("CustomerJobs")
+  masterJobs    Job[]          @relation("MasterJobs")
 }
 
 // ---------- Catalog (M2) ----------
@@ -191,6 +193,7 @@ model Request {
   expiresAt   DateTime
 
   offers Offer[]
+  job    Job?
 
   @@index([customerId, status])
   @@index([status, districtId, categoryId])
@@ -248,10 +251,75 @@ model Offer {
   status    OfferStatus @default(SENT)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+  job       Job?
 
   /// One offer per master per request.
   @@unique([requestId, masterId])
   @@index([masterId, status])
+}
+
+// ---------- Jobs (M5) ----------
+
+enum JobStatus {
+  ACCEPTED
+  ON_THE_WAY
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
+/// Work agreed between a customer and the chosen master.
+model Job {
+  id                 String    @id @default(cuid())
+  requestId          String    @unique
+  request            Request   @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  offerId            String    @unique
+  offer              Offer     @relation(fields: [offerId], references: [id], onDelete: Cascade)
+  customerId         String
+  customer           User      @relation("CustomerJobs", fields: [customerId], references: [id], onDelete: Cascade)
+  masterId           String
+  master             User      @relation("MasterJobs", fields: [masterId], references: [id], onDelete: Cascade)
+  /// Price from the accepted offer (so'm).
+  agreedPrice        Int
+  /// Changes ONLY through an APPROVED PriceChange; set to the current price when DONE.
+  finalPrice         Int?
+  status             JobStatus @default(ACCEPTED)
+  /// "On the way, ~20 min".
+  onTheWayEtaMinutes Int?
+  acceptedAt         DateTime  @default(now())
+  onTheWayAt         DateTime?
+  startedAt          DateTime?
+  doneAt             DateTime?
+  cancelledAt        DateTime?
+  cancelledById      String?
+  cancelReason       String?
+  /// Free return visit if the problem comes back before this date (default 14 days).
+  guaranteeUntil     DateTime?
+
+  priceChanges PriceChange[]
+
+  @@index([customerId, status])
+  @@index([masterId, status])
+}
+
+enum PriceChangeStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+/// "You need extra parts": the master proposes a new price, the customer must approve it.
+model PriceChange {
+  id         String            @id @default(cuid())
+  jobId      String
+  job        Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  newPrice   Int
+  reason     String
+  status     PriceChangeStatus @default(PENDING)
+  createdAt  DateTime          @default(now())
+  answeredAt DateTime?
+
+  @@index([jobId, status])
 }
 
 /// Expo push token of a phone (one user can have several phones).

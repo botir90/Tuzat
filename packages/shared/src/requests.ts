@@ -118,5 +118,7 @@ export const requestDtoSchema = z.object({
   createdAt: z.string(),
   expiresAt: z.string(),
   offerCount: z.number().int(),
+  /** Set when a master was chosen (status ASSIGNED). */
+  jobId: z.string().nullable(),
 });
 export type RequestDto = z.infer<typeof requestDtoSchema>;

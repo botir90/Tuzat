@@ -7,12 +7,14 @@ export type RequestWithRelations = Request & {
   category: Category;
   district: District & { region: Region };
   _count?: { offers?: number };
+  job?: { id: string } | null;
 };
 
 /** Prisma "include" that loads everything toRequestDto needs. */
 export const requestInclude = {
   category: true,
   district: { include: { region: true } },
+  job: { select: { id: true } },
 } as const;
 
 export async function toRequestDto(
@@ -49,5 +51,6 @@ export async function toRequestDto(
     createdAt: request.createdAt.toISOString(),
     expiresAt: request.expiresAt.toISOString(),
     offerCount: options.offerCount ?? request._count?.offers ?? 0,
+    jobId: request.job?.id ?? null,
   };
 }

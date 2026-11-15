@@ -3,6 +3,7 @@ import { registerAuthRoutes } from './auth/routes';
 import { registerCatalogRoutes } from './catalog/routes';
 import type { AppContext } from './context';
 import { registerErrorHandler } from './lib/error-handler';
+import { registerJobRoutes } from './jobs/routes';
 import { registerMasterRoutes } from './master/routes';
 import { registerRequestRoutes } from './requests/routes';
 import { registerHealthRoute, type DatabaseCheck } from './routes/health';
@@ -36,5 +37,6 @@ export function buildApp(ctx: AppContext, options: BuildAppOptions = {}): Fastif
   registerCatalogRoutes(app, ctx);
   registerRequestRoutes(app, ctx);
   registerMasterRoutes(app, ctx);
+  registerJobRoutes(app, ctx);
   return app;
 }

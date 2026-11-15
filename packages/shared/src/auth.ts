@@ -89,6 +89,9 @@ export const API_ERROR_CODES = [
   'REQUEST_NOT_OPEN',
   'TOO_MANY_OFFERS',
   'OFFER_ALREADY_SENT',
+  'OFFER_NOT_AVAILABLE',
+  'JOB_STATUS_NOT_ALLOWED',
+  'PRICE_CHANGE_PENDING',
   'INTERNAL_ERROR',
 ] as const;
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];
