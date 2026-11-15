@@ -57,7 +57,36 @@ pnpm --filter @usta/mobile start
 
 A QR code appears in the terminal. Open **Expo Go** on your phone and scan it.
 Your phone and computer must be on the **same Wi-Fi network**.
-If it does not connect, try `pnpm --filter @usta/mobile start -- --tunnel`.
+
+### Phone cannot connect ("Something went wrong" in Expo Go)
+
+This happens on Windows, especially when the laptop uses the **phone's hotspot**.
+
+1. **Make the network Private.** Windows Firewall blocks Node.js on "Public" networks.
+   Open PowerShell **as Administrator** and run (use your network name from `Get-NetConnectionProfile`):
+   ```powershell
+   Set-NetConnectionProfile -Name "<network name>" -NetworkCategory Private
+   ```
+2. **Turn off VPNs** while developing.
+3. **Tell Expo the right IP.** The laptop has several network adapters, and Expo may pick the wrong one.
+   Find the Wi-Fi adapter's IPv4 address with `ipconfig`, then:
+   ```powershell
+   $env:REACT_NATIVE_PACKAGER_HOSTNAME = "<laptop Wi-Fi IP>"
+   pnpm --filter @usta/mobile start
+   ```
+   In Expo Go you can also tap **Enter URL manually** and type `exp://<laptop Wi-Fi IP>:8081`.
+
+The hotspot IP can change after reconnecting, so check `ipconfig` again if it stops working.
+
+### Installable APK (no Expo Go needed)
+
+`apps/mobile/eas.json` has a `preview` profile that builds an APK in the cloud and gives a download link:
+
+```bash
+cd apps/mobile
+npx eas-cli@latest login
+npx eas-cli@latest build -p android --profile preview
+```
 
 ## Checks (run before every commit)
 
