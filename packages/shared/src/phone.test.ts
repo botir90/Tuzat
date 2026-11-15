@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { otpVerifySchema } from './auth';
+import { formatSum } from './catalog';
 import { formatUzPhone, normalizeUzPhone, phoneSchema } from './phone';
 
 describe('normalizeUzPhone', () => {
@@ -51,5 +52,16 @@ describe('otpVerifySchema', () => {
   it('does not allow choosing ADMIN', () => {
     const result = otpVerifySchema.safeParse({ phone: '901234567', code: '123456', role: 'ADMIN' });
     expect(result.success).toBe(false);
+  });
+});
+
+describe('formatSum', () => {
+  it.each([
+    [0, '0'],
+    [999, '999'],
+    [80000, '80 000'],
+    [1200000, '1 200 000'],
+  ])('formats %d', (amount, expected) => {
+    expect(formatSum(amount)).toBe(expected);
   });
 });

@@ -1,5 +1,6 @@
 import Fastify, { type FastifyInstance } from 'fastify';
 import { registerAuthRoutes } from './auth/routes';
+import { registerCatalogRoutes } from './catalog/routes';
 import type { AppContext } from './context';
 import { registerErrorHandler } from './lib/error-handler';
 import { registerHealthRoute, type DatabaseCheck } from './routes/health';
@@ -30,5 +31,6 @@ export function buildApp(ctx: AppContext, options: BuildAppOptions = {}): Fastif
   registerHealthRoute(app, checkDatabase);
   registerAuthRoutes(app, ctx);
   registerUserRoutes(app, ctx);
+  registerCatalogRoutes(app, ctx);
   return app;
 }

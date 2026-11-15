@@ -37,6 +37,112 @@ model User {
   refreshTokens RefreshToken[]
 }
 
+// ---------- Catalog (M2) ----------
+// Names are stored in three columns (one per app language).
+
+/// 12 regions + Tashkent city + Karakalpakstan.
+model Region {
+  id         String  @id @default(cuid())
+  slug       String  @unique
+  nameUzLatn String
+  nameUzCyrl String
+  nameRu     String
+  /// true once we have launched there (masters onboarded).
+  isActive   Boolean @default(false)
+  sortOrder  Int     @default(0)
+
+  districts      District[]
+  priceOverrides RegionPrice[]
+  waitlist       WaitlistEntry[]
+}
+
+enum DistrictType {
+  DISTRICT
+  CITY
+}
+
+/// Districts (tumanlar) and district-level cities (shaharlar).
+model District {
+  id         String       @id @default(cuid())
+  slug       String       @unique
+  regionId   String
+  region     Region       @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  type       DistrictType @default(DISTRICT)
+  nameUzLatn String
+  nameUzCyrl String
+  nameRu     String
+  /// Approximate center. null when not known yet.
+  lat        Float?
+  lng        Float?
+  sortOrder  Int          @default(0)
+
+  waitlist WaitlistEntry[]
+
+  @@index([regionId])
+}
+
+model Category {
+  id         String  @id @default(cuid())
+  slug       String  @unique
+  nameUzLatn String
+  nameUzCyrl String
+  nameRu     String
+  /// Icon name from MaterialCommunityIcons (@expo/vector-icons).
+  icon       String
+  sortOrder  Int     @default(0)
+  isActive   Boolean @default(true)
+
+  priceItems PriceItem[]
+  waitlist   WaitlistEntry[]
+}
+
+/// A typical job with a published price range, e.g. "Replace a faucet: 80 000–150 000".
+model PriceItem {
+  id         String  @id @default(cuid())
+  slug       String  @unique
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  nameUzLatn String
+  nameUzCyrl String
+  nameRu     String
+  /// Prices in so'm.
+  minPrice   Int
+  maxPrice   Int
+  sortOrder  Int     @default(0)
+
+  regionOverrides RegionPrice[]
+
+  @@index([categoryId])
+}
+
+/// Optional different price range for one region (prices in Tashkent differ from Khorezm).
+model RegionPrice {
+  id          String    @id @default(cuid())
+  priceItemId String
+  priceItem   PriceItem @relation(fields: [priceItemId], references: [id], onDelete: Cascade)
+  regionId    String
+  region      Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  minPrice    Int
+  maxPrice    Int
+
+  @@unique([priceItemId, regionId])
+}
+
+/// Customers who want a service where we have no masters yet. Used as demand data.
+model WaitlistEntry {
+  id         String    @id @default(cuid())
+  phone      String
+  regionId   String
+  region     Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
+  districtId String?
+  district   District? @relation(fields: [districtId], references: [id], onDelete: SetNull)
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt  DateTime  @default(now())
+
+  @@index([regionId])
+}
+
 /// One-time login codes. We store a hash, never the code itself.
 model OtpCode {
   id         String    @id @default(cuid())
