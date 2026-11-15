@@ -12,7 +12,8 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "master:verify": "tsx scripts/verify-master.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1169.0",

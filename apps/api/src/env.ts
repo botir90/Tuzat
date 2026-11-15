@@ -22,6 +22,8 @@ const envSchema = z.object({
 
   /** "console" prints OTP codes to the terminal (development). */
   SMS_PROVIDER: z.enum(['console']).default('console'),
+  /** 'expo' sends real push notifications, 'log' prints them in the terminal. */
+  PUSH_PROVIDER: z.enum(['expo', 'log']).default('expo'),
 
   /** S3-compatible file storage (SeaweedFS in docker-compose for development). */
   S3_ENDPOINT: z.url(),

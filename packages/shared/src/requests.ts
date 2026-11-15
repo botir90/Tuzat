@@ -13,7 +13,12 @@ export const MAX_SCHEDULE_DAYS = 14;
 
 // ---------- Uploads ----------
 
-export const UPLOAD_KINDS = ['request-photo', 'request-voice'] as const;
+export const UPLOAD_KINDS = [
+  'request-photo',
+  'request-voice',
+  'master-photo',
+  'master-work',
+] as const;
 export type UploadKind = (typeof UPLOAD_KINDS)[number];
 
 export const UPLOAD_RULES: Record<
@@ -21,6 +26,14 @@ export const UPLOAD_RULES: Record<
   { contentTypes: readonly string[]; maxBytes: number }
 > = {
   'request-photo': {
+    contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxBytes: 5 * 1024 * 1024,
+  },
+  'master-photo': {
+    contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxBytes: 5 * 1024 * 1024,
+  },
+  'master-work': {
     contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
     maxBytes: 5 * 1024 * 1024,
   },

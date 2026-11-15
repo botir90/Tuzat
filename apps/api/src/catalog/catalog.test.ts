@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { REGIONS } from '../../prisma/seed-data/regions';
 import { seedCatalog } from '../../prisma/seed';
+import { createMaster } from '../../test/fixtures';
 import { useTestApp } from '../../test/helpers';
 
 describe('catalog', () => {
@@ -93,8 +94,18 @@ describe('catalog', () => {
     expect(res.statusCode).toBe(404);
   });
 
-  it('GET /availability depends on whether the region is launched', async () => {
-    const { urganch, buxoroCity } = await fixture();
+  it('GET /availability needs a launched region and a verified master', async () => {
+    const { urganch, buxoroCity, plumber } = await fixture();
+    const before = await t.app.inject({
+      method: 'GET',
+      url: `/availability?districtId=${urganch.id}`,
+    });
+    expect(before.json()).toEqual({ available: false });
+
+    await createMaster(t, '+998905556677', {
+      categoryIds: [plumber.id],
+      districtIds: [urganch.id, buxoroCity.id],
+    });
     const yes = await t.app.inject({
       method: 'GET',
       url: `/availability?districtId=${urganch.id}`,

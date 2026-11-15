@@ -4,6 +4,7 @@ import { createContext } from './context';
 import { createPrismaClient } from './db';
 import { loadEnv } from './env';
 import { expireOldRequests } from './requests/expire';
+import { ExpoPushSender, LogPushSender } from './push/push';
 import { ConsoleSmsSender } from './sms/sms';
 import { S3Storage } from './storage/storage';
 
@@ -22,7 +23,12 @@ if (env.NODE_ENV !== 'production') {
   });
 }
 
-const ctx = createContext({ prisma, env, sms: new ConsoleSmsSender(), storage });
+const push =
+  env.PUSH_PROVIDER === 'expo'
+    ? new ExpoPushSender((message, error) => console.error(message, error ?? ''))
+    : new LogPushSender();
+
+const ctx = createContext({ prisma, env, sms: new ConsoleSmsSender(), storage, push });
 
 const app = buildApp(ctx, { logger: true });
 

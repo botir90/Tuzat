@@ -5,7 +5,6 @@ import {
   MAX_OPEN_REQUESTS_PER_CUSTOMER,
   MAX_SCHEDULE_DAYS,
   REQUEST_TTL_HOURS,
-  UPLOAD_RULES,
   createRequestSchema,
   presignUploadSchema,
   type PresignUploadResponse,
@@ -16,6 +15,9 @@ import { requireUser } from '../auth/authenticate';
 import type { AppContext } from '../context';
 import { AppError, conflict, notFound } from '../lib/errors';
 import { publicStorageEndpoint } from '../storage/public-endpoint';
+import { assertUpload, uploadPrefix } from '../storage/uploads';
+import { notifyMastersAboutRequest } from '../master/routes';
+import { notifyInBackground } from '../push/notify';
 import { requestInclude, toRequestDto } from './dto';
 import { expireOldRequests } from './expire';
 
@@ -31,9 +33,6 @@ const EXTENSIONS: Record<string, string> = {
   'audio/aac': 'aac',
   'audio/mpeg': 'mp3',
 };
-
-/** Every upload lives under the uploader's folder, so nobody can attach someone else's file. */
-const uploadPrefix = (userId: string, kind: UploadKind) => `uploads/${userId}/${kind}/`;
 
 export function registerRequestRoutes(app: FastifyInstance, ctx: AppContext): void {
   const { prisma, storage } = ctx;
@@ -51,14 +50,8 @@ export function registerRequestRoutes(app: FastifyInstance, ctx: AppContext): vo
     return { key, uploadUrl, headers: { 'Content-Type': contentType } };
   });
 
-  /** Checks that a key belongs to this user, exists, and is not too big. */
-  async function checkUpload(userId: string, kind: UploadKind, key: string): Promise<void> {
-    if (!key.startsWith(uploadPrefix(userId, kind))) throw new AppError('UPLOAD_NOT_FOUND', 400);
-    const info = await storage.head(key);
-    if (!info || info.size === 0 || info.size > UPLOAD_RULES[kind].maxBytes) {
-      throw new AppError('UPLOAD_NOT_FOUND', 400);
-    }
-  }
+  const checkUpload = (userId: string, kind: UploadKind, key: string) =>
+    assertUpload(storage, userId, kind, key);
 
   app.post('/requests', async (request, reply) => {
     const user = await requireUser(ctx, request);
@@ -115,6 +108,9 @@ export function registerRequestRoutes(app: FastifyInstance, ctx: AppContext): vo
       include: requestInclude,
     });
 
+    // Tell matching masters (push). Runs in the background.
+    notifyInBackground(ctx, notifyMastersAboutRequest(ctx, created.id));
+
     const dto = await toRequestDto(created, storage, publicStorageEndpoint(ctx.env, request), {
       revealAddress: true,
     });
@@ -129,7 +125,10 @@ export function registerRequestRoutes(app: FastifyInstance, ctx: AppContext): vo
       where: { customerId: user.id },
       orderBy: { createdAt: 'desc' },
       take: 50,
-      include: requestInclude,
+      include: {
+        ...requestInclude,
+        _count: { select: { offers: { where: { status: { in: ['SENT', 'ACCEPTED'] } } } } },
+      },
     });
     const endpoint = publicStorageEndpoint(ctx.env, request);
     return Promise.all(

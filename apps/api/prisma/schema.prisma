@@ -36,6 +36,9 @@ model User {
 
   refreshTokens RefreshToken[]
   requests      Request[]      @relation("CustomerRequests")
+  masterProfile MasterProfile?
+  offers        Offer[]        @relation("MasterOffers")
+  pushTokens    PushToken[]
 }
 
 // ---------- Catalog (M2) ----------
@@ -79,6 +82,7 @@ model District {
 
   waitlist WaitlistEntry[]
   requests Request[]
+  masters  MasterProfile[]
 
   @@index([regionId])
 }
@@ -97,6 +101,7 @@ model Category {
   priceItems PriceItem[]
   waitlist   WaitlistEntry[]
   requests   Request[]
+  masters    MasterProfile[]
 }
 
 /// A typical job with a published price range, e.g. "Replace a faucet: 80 000–150 000".
@@ -185,8 +190,81 @@ model Request {
   /// OPEN requests become EXPIRED after 24 h without a chosen master.
   expiresAt   DateTime
 
+  offers Offer[]
+
   @@index([customerId, status])
   @@index([status, districtId, categoryId])
+}
+
+// ---------- Master side (M4) ----------
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+/// Extra data for users who work as masters.
+model MasterProfile {
+  userId             String             @id
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  photoKey           String?
+  bio                String?
+  workPhotoKeys      String[]
+  /// Only VERIFIED masters see requests (an admin checks passport and work samples).
+  verificationStatus VerificationStatus @default(PENDING)
+  rejectionReason    String?
+  /// "I'm accepting orders" switch.
+  isAvailable        Boolean            @default(true)
+  ratingAvg          Float              @default(0)
+  ratingCount        Int                @default(0)
+  completedJobsCount Int                @default(0)
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  categories Category[]
+  districts  District[]
+}
+
+enum OfferStatus {
+  SENT
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+/// A master's price and arrival time for a request.
+model Offer {
+  id        String      @id @default(cuid())
+  requestId String
+  request   Request     @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  masterId  String
+  master    User        @relation("MasterOffers", fields: [masterId], references: [id], onDelete: Cascade)
+  /// So'm.
+  price     Int
+  /// When the master can be at the address.
+  arrivalAt DateTime
+  message   String?
+  status    OfferStatus @default(SENT)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  /// One offer per master per request.
+  @@unique([requestId, masterId])
+  @@index([masterId, status])
+}
+
+/// Expo push token of a phone (one user can have several phones).
+model PushToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  platform  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 /// One-time login codes. We store a hash, never the code itself.

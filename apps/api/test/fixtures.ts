@@ -27,3 +27,34 @@ export async function createCatalog(prisma: PrismaClient) {
   });
   return { xorazm, buxoro, urganch, xiva, buxoroCity, plumber, electrician };
 }
+
+/**
+ * Logs in as a master, fills the profile and (by default) verifies it.
+ * Returns the login tokens and the user id.
+ */
+export async function createMaster(
+  t: import('./helpers').TestApp,
+  phone: string,
+  opts: { categoryIds: string[]; districtIds: string[]; verified?: boolean; name?: string },
+) {
+  const { login, bearer } = await import('./helpers');
+  const session = await login(t, phone, 'MASTER');
+  const res = await t.app.inject({
+    method: 'PUT',
+    url: '/master/profile',
+    headers: bearer(session.accessToken),
+    payload: {
+      name: opts.name ?? 'Usta Akmal',
+      categoryIds: opts.categoryIds,
+      districtIds: opts.districtIds,
+    },
+  });
+  if (res.statusCode !== 200) throw new Error(`profile failed: ${res.body}`);
+  if (opts.verified ?? true) {
+    await t.ctx.prisma.masterProfile.update({
+      where: { userId: session.userId },
+      data: { verificationStatus: 'VERIFIED' },
+    });
+  }
+  return { ...session, auth: bearer(session.accessToken) };
+}

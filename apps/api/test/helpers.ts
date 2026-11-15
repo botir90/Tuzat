@@ -6,6 +6,7 @@ import { createPrismaClient } from '../src/db';
 import { parseEnv } from '../src/env';
 import type { SmsSender } from '../src/sms/sms';
 import type { FileStorage } from '../src/storage/storage';
+import type { PushMessage, PushSender } from '../src/push/push';
 import { testDatabaseUrl } from './test-env';
 
 /** Remembers SMS messages instead of sending them, so tests can read the code. */
@@ -13,6 +14,14 @@ export class FakeSms implements SmsSender {
   messages: { phone: string; text: string }[] = [];
   async send(phone: string, text: string): Promise<void> {
     this.messages.push({ phone, text });
+  }
+}
+
+/** Remembers push notifications so tests can check them. */
+export class FakePush implements PushSender {
+  sent: PushMessage[] = [];
+  async send(messages: PushMessage[]): Promise<void> {
+    this.sent.push(...messages);
   }
 }
 
@@ -54,6 +63,7 @@ export interface TestApp {
   sms: FakeSms;
   clock: FakeClock;
   storage: FakeStorage;
+  push: FakePush;
 }
 
 const prisma = createPrismaClient(testDatabaseUrl());
@@ -78,6 +88,7 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
     await truncateAll();
     const sms = new FakeSms();
     const storage = new FakeStorage();
+    const push = new FakePush();
     const clock = new FakeClock();
     const env = parseEnv({
       ...process.env,
@@ -96,10 +107,11 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
       env,
       sms,
       storage,
+      push,
       now: clock.now,
       generateOtpCode: () => TEST_OTP_CODE,
     });
-    Object.assign(holder, { app: buildApp(ctx, options), ctx, sms, clock, storage });
+    Object.assign(holder, { app: buildApp(ctx, options), ctx, sms, clock, storage, push });
   });
 
   afterAll(async () => {

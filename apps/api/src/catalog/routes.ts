@@ -68,16 +68,25 @@ export function registerCatalogRoutes(app: FastifyInstance, ctx: AppContext): vo
 
   /**
    * Can a customer in this district get a master?
-   * For now: the region must be launched. M4 adds "a verified master serves this district".
+   * The region must be launched AND a verified master must serve this district (and category).
    */
   app.get('/availability', async (request): Promise<AvailabilityDto> => {
-    const { districtId } = availabilityQuery.parse(request.query);
+    const { districtId, categoryId } = availabilityQuery.parse(request.query);
     const district = await prisma.district.findUnique({
       where: { id: districtId },
       include: { region: true },
     });
     if (!district) throw notFound();
-    return { available: district.region.isActive };
+    if (!district.region.isActive) return { available: false };
+    // At least one verified master works in this district (and category).
+    const masters = await prisma.masterProfile.count({
+      where: {
+        verificationStatus: 'VERIFIED',
+        districts: { some: { id: districtId } },
+        ...(categoryId ? { categories: { some: { id: categoryId } } } : {}),
+      },
+    });
+    return { available: masters > 0 };
   });
 
   /** "No masters here yet, leave your number and we'll notify you." */
