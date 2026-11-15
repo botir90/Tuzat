@@ -68,5 +68,25 @@
     "account": "Hisob",
     "notLoggedIn": "Siz hali kirmagansiz.",
     "logout": "Chiqish"
+  },
+  "location": {
+    "regionTitle": "Viloyatni tanlang",
+    "regionSubtitle": "Usta qayerga kelishi kerak?",
+    "districtTitle": "Tuman yoki shaharni tanlang",
+    "available": "Ishlaymiz",
+    "choose": "Hududingizni tanlang",
+    "yourLocation": "Sizning hududingiz",
+    "change": "Hududni o'zgartirish"
+  },
+  "catalog": {
+    "pricesSubtitle": "Odatiy ishlar narxi. Aniq narxni usta taklifida ko'rasiz.",
+    "priceRange": "{{min}} – {{max}} so'm",
+    "priceNote": "Ish boshlanishidan oldin narx kelishiladi. Narx o'zgarsa, faqat sizning roziligingiz bilan."
+  },
+  "waitlist": {
+    "title": "Bu yerda hali usta yo'q",
+    "subtitle": "Biz bu hududda tez orada ishlay boshlaymiz. Raqamingizni qoldiring, birinchilardan bo'lib xabar beramiz.",
+    "notifyMe": "Menga xabar bering",
+    "thanks": "Rahmat! Bu hududda ustalar paydo bo'lishi bilan sizga SMS yuboramiz."
   }
 }
