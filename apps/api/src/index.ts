@@ -3,15 +3,39 @@ import { buildApp } from './app';
 import { createContext } from './context';
 import { createPrismaClient } from './db';
 import { loadEnv } from './env';
+import { expireOldRequests } from './requests/expire';
 import { ConsoleSmsSender } from './sms/sms';
+import { S3Storage } from './storage/storage';
 
 const env = loadEnv();
 const prisma = createPrismaClient(env.DATABASE_URL);
-const ctx = createContext({ prisma, env, sms: new ConsoleSmsSender() });
+const storage = new S3Storage({
+  endpoint: env.S3_ENDPOINT,
+  region: env.S3_REGION,
+  bucket: env.S3_BUCKET,
+  accessKeyId: env.S3_ACCESS_KEY,
+  secretAccessKey: env.S3_SECRET_KEY,
+});
+if (env.NODE_ENV !== 'production') {
+  await storage.ensureBucket().catch((error: unknown) => {
+    console.warn('File storage is not reachable (is docker compose running?):', error);
+  });
+}
+
+const ctx = createContext({ prisma, env, sms: new ConsoleSmsSender(), storage });
 
 const app = buildApp(ctx, { logger: true });
 
+// Every 5 minutes: mark requests older than 24 h as EXPIRED.
+const expiryTimer = setInterval(
+  () => {
+    expireOldRequests(prisma, new Date()).catch((error: unknown) => app.log.error(error));
+  },
+  5 * 60 * 1000,
+);
+
 app.addHook('onClose', async () => {
+  clearInterval(expiryTimer);
   await prisma.$disconnect();
 });
 

@@ -17,3 +17,6 @@ export class AppError extends Error {
 
 export const unauthorized = () => new AppError('UNAUTHORIZED', 401);
 export const notFound = () => new AppError('NOT_FOUND', 404);
+export const forbidden = () => new AppError('FORBIDDEN', 403);
+/** The action is not allowed in the current state (e.g. cancelling a finished request). */
+export const conflict = () => new AppError('CONFLICT', 409);

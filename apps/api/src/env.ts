@@ -22,6 +22,15 @@ const envSchema = z.object({
 
   /** "console" prints OTP codes to the terminal (development). */
   SMS_PROVIDER: z.enum(['console']).default('console'),
+
+  /** S3-compatible file storage (SeaweedFS in docker-compose for development). */
+  S3_ENDPOINT: z.url(),
+  /** Address phones use to reach storage. Optional in development (derived from the request). */
+  S3_PUBLIC_ENDPOINT: z.url().optional(),
+  S3_REGION: z.string().default('us-east-1'),
+  S3_BUCKET: z.string().min(1),
+  S3_ACCESS_KEY: z.string().min(1),
+  S3_SECRET_KEY: z.string().min(1),
 });
 
 export type Env = z.infer<typeof envSchema>;

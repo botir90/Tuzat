@@ -78,6 +78,11 @@ export const API_ERROR_CODES = [
   'UNAUTHORIZED',
   'USER_BLOCKED',
   'NOT_FOUND',
+  'FORBIDDEN',
+  'CONFLICT',
+  'REGION_NOT_ACTIVE',
+  'TOO_MANY_OPEN_REQUESTS',
+  'UPLOAD_NOT_FOUND',
   'INTERNAL_ERROR',
 ] as const;
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

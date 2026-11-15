@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "usta-dev",
+      "credentials": [{ "accessKey": "usta_dev_access", "secretKey": "usta_dev_secret_key" }],
+      "actions": ["Admin", "Read", "Write", "List", "Tagging"]
+    }
+  ]
+}

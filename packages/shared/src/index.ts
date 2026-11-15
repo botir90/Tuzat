@@ -5,3 +5,4 @@ export * from './health';
 export * from './phone';
 export * from './auth';
 export * from './catalog';
+export * from './requests';

@@ -5,6 +5,7 @@ import { createContext, type AppContext } from '../src/context';
 import { createPrismaClient } from '../src/db';
 import { parseEnv } from '../src/env';
 import type { SmsSender } from '../src/sms/sms';
+import type { FileStorage } from '../src/storage/storage';
 import { testDatabaseUrl } from './test-env';
 
 /** Remembers SMS messages instead of sending them, so tests can read the code. */
@@ -12,6 +13,27 @@ export class FakeSms implements SmsSender {
   messages: { phone: string; text: string }[] = [];
   async send(phone: string, text: string): Promise<void> {
     this.messages.push({ phone, text });
+  }
+}
+
+/** In-memory file storage. Tests "upload" with storage.put(key, size). */
+export class FakeStorage implements FileStorage {
+  files = new Map<string, { size: number; contentType: string }>();
+  put(key: string, size = 1000, contentType = 'image/jpeg'): void {
+    this.files.set(key, { size, contentType });
+  }
+  async presignUpload(
+    key: string,
+    _contentType: string,
+    endpoint = 'http://storage',
+  ): Promise<string> {
+    return `${endpoint}/upload/${key}`;
+  }
+  async presignDownload(key: string, endpoint = 'http://storage'): Promise<string> {
+    return `${endpoint}/download/${key}`;
+  }
+  async head(key: string) {
+    return this.files.get(key) ?? null;
   }
 }
 
@@ -31,6 +53,7 @@ export interface TestApp {
   ctx: AppContext;
   sms: FakeSms;
   clock: FakeClock;
+  storage: FakeStorage;
 }
 
 const prisma = createPrismaClient(testDatabaseUrl());
@@ -54,6 +77,7 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
   beforeEach(async () => {
     await truncateAll();
     const sms = new FakeSms();
+    const storage = new FakeStorage();
     const clock = new FakeClock();
     const env = parseEnv({
       ...process.env,
@@ -61,15 +85,21 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
       DATABASE_URL: testDatabaseUrl(),
       JWT_ACCESS_SECRET: 'test-access-secret-that-is-long-enough-123',
       OTP_SECRET: 'test-otp-secret-that-is-long-enough-123456',
+      S3_ENDPOINT: 'http://localhost:8333',
+      S3_PUBLIC_ENDPOINT: 'http://storage.test',
+      S3_BUCKET: 'test',
+      S3_ACCESS_KEY: 'test',
+      S3_SECRET_KEY: 'test',
     });
     const ctx = createContext({
       prisma,
       env,
       sms,
+      storage,
       now: clock.now,
       generateOtpCode: () => TEST_OTP_CODE,
     });
-    Object.assign(holder, { app: buildApp(ctx, options), ctx, sms, clock });
+    Object.assign(holder, { app: buildApp(ctx, options), ctx, sms, clock, storage });
   });
 
   afterAll(async () => {

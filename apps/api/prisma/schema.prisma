@@ -35,6 +35,7 @@ model User {
   updatedAt DateTime  @updatedAt
 
   refreshTokens RefreshToken[]
+  requests      Request[]      @relation("CustomerRequests")
 }
 
 // ---------- Catalog (M2) ----------
@@ -77,6 +78,7 @@ model District {
   sortOrder  Int          @default(0)
 
   waitlist WaitlistEntry[]
+  requests Request[]
 
   @@index([regionId])
 }
@@ -94,12 +96,13 @@ model Category {
 
   priceItems PriceItem[]
   waitlist   WaitlistEntry[]
+  requests   Request[]
 }
 
 /// A typical job with a published price range, e.g. "Replace a faucet: 80 000–150 000".
 model PriceItem {
-  id         String  @id @default(cuid())
-  slug       String  @unique
+  id         String   @id @default(cuid())
+  slug       String   @unique
   categoryId String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   nameUzLatn String
@@ -108,7 +111,7 @@ model PriceItem {
   /// Prices in so'm.
   minPrice   Int
   maxPrice   Int
-  sortOrder  Int     @default(0)
+  sortOrder  Int      @default(0)
 
   regionOverrides RegionPrice[]
 
@@ -141,6 +144,49 @@ model WaitlistEntry {
   createdAt  DateTime  @default(now())
 
   @@index([regionId])
+}
+
+// ---------- Requests (M3) ----------
+
+enum DesiredTime {
+  NOW
+  TODAY
+  SCHEDULED
+}
+
+enum RequestStatus {
+  OPEN
+  ASSIGNED
+  CANCELLED
+  EXPIRED
+}
+
+/// A customer's repair request ("my faucet is leaking").
+model Request {
+  id          String        @id @default(cuid())
+  customerId  String
+  customer    User          @relation("CustomerRequests", fields: [customerId], references: [id], onDelete: Cascade)
+  categoryId  String
+  category    Category      @relation(fields: [categoryId], references: [id])
+  description String?
+  /// Storage keys (not URLs): download links are created on demand.
+  photoKeys   String[]
+  voiceKey    String?
+  districtId  String
+  district    District      @relation(fields: [districtId], references: [id])
+  address     String
+  landmark    String?
+  lat         Float?
+  lng         Float?
+  desiredTime DesiredTime
+  scheduledAt DateTime?
+  status      RequestStatus @default(OPEN)
+  createdAt   DateTime      @default(now())
+  /// OPEN requests become EXPIRED after 24 h without a chosen master.
+  expiresAt   DateTime
+
+  @@index([customerId, status])
+  @@index([status, districtId, categoryId])
 }
 
 /// One-time login codes. We store a hash, never the code itself.

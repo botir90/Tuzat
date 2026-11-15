@@ -4,6 +4,7 @@ import { OtpService } from './auth/otp';
 import { TokenService } from './auth/tokens';
 import type { Env } from './env';
 import type { SmsSender } from './sms/sms';
+import type { FileStorage } from './storage/storage';
 
 /** Everything the routes need. Built once at startup; tests build it with fakes. */
 export interface AppContext {
@@ -12,12 +13,14 @@ export interface AppContext {
   now: () => Date;
   otp: OtpService;
   tokens: TokenService;
+  storage: FileStorage;
 }
 
 export interface ContextDeps {
   prisma: PrismaClient;
   env: Env;
   sms: SmsSender;
+  storage: FileStorage;
   now?: () => Date;
   generateOtpCode?: () => string;
 }
@@ -28,6 +31,7 @@ export function createContext(deps: ContextDeps): AppContext {
     prisma: deps.prisma,
     env: deps.env,
     now,
+    storage: deps.storage,
     otp: new OtpService({
       prisma: deps.prisma,
       sms: deps.sms,
