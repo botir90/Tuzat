@@ -3,6 +3,7 @@ import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import prettier from 'eslint-config-prettier';
 import globals from 'globals';
+import reactHooks from 'eslint-plugin-react-hooks';
 
 export default tseslint.config(
   {
@@ -17,6 +18,11 @@ export default tseslint.config(
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
+  },
+  // React rules for the mobile app (and later the admin panel).
+  {
+    files: ['apps/mobile/**/*.{ts,tsx}'],
+    ...reactHooks.configs.flat.recommended,
   },
   // Must be last: turns off rules that conflict with Prettier formatting.
   prettier,

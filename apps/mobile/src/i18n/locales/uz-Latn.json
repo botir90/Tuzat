@@ -1,0 +1,12 @@
+{
+  "language": {
+    "title": "Tilni tanlang",
+    "subtitle": "Keyinroq uni istalgan vaqtda o'zgartirishingiz mumkin.",
+    "selected": "Tanlangan"
+  },
+  "home": {
+    "welcome": "Xush kelibsiz!",
+    "subtitle": "Uy ta'miri uchun ishonchli usta toping.",
+    "changeLanguage": "Tilni o'zgartirish"
+  }
+}
