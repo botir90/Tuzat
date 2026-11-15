@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { normalizeUzPhone, type OtpRequestResponse } from '@usta/shared';
@@ -18,6 +18,7 @@ function formatLocal(digits: string): string {
 
 export default function PhoneScreen() {
   const { t } = useTranslation();
+  const { next } = useLocalSearchParams<{ next?: string }>();
   const [digits, setDigits] = useState('');
   const [showInvalid, setShowInvalid] = useState(false);
 
@@ -34,7 +35,11 @@ export default function PhoneScreen() {
     onSuccess: (data, validPhone) => {
       router.push({
         pathname: '/login/code',
-        params: { phone: validPhone, resendAfter: String(data.resendAfterSeconds) },
+        params: {
+          phone: validPhone,
+          resendAfter: String(data.resendAfterSeconds),
+          ...(next ? { next } : {}),
+        },
       });
     },
   });

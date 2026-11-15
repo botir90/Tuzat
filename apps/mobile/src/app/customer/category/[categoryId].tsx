@@ -42,7 +42,20 @@ export default function CategoryScreen() {
   const error = availability.error ?? prices.error;
 
   return (
-    <Screen title={title} subtitle={t('catalog.pricesSubtitle')}>
+    <Screen
+      title={title}
+      subtitle={t('catalog.pricesSubtitle')}
+      footer={
+        availability.data?.available ? (
+          <BigButton
+            label={t('requests.callMaster')}
+            onPress={() =>
+              router.push({ pathname: '/customer/request/new', params: { categoryId } })
+            }
+          />
+        ) : null
+      }
+    >
       <QueryState
         isLoading={loading}
         error={error}

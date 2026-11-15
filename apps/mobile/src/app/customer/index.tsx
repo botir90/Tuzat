@@ -28,11 +28,19 @@ export default function CustomerHome() {
       subtitle={t('home.subtitle')}
       footer={
         <View style={styles.row}>
-          {status !== 'signedIn' ? (
+          {status === 'signedIn' ? (
+            <View style={styles.flex}>
+              <BigButton
+                label={t('requests.myRequests')}
+                variant="outline"
+                onPress={() => router.push('/customer/requests')}
+              />
+            </View>
+          ) : (
             <View style={styles.flex}>
               <BigButton label={t('home.login')} onPress={() => router.push('/login')} />
             </View>
-          ) : null}
+          )}
           <View style={styles.flex}>
             <BigButton
               label={t('common.settings')}

@@ -22,7 +22,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-localization", "expo-secure-store"],
+    "plugins": ["expo-router", "expo-localization", "expo-secure-store", "expo-audio"],
     "scheme": "usta-app",
     "experiments": {
       "typedRoutes": true

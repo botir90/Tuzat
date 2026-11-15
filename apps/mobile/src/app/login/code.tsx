@@ -20,7 +20,7 @@ import { currentLanguage } from '@/i18n';
 
 export default function CodeScreen() {
   const { t } = useTranslation();
-  const params = useLocalSearchParams<{ phone: string; resendAfter?: string }>();
+  const params = useLocalSearchParams<{ phone: string; resendAfter?: string; next?: string }>();
   const phone = params.phone;
   const [code, setCode] = useState('');
   const countdown = useCountdown(Number(params.resendAfter ?? 60));
@@ -36,7 +36,11 @@ export default function CodeScreen() {
       }),
     onSuccess: async (response) => {
       await signIn(response);
-      // Close the login screens and go back to wherever the user came from.
+      if (params.next === 'back') {
+        // Opened from a form (e.g. a new request): close the 2 login screens, continue there.
+        router.dismiss(2);
+        return;
+      }
       router.dismissAll();
       router.replace('/');
     },

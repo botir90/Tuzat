@@ -4,7 +4,8 @@
     "retry": "Qayta urinish",
     "back": "Orqaga",
     "settings": "Sozlamalar",
-    "loading": "Yuklanmoqda…"
+    "loading": "Yuklanmoqda…",
+    "refresh": "Yangilash"
   },
   "errors": {
     "NETWORK_ERROR": "Internet aloqasi yo'q yoki server javob bermayapti. Aloqani tekshirib, qayta urinib ko'ring.",
@@ -18,7 +19,12 @@
     "USER_BLOCKED": "Hisobingiz bloklangan. Yordam uchun qo'llab-quvvatlash xizmatiga murojaat qiling.",
     "NOT_FOUND": "Ma'lumot topilmadi. U o'chirilgan bo'lishi mumkin.",
     "INTERNAL_ERROR": "Serverda xatolik yuz berdi. Birozdan keyin qayta urinib ko'ring.",
-    "UNKNOWN": "Kutilmagan xatolik. Qayta urinib ko'ring."
+    "UNKNOWN": "Kutilmagan xatolik. Qayta urinib ko'ring.",
+    "FORBIDDEN": "Bu amalga ruxsat yo'q.",
+    "CONFLICT": "Bu amalni hozir bajarib bo'lmaydi. Sahifani yangilab, qayta urinib ko'ring.",
+    "REGION_NOT_ACTIVE": "Bu hududda hali ishlamaymiz. Raqamingizni qoldiring, ishga tushganimizda xabar beramiz.",
+    "TOO_MANY_OPEN_REQUESTS": "Sizda 3 ta ochiq so'rov bor. Yangisini yaratish uchun birini yakunlang yoki bekor qiling.",
+    "UPLOAD_NOT_FOUND": "Fayl yuklanmadi. Rasm yoki ovozni qayta qo'shib ko'ring."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -88,5 +94,77 @@
     "subtitle": "Biz bu hududda tez orada ishlay boshlaymiz. Raqamingizni qoldiring, birinchilardan bo'lib xabar beramiz.",
     "notifyMe": "Menga xabar bering",
     "thanks": "Rahmat! Bu hududda ustalar paydo bo'lishi bilan sizga SMS yuboramiz."
+  },
+  "photos": {
+    "camera": "Suratga olish",
+    "gallery": "Galereyadan",
+    "remove": "{{number}}-rasmni o'chirish",
+    "number": "{{number}}-rasm",
+    "limit": "Ko'pi bilan {{max}} ta rasm qo'shish mumkin.",
+    "cameraDenied": "Kameraga ruxsat berilmagan. Telefon sozlamalarida ruxsat bering.",
+    "galleryDenied": "Galereyaga ruxsat berilmagan. Telefon sozlamalarida ruxsat bering.",
+    "failed": "Rasmni tayyorlab bo'lmadi. Boshqa rasm tanlab ko'ring."
+  },
+  "voice": {
+    "record": "Ovozli xabar yozish",
+    "stop": "To'xtatish ({{time}})",
+    "play": "Tinglash",
+    "pause": "Pauza",
+    "delete": "O'chirish",
+    "denied": "Mikrofonga ruxsat berilmagan. Telefon sozlamalarida ruxsat bering."
+  },
+  "request": {
+    "title": "Yangi so'rov",
+    "subtitle": "Nima buzilganini yozing, ayting yoki suratga oling.",
+    "describe": "Muammo",
+    "descriptionLabel": "Qisqacha yozing",
+    "descriptionPlaceholder": "Masalan: oshxonadagi kran oqyapti",
+    "where": "Manzil",
+    "addressLabel": "Ko'cha, uy, xonadon",
+    "addressPlaceholder": "Masalan: Al-Xorazmiy ko'chasi 12, 5-xonadon",
+    "landmarkLabel": "Mo'ljal (ixtiyoriy)",
+    "landmarkPlaceholder": "Masalan: 5-maktab yonida",
+    "useMyLocation": "Joylashuvimni aniqlash",
+    "locationSaved": "Joylashuv saqlandi ✓",
+    "locationDenied": "Joylashuvga ruxsat berilmagan. Manzilni yozib qoldiring.",
+    "locationFailed": "Joylashuvni aniqlab bo'lmadi. Manzilni yozib qoldiring.",
+    "when": "Qachon kerak?",
+    "timeNow": "Hozir",
+    "timeToday": "Bugun",
+    "timeChoose": "Vaqtni tanlash",
+    "day": "Kun",
+    "hour": "Soat",
+    "dayOffset1": "Ertaga",
+    "dayOffset2": "Indinga",
+    "dayOffset3": "3 kundan keyin",
+    "describeRequired": "Muammoni yozing, ovozli xabar yoki rasm qo'shing.",
+    "addressRequired": "Manzilni yozing: ko'cha va uy raqami.",
+    "timeRequired": "Kun va soatni tanlang.",
+    "submit": "So'rov yuborish",
+    "loginAndSubmit": "Kirish va so'rov yuborish",
+    "uploadingPhotos": "Rasmlar yuklanmoqda…",
+    "uploadingVoice": "Ovozli xabar yuklanmoqda…",
+    "saving": "So'rov saqlanmoqda…"
+  },
+  "requests": {
+    "myRequests": "Mening so'rovlarim",
+    "callMaster": "Usta chaqirish",
+    "empty": "Sizda hali so'rovlar yo'q. Kategoriyani tanlab, birinchi so'rovni yuboring.",
+    "offers": "{{count}} ta taklif",
+    "detailTitle": "So'rov",
+    "cancel": "So'rovni bekor qilish",
+    "createdAt": "Yuborilgan vaqt"
+  },
+  "requestStatus": {
+    "OPEN": "Takliflar kutilmoqda",
+    "ASSIGNED": "Usta tanlandi",
+    "CANCELLED": "Bekor qilingan",
+    "EXPIRED": "Muddati tugagan"
+  },
+  "requestStatusHint": {
+    "OPEN": "Ustalar so'rovingizni ko'rib, narx taklif qilishadi. 24 soat ichida usta tanlang.",
+    "ASSIGNED": "Ish holatini \"Ishlar\" bo'limida kuzating.",
+    "CANCELLED": "Kerak bo'lsa, yangi so'rov yuboring.",
+    "EXPIRED": "24 soat ichida usta tanlanmadi. Yangi so'rov yuborishingiz mumkin."
   }
 }
