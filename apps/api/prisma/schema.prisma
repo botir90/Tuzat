@@ -8,3 +8,57 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+enum UserRole {
+  CUSTOMER
+  MASTER
+  ADMIN
+}
+
+/// Languages are stored with underscores because Prisma enum values can't contain "-".
+/// The API maps them to "uz-Latn" / "uz-Cyrl" / "ru".
+enum Language {
+  uz_Latn
+  uz_Cyrl
+  ru
+}
+
+model User {
+  id        String    @id @default(cuid())
+  phone     String    @unique
+  name      String?
+  /// null until the user picks "I need a master" / "I am a master".
+  role      UserRole?
+  language  Language?
+  isBlocked Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+}
+
+/// One-time login codes. We store a hash, never the code itself.
+model OtpCode {
+  id         String    @id @default(cuid())
+  phone      String
+  codeHash   String
+  expiresAt  DateTime
+  attempts   Int       @default(0)
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([phone, createdAt])
+}
+
+/// Long-lived login sessions. We store a hash of the token, never the token itself.
+model RefreshToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
