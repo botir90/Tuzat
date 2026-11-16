@@ -72,13 +72,12 @@ export default function MasterHome() {
       {data.verificationStatus === 'REJECTED' ? (
         <Notice tone="error" text={t('master.rejected', { reason: data.rejectionReason ?? '—' })} />
       ) : null}
-      {data.verificationStatus !== 'VERIFIED' ? (
-        <BigButton
-          label={t('master.editProfile')}
-          variant="outline"
-          onPress={() => router.push('/master/onboarding')}
-        />
-      ) : null}
+      {/* Always editable: masters add districts or categories over time. */}
+      <BigButton
+        label={t('master.editProfile')}
+        variant="outline"
+        onPress={() => router.push('/master/onboarding')}
+      />
 
       {data.verificationStatus === 'VERIFIED' ? (
         <>
