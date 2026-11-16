@@ -301,5 +301,14 @@
     "cancel": "Ishni bekor qilish",
     "cancelledByMe": "Siz ishni bekor qildingiz.",
     "cancelledByOther": "Ish ikkinchi tomon tomonidan bekor qilindi."
+  },
+  "map": {
+    "pickOnMap": "Xaritada belgilash",
+    "title": "Uyingizni xaritada belgilang",
+    "tapHint": "Xaritada kerakli joyni bosing yoki qizil belgini suring.",
+    "pointChosen": "Joy tanlandi",
+    "confirm": "Shu joyni tanlash",
+    "failed": "Xarita yuklanmadi. Internetni tekshiring yoki manzilni yozib qoldiring.",
+    "noKey": "Xarita hali sozlanmagan. Manzilni yozib qoldiring."
   }
 }

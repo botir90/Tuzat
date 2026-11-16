@@ -25,6 +25,9 @@ export const districtDtoSchema = z.object({
   regionId: z.string(),
   type: z.enum(DISTRICT_TYPES),
   name: localizedTextSchema,
+  /** Approximate center; null when unknown. */
+  lat: z.number().nullable(),
+  lng: z.number().nullable(),
 });
 export type DistrictDto = z.infer<typeof districtDtoSchema>;
 

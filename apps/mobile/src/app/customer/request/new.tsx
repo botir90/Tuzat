@@ -194,12 +194,17 @@ export default function NewRequestScreen() {
         onChangeText={(landmark) => draft.update({ landmark })}
         placeholder={t('request.landmarkPlaceholder')}
       />
+      {draft.coords ? <Notice text={t('request.locationSaved')} /> : null}
       <BigButton
-        label={draft.coords ? t('request.locationSaved') : t('request.useMyLocation')}
+        label={t('request.useMyLocation')}
         variant="outline"
-        selected={draft.coords !== null}
         loading={locating}
         onPress={() => void detectMyLocation()}
+      />
+      <BigButton
+        label={t('map.pickOnMap')}
+        variant="outline"
+        onPress={() => router.push('/customer/request/map')}
       />
 
       <Text style={styles.section}>{t('request.when')}</Text>

@@ -31,6 +31,8 @@ export const toDistrictDto = (d: District): DistrictDto => ({
   regionId: d.regionId,
   type: d.type,
   name: names(d),
+  lat: d.lat,
+  lng: d.lng,
 });
 
 export const toCategoryDto = (c: Category): CategoryDto => ({
