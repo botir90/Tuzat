@@ -1,21 +1,11 @@
 import { z } from 'zod';
 import { JOB_STATUSES, PRICE_CHANGE_STATUSES } from './enums';
+import { masterCardSchema } from './cards';
 import { offerDtoSchema } from './master';
 import { requestDtoSchema } from './requests';
+import { guaranteeClaimDtoSchema, reviewDtoSchema } from './trust';
 
 export const GUARANTEE_DAYS = 14;
-
-/** Public info about a master shown on offers and jobs. */
-export const masterCardSchema = z.object({
-  id: z.string(),
-  name: z.string().nullable(),
-  photoUrl: z.string().nullable(),
-  ratingAvg: z.number(),
-  ratingCount: z.number().int(),
-  completedJobsCount: z.number().int(),
-  verified: z.boolean(),
-});
-export type MasterCard = z.infer<typeof masterCardSchema>;
 
 /** An offer as the customer sees it: price, time and who the master is. */
 export const customerOfferDtoSchema = offerDtoSchema.extend({
@@ -56,6 +46,12 @@ export const jobDtoSchema = z.object({
   customer: z.object({ name: z.string().nullable(), phone: z.string() }),
   pendingPriceChange: priceChangeDtoSchema.nullable(),
   priceChanges: z.array(priceChangeDtoSchema),
+  review: reviewDtoSchema.nullable(),
+  guaranteeClaims: z.array(guaranteeClaimDtoSchema),
+  /** Customer only: the job is DONE and not reviewed yet. */
+  canReview: z.boolean(),
+  /** Customer only: DONE, inside the guarantee period, no open claim. */
+  canClaimGuarantee: z.boolean(),
 });
 export type JobDto = z.infer<typeof jobDtoSchema>;
 

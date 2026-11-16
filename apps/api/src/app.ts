@@ -6,6 +6,7 @@ import { registerErrorHandler } from './lib/error-handler';
 import { registerJobRoutes } from './jobs/routes';
 import { registerMasterRoutes } from './master/routes';
 import { registerRequestRoutes } from './requests/routes';
+import { registerTrustRoutes } from './trust/routes';
 import { registerHealthRoute, type DatabaseCheck } from './routes/health';
 import { registerUserRoutes } from './users/routes';
 
@@ -38,5 +39,6 @@ export function buildApp(ctx: AppContext, options: BuildAppOptions = {}): Fastif
   registerRequestRoutes(app, ctx);
   registerMasterRoutes(app, ctx);
   registerJobRoutes(app, ctx);
+  registerTrustRoutes(app, ctx);
   return app;
 }

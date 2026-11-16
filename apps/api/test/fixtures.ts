@@ -58,3 +58,52 @@ export async function createMaster(
   }
   return { ...session, auth: bearer(session.accessToken) };
 }
+
+/**
+ * Full happy path up to a finished job: customer request → master offer → accepted →
+ * IN_PROGRESS → DONE (unless `finish: false`). Used by review / guarantee / complaint tests.
+ */
+export async function createJob(t: import('./helpers').TestApp, opts: { finish?: boolean } = {}) {
+  const { login, bearer } = await import('./helpers');
+  const c = await createCatalog(t.ctx.prisma);
+  const customer = await login(t, '+998901112233', 'CUSTOMER');
+  const customerAuth = bearer(customer.accessToken);
+  const master = await createMaster(t, '+998905556677', {
+    categoryIds: [c.plumber.id],
+    districtIds: [c.urganch.id],
+    name: 'Akmal Karimov',
+  });
+
+  const inject = async (method: 'GET' | 'POST', url: string, headers: object, payload?: object) => {
+    const res = await t.app.inject({
+      method,
+      url,
+      headers: headers as Record<string, string>,
+      payload,
+    });
+    if (res.statusCode >= 400) throw new Error(`${method} ${url} failed: ${res.body}`);
+    return res.json();
+  };
+
+  const request = await inject('POST', '/requests', customerAuth, {
+    categoryId: c.plumber.id,
+    districtId: c.urganch.id,
+    description: 'Kran oqyapti',
+    address: 'Al-Xorazmiy 12',
+    desiredTime: 'NOW',
+  });
+  const offer = await inject('POST', `/master/requests/${request.id}/offers`, master.auth, {
+    price: 120_000,
+    arrivalAt: '2026-01-01T10:00:00.000Z',
+  });
+  const job = await inject(
+    'POST',
+    `/requests/${request.id}/offers/${offer.id}/accept`,
+    customerAuth,
+  );
+  if (opts.finish ?? true) {
+    await inject('POST', `/jobs/${job.id}/status`, master.auth, { status: 'IN_PROGRESS' });
+    await inject('POST', `/jobs/${job.id}/status`, master.auth, { status: 'DONE' });
+  }
+  return { catalog: c, customer, customerAuth, master, jobId: job.id as string };
+}

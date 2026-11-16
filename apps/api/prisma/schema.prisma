@@ -34,13 +34,16 @@ model User {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  refreshTokens RefreshToken[]
-  requests      Request[]      @relation("CustomerRequests")
-  masterProfile MasterProfile?
-  offers        Offer[]        @relation("MasterOffers")
-  pushTokens    PushToken[]
-  customerJobs  Job[]          @relation("CustomerJobs")
-  masterJobs    Job[]          @relation("MasterJobs")
+  refreshTokens   RefreshToken[]
+  requests        Request[]      @relation("CustomerRequests")
+  masterProfile   MasterProfile?
+  offers          Offer[]        @relation("MasterOffers")
+  pushTokens      PushToken[]
+  customerJobs    Job[]          @relation("CustomerJobs")
+  masterJobs      Job[]          @relation("MasterJobs")
+  reviewsGiven    Review[]       @relation("ReviewsGiven")
+  reviewsReceived Review[]       @relation("ReviewsReceived")
+  complaintsSent  Complaint[]    @relation("ComplaintsSent")
 }
 
 // ---------- Catalog (M2) ----------
@@ -296,7 +299,10 @@ model Job {
   /// Free return visit if the problem comes back before this date (default 14 days).
   guaranteeUntil     DateTime?
 
-  priceChanges PriceChange[]
+  priceChanges    PriceChange[]
+  review          Review?
+  guaranteeClaims GuaranteeClaim[]
+  complaints      Complaint[]
 
   @@index([customerId, status])
   @@index([masterId, status])
@@ -320,6 +326,79 @@ model PriceChange {
   answeredAt DateTime?
 
   @@index([jobId, status])
+}
+
+// ---------- Trust (M6) ----------
+
+/// Only the customer of a DONE job can review it, and only once (jobId is unique).
+model Review {
+  id         String   @id @default(cuid())
+  jobId      String   @unique
+  job        Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  customerId String
+  customer   User     @relation("ReviewsGiven", fields: [customerId], references: [id], onDelete: Cascade)
+  masterId   String
+  master     User     @relation("ReviewsReceived", fields: [masterId], references: [id], onDelete: Cascade)
+  /// 1–5.
+  stars      Int
+  comment    String?
+  photoKeys  String[]
+  createdAt  DateTime @default(now())
+
+  @@index([masterId, createdAt])
+}
+
+enum ClaimStatus {
+  OPEN
+  RESOLVED
+  REJECTED
+}
+
+/// "The problem came back": a free return visit within the guarantee period.
+model GuaranteeClaim {
+  id          String      @id @default(cuid())
+  jobId       String
+  job         Job         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  description String
+  status      ClaimStatus @default(OPEN)
+  adminNote   String?
+  createdAt   DateTime    @default(now())
+  resolvedAt  DateTime?
+
+  @@index([jobId])
+  @@index([status, createdAt])
+}
+
+enum ComplaintStatus {
+  OPEN
+  RESOLVED
+}
+
+/// A complaint about a job, from either side. Handled by an admin.
+model Complaint {
+  id         String          @id @default(cuid())
+  jobId      String
+  job        Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  fromUserId String
+  fromUser   User            @relation("ComplaintsSent", fields: [fromUserId], references: [id], onDelete: Cascade)
+  text       String
+  status     ComplaintStatus @default(OPEN)
+  adminNote  String?
+  createdAt  DateTime        @default(now())
+  resolvedAt DateTime?
+
+  @@index([status, createdAt])
+  @@index([jobId])
+}
+
+/// Admin panel accounts. Separate from app users: they log in with a password, not SMS.
+model AdminUser {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  /// scrypt hash, never the password itself.
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
 }
 
 /// Expo push token of a phone (one user can have several phones).

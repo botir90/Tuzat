@@ -1,8 +1,15 @@
 import type { JobDto, MasterCard, PriceChangeDto } from '@usta/shared';
-import type { MasterProfile, Offer, PriceChange, User } from '../generated/prisma/client';
+import type {
+  GuaranteeClaim,
+  Job,
+  MasterProfile,
+  Offer,
+  PriceChange,
+  User,
+} from '../generated/prisma/client';
 import { requestInclude, toRequestDto, type RequestWithRelations } from '../requests/dto';
 import type { FileStorage } from '../storage/storage';
-import type { Job } from '../generated/prisma/client';
+import { reviewInclude, toClaimDto, toReviewDto, type ReviewWithRelations } from '../trust/dto';
 
 type MasterWithProfile = User & { masterProfile: MasterProfile | null };
 
@@ -37,6 +44,8 @@ export const jobInclude = {
   customer: true,
   master: { include: { masterProfile: true } },
   priceChanges: { orderBy: { createdAt: 'asc' } },
+  review: { include: reviewInclude },
+  guaranteeClaims: { orderBy: { createdAt: 'asc' } },
 } as const;
 
 export type JobWithRelations = Job & {
@@ -45,6 +54,8 @@ export type JobWithRelations = Job & {
   customer: User;
   master: MasterWithProfile;
   priceChanges: PriceChange[];
+  review: ReviewWithRelations | null;
+  guaranteeClaims: GuaranteeClaim[];
 };
 
 /** Price to pay now: the last approved change, otherwise the agreed price. */
@@ -58,9 +69,14 @@ export async function toJobDto(
   viewerId: string,
   storage: FileStorage,
   publicEndpoint: string,
+  now: Date,
 ): Promise<JobDto> {
   const iso = (d: Date | null) => d?.toISOString() ?? null;
   const pending = job.priceChanges.find((pc) => pc.status === 'PENDING') ?? null;
+  const isCustomer = job.customerId === viewerId;
+  const isDone = job.status === 'DONE';
+  const inGuarantee = job.guaranteeUntil !== null && job.guaranteeUntil > now;
+  const hasOpenClaim = job.guaranteeClaims.some((c) => c.status === 'OPEN');
   return {
     id: job.id,
     status: job.status,
@@ -86,5 +102,9 @@ export async function toJobDto(
     customer: { name: job.customer.name, phone: job.customer.phone },
     pendingPriceChange: pending ? toPriceChangeDto(pending) : null,
     priceChanges: job.priceChanges.map(toPriceChangeDto),
+    review: job.review ? await toReviewDto(job.review, storage, publicEndpoint) : null,
+    guaranteeClaims: job.guaranteeClaims.map(toClaimDto),
+    canReview: isCustomer && isDone && !job.review,
+    canClaimGuarantee: isCustomer && isDone && inGuarantee && !hasOpenClaim,
   };
 }

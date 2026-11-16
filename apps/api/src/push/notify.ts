@@ -44,6 +44,25 @@ const TEXTS = {
     'uz-Cyrl': { title: 'Мижоз жавоб берди', body: '{{answer}}' },
     ru: { title: 'Клиент ответил', body: '{{answer}}' },
   },
+  newReview: {
+    'uz-Latn': { title: 'Yangi baho', body: '{{stars}} ★ — {{category}}' },
+    'uz-Cyrl': { title: 'Янги баҳо', body: '{{stars}} ★ — {{category}}' },
+    ru: { title: 'Новая оценка', body: '{{stars}} ★ — {{category}}' },
+  },
+  guaranteeClaim: {
+    'uz-Latn': {
+      title: 'Kafolat: muammo qaytdi',
+      body: "{{category}}. Mijoz bilan bog'lanib, bepul qayta tashrif kelishing.",
+    },
+    'uz-Cyrl': {
+      title: 'Кафолат: муаммо қайтди',
+      body: '{{category}}. Мижоз билан боғланиб, бепул қайта ташриф келишинг.',
+    },
+    ru: {
+      title: 'Гарантия: проблема вернулась',
+      body: '{{category}}. Свяжитесь с клиентом и договоритесь о бесплатном визите.',
+    },
+  },
 } satisfies Record<string, Record<Language, { title: string; body: string }>>;
 
 export type NotificationKind = keyof typeof TEXTS;

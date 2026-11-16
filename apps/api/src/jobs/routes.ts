@@ -141,7 +141,9 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
         { type: 'job', jobId: job.id },
       ),
     );
-    return reply.code(201).send(await toJobDto(job, user.id, storage, endpoint(request)));
+    return reply
+      .code(201)
+      .send(await toJobDto(job, user.id, storage, endpoint(request), ctx.now()));
   });
 
   // ---------- Jobs (both sides) ----------
@@ -154,13 +156,15 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       take: 50,
       include: jobInclude,
     });
-    return Promise.all(jobs.map((job) => toJobDto(job, user.id, storage, endpoint(request))));
+    return Promise.all(
+      jobs.map((job) => toJobDto(job, user.id, storage, endpoint(request), ctx.now())),
+    );
   });
 
   app.get('/jobs/:id', async (request): Promise<JobDto> => {
     const user = await requireUser(ctx, request);
     const { id } = idParams.parse(request.params);
-    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request));
+    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now());
   });
 
   /**
@@ -207,7 +211,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     }
 
     notifyStatus(job, isMaster ? job.customerId : job.masterId, status);
-    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request));
+    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now());
   });
 
   /**
@@ -252,7 +256,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     });
 
     notifyStatus(job, isMaster ? job.customerId : job.masterId, 'CANCELLED');
-    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request));
+    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now());
   });
 
   // ---------- Price changes ----------
@@ -289,7 +293,9 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     );
     return reply
       .code(201)
-      .send(await toJobDto(await loadJob(id, user), user.id, storage, endpoint(request)));
+      .send(
+        await toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now()),
+      );
   });
 
   async function answerPriceChange(request: FastifyRequest, approve: boolean): Promise<JobDto> {
@@ -330,7 +336,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
         },
       ),
     );
-    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request));
+    return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now());
   }
 
   app.post('/jobs/:id/price-changes/:pcId/approve', (request) => answerPriceChange(request, true));
