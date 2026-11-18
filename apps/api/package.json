@@ -13,11 +13,13 @@
     "db:studio": "prisma studio",
     "postinstall": "prisma generate",
     "db:seed": "tsx prisma/seed.ts",
-    "master:verify": "tsx scripts/verify-master.ts"
+    "master:verify": "tsx scripts/verify-master.ts",
+    "admin:create": "tsx scripts/create-admin.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "3.1169.0",
     "@aws-sdk/s3-request-presigner": "3.1169.0",
+    "@fastify/cors": "^11.4.3",
     "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "@usta/shared": "workspace:*",

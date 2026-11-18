@@ -6,6 +6,7 @@ import type { Env } from './env';
 import type { SmsSender } from './sms/sms';
 import type { FileStorage } from './storage/storage';
 import type { PushSender } from './push/push';
+import { BackgroundTasks } from './lib/background';
 
 /** Everything the routes need. Built once at startup; tests build it with fakes. */
 export interface AppContext {
@@ -16,6 +17,7 @@ export interface AppContext {
   tokens: TokenService;
   storage: FileStorage;
   push: PushSender;
+  background: BackgroundTasks;
 }
 
 export interface ContextDeps {
@@ -36,6 +38,7 @@ export function createContext(deps: ContextDeps): AppContext {
     now,
     storage: deps.storage,
     push: deps.push,
+    background: new BackgroundTasks((error) => console.error('Background task failed', error)),
     otp: new OtpService({
       prisma: deps.prisma,
       sms: deps.sms,

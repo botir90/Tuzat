@@ -180,7 +180,7 @@ describe('master', () => {
       });
 
       await createRequest(t, c);
-      await new Promise((resolve) => setTimeout(resolve, 50)); // push runs in background
+      await t.ctx.background.drain();
 
       expect(t.push.sent).toEqual([
         expect.objectContaining({
@@ -213,7 +213,7 @@ describe('master', () => {
         headers: m.auth,
         payload: offerBody,
       });
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await t.ctx.background.drain();
 
       expect(res.statusCode).toBe(201);
       expect(res.json()).toMatchObject({ price: 120_000, status: 'SENT' });

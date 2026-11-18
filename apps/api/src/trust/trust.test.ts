@@ -95,7 +95,7 @@ describe('trust', () => {
       // The 15-minute access token expired during those 10 days.
       const again = await login(t, '+998901112233');
       const res = await claim(s.jobId, bearer(again.accessToken));
-      await new Promise((resolve) => setTimeout(resolve, 50));
+      await t.ctx.background.drain();
 
       expect(res.statusCode).toBe(201);
       expect(res.json()).toMatchObject({ canClaimGuarantee: false });

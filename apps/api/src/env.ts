@@ -18,6 +18,10 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(15 * 60),
+  /** Separate secret for admin panel tokens. Long random string. */
+  ADMIN_JWT_SECRET: z.string().min(32),
+  /** Address of the admin panel (allowed by CORS). */
+  ADMIN_ORIGIN: z.string().default('http://localhost:5173'),
   REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
 
   /** "console" prints OTP codes to the terminal (development). */

@@ -49,6 +49,25 @@ const TEXTS = {
     'uz-Cyrl': { title: 'Янги баҳо', body: '{{stars}} ★ — {{category}}' },
     ru: { title: 'Новая оценка', body: '{{stars}} ★ — {{category}}' },
   },
+  masterVerified: {
+    'uz-Latn': {
+      title: 'Profilingiz tasdiqlandi!',
+      body: "Endi buyurtmalarni ko'rishingiz va taklif yuborishingiz mumkin.",
+    },
+    'uz-Cyrl': {
+      title: 'Профилингиз тасдиқланди!',
+      body: 'Энди буюртмаларни кўришингиз ва таклиф юборишингиз мумкин.',
+    },
+    ru: {
+      title: 'Ваш профиль подтверждён!',
+      body: 'Теперь вы можете видеть заказы и отправлять предложения.',
+    },
+  },
+  masterRejected: {
+    'uz-Latn': { title: 'Profil tasdiqlanmadi', body: '{{reason}}' },
+    'uz-Cyrl': { title: 'Профиль тасдиқланмади', body: '{{reason}}' },
+    ru: { title: 'Профиль не подтверждён', body: '{{reason}}' },
+  },
   guaranteeClaim: {
     'uz-Latn': {
       title: 'Kafolat: muammo qaytdi',
@@ -98,5 +117,5 @@ export async function notifyUsers(
 
 /** Fire-and-forget: the user's action must not wait for (or fail because of) a push. */
 export function notifyInBackground(ctx: AppContext, work: Promise<void>): void {
-  work.catch((error: unknown) => console.error('Push notification failed', error));
+  ctx.background.run(work);
 }

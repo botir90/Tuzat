@@ -42,6 +42,8 @@ const expiryTimer = setInterval(
 
 app.addHook('onClose', async () => {
   clearInterval(expiryTimer);
+  // Let notifications that are being sent finish before the database closes.
+  await ctx.background.drain();
   await prisma.$disconnect();
 });
 

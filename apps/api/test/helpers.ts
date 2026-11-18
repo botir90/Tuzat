@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { afterAll, beforeEach } from 'vitest';
+import { afterAll, afterEach, beforeEach } from 'vitest';
 import { buildApp, type BuildAppOptions } from '../src/app';
 import { createContext, type AppContext } from '../src/context';
 import { createPrismaClient } from '../src/db';
@@ -96,6 +96,7 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
       DATABASE_URL: testDatabaseUrl(),
       JWT_ACCESS_SECRET: 'test-access-secret-that-is-long-enough-123',
       OTP_SECRET: 'test-otp-secret-that-is-long-enough-123456',
+      ADMIN_JWT_SECRET: 'test-admin-secret-that-is-long-enough-1234',
       S3_ENDPOINT: 'http://localhost:8333',
       S3_PUBLIC_ENDPOINT: 'http://storage.test',
       S3_BUCKET: 'test',
@@ -112,6 +113,11 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
       generateOtpCode: () => TEST_OTP_CODE,
     });
     Object.assign(holder, { app: buildApp(ctx, options), ctx, sms, clock, storage, push });
+  });
+
+  // Background work (push notifications) must finish before the next test wipes the tables.
+  afterEach(async () => {
+    await holder.ctx?.background.drain();
   });
 
   afterAll(async () => {
