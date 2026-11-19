@@ -100,7 +100,9 @@ export const useAuth = create<AuthState>((set, get) => ({
     }
     await tokenStorage.clear();
     await safeSet(USER_KEY, null);
-    set({ status: 'signedOut', user: null });
+    // The next person on this phone chooses again: "I need a master" or "I am a master".
+    await safeSet(MODE_KEY, null);
+    set({ status: 'signedOut', user: null, mode: null });
   },
 
   async setMode(mode) {
