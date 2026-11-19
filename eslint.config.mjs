@@ -19,10 +19,15 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     },
   },
-  // React rules for the mobile app (and later the admin panel).
+  // React rules for the mobile app and the admin panel.
   {
-    files: ['apps/mobile/**/*.{ts,tsx}'],
+    files: ['apps/mobile/**/*.{ts,tsx}', 'apps/admin/**/*.{ts,tsx}'],
     ...reactHooks.configs.flat.recommended,
+  },
+  // The admin panel runs in a browser.
+  {
+    files: ['apps/admin/src/**/*.{ts,tsx}'],
+    languageOptions: { globals: { ...globals.browser } },
   },
   // Must be last: turns off rules that conflict with Prettier formatting.
   prettier,
