@@ -33,7 +33,12 @@
     "OFFER_ALREADY_SENT": "Siz bu buyurtmaga taklif yuborgansiz.",
     "OFFER_NOT_AVAILABLE": "Bu taklif endi mavjud emas: usta uni qaytarib olgan. Boshqa taklifni tanlang.",
     "JOB_STATUS_NOT_ALLOWED": "Bu amalni hozirgi holatda bajarib bo'lmaydi. Sahifani yangilang.",
-    "PRICE_CHANGE_PENDING": "Avval narx o'zgarishiga javob kerak."
+    "PRICE_CHANGE_PENDING": "Avval narx o'zgarishiga javob kerak.",
+    "JOB_NOT_DONE": "Bu amal faqat ish tugagandan keyin mumkin.",
+    "REVIEW_ALREADY_EXISTS": "Siz bu ishga allaqachon baho qo'ygansiz.",
+    "GUARANTEE_EXPIRED": "Kafolat muddati tugagan. Yordam kerak bo'lsa, shikoyat yozing.",
+    "CLAIM_ALREADY_OPEN": "Sizda bu ish bo'yicha ochiq kafolat so'rovi bor. Javobni kuting.",
+    "ADMIN_LOGIN_FAILED": "Login yoki parol noto'g'ri."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -242,7 +247,8 @@
     "noRating": "Hali baho yo'q",
     "jobsDone": "{{count}} ta ish bajargan",
     "verified": "Tekshirilgan usta",
-    "master": "Usta"
+    "master": "Usta",
+    "viewMaster": "Sharhlar va ishlarini ko'rish"
   },
   "jobStatus": {
     "ACCEPTED": "Qabul qilindi",
@@ -310,5 +316,62 @@
     "confirm": "Shu joyni tanlash",
     "failed": "Xarita yuklanmadi. Internetni tekshiring yoki manzilni yozib qoldiring.",
     "noKey": "Xarita hali sozlanmagan. Manzilni yozib qoldiring."
+  },
+  "review": {
+    "title": "Ustaga baho qo'ying",
+    "subtitle": "Bahongiz boshqa mijozlarga to'g'ri usta tanlashga yordam beradi.",
+    "starsLabel": "{{count}} yulduz",
+    "starsRequired": "Yulduzlardan birini tanlang.",
+    "hint1": "Juda yomon",
+    "hint2": "Yomon",
+    "hint3": "O'rtacha",
+    "hint4": "Yaxshi",
+    "hint5": "A'lo!",
+    "commentLabel": "Izoh (ixtiyoriy)",
+    "commentPlaceholder": "Nima yoqdi yoki yoqmadi?",
+    "photosLabel": "Ish natijasining rasmlari (ixtiyoriy)",
+    "publicNote": "Baho va izoh ustaning sahifasida hammaga ko'rinadi. Ismingiz qisqartirilgan holda ko'rsatiladi.",
+    "submit": "Bahoni yuborish",
+    "leave": "Ustaga baho qo'yish",
+    "yourReview": "Sizning bahongiz",
+    "anonymous": "Mijoz"
+  },
+  "guarantee": {
+    "title": "Muammo qaytdimi?",
+    "subtitle": "Kafolat davrida usta bepul qayta keladi.",
+    "descriptionLabel": "Nima bo'ldi?",
+    "descriptionPlaceholder": "Masalan: kran yana oqa boshladi",
+    "tooShort": "Muammoni bir-ikki so'z bilan yozing.",
+    "howItWorks": "Ustaga darhol xabar boradi. U siz bilan bog'lanib, bepul qayta tashrif vaqtini kelishadi. Kelmasa, bizning xodim aralashadi.",
+    "submit": "Kafolat bo'yicha so'rov yuborish",
+    "button": "Muammo qaytdi (kafolat)",
+    "claim": "Kafolat so'rovi",
+    "status": {
+      "OPEN": "ko'rib chiqilmoqda",
+      "RESOLVED": "hal qilindi",
+      "REJECTED": "rad etildi"
+    }
+  },
+  "complaint": {
+    "title": "Shikoyat",
+    "subtitle": "Muammoni yozing. Qo'llab-quvvatlash xizmati ko'rib chiqadi va javob beradi.",
+    "textLabel": "Nima bo'ldi?",
+    "textPlaceholder": "Vaziyatni batafsil yozing",
+    "tooShort": "Vaziyatni batafsilroq yozing.",
+    "submit": "Shikoyat yuborish",
+    "sent": "Shikoyatingiz qabul qilindi. Tez orada ko'rib chiqamiz.",
+    "button": "Muammo bormi? Shikoyat yozish",
+    "history": "Sizning shikoyatlaringiz",
+    "answer": "Javob",
+    "status": {
+      "OPEN": "ko'rib chiqilmoqda",
+      "RESOLVED": "hal qilindi"
+    }
+  },
+  "masterPage": {
+    "title": "Usta haqida",
+    "workPhotos": "Bajargan ishlari",
+    "reviews": "Sharhlar ({{count}})",
+    "noReviews": "Hali sharhlar yo'q."
   }
 }

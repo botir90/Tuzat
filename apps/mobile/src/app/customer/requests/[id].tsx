@@ -92,6 +92,9 @@ export default function RequestDetailScreen() {
             <OfferCard
               key={offer.id}
               offer={offer}
+              onViewMaster={() =>
+                router.push({ pathname: '/masters/[id]', params: { id: offer.master.id } })
+              }
               choosing={acceptOffer.isPending && acceptOffer.variables === offer.id}
               onChoose={() =>
                 acceptOffer.mutate(offer.id, {

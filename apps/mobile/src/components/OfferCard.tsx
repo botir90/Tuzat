@@ -10,10 +10,12 @@ interface OfferCardProps {
   offer: CustomerOfferDto;
   onChoose?: () => void;
   choosing?: boolean;
+  /** Opens the master's page with reviews and work samples. */
+  onViewMaster?: () => void;
 }
 
 /** One master's offer: who, how much, when. */
-export function OfferCard({ offer, onChoose, choosing }: OfferCardProps) {
+export function OfferCard({ offer, onChoose, choosing, onViewMaster }: OfferCardProps) {
   const { t } = useTranslation();
   return (
     <View style={styles.card}>
@@ -23,6 +25,9 @@ export function OfferCard({ offer, onChoose, choosing }: OfferCardProps) {
         {t('offers.arrival', { time: formatDateTime(offer.arrivalAt) })}
       </Text>
       {offer.message ? <Text style={styles.message}>“{offer.message}”</Text> : null}
+      {onViewMaster ? (
+        <BigButton label={t('offers.viewMaster')} variant="outline" onPress={onViewMaster} />
+      ) : null}
       {onChoose ? (
         <BigButton label={t('offers.choose')} onPress={onChoose} loading={choosing} />
       ) : null}

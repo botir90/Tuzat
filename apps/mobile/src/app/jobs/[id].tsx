@@ -10,6 +10,7 @@ import { Chips } from '@/components/Chips';
 import { MasterInfo } from '@/components/MasterInfo';
 import { Notice } from '@/components/Notice';
 import { QueryState } from '@/components/QueryState';
+import { ReviewCard } from '@/components/ReviewCard';
 import { Screen } from '@/components/Screen';
 import { StatusSteps } from '@/components/StatusSteps';
 import { TextField } from '@/components/TextField';
@@ -286,6 +287,45 @@ function JobView({ job }: { job: JobDto }) {
           />
         )
       ) : null}
+
+      {/* Trust: review, guarantee and complaints (M6). */}
+      {job.review ? (
+        <>
+          <Text style={styles.label}>{t('review.yourReview')}</Text>
+          <ReviewCard review={job.review} />
+        </>
+      ) : null}
+      {job.canReview ? (
+        <BigButton
+          label={t('review.leave')}
+          onPress={() => router.push({ pathname: '/review/[jobId]', params: { jobId: job.id } })}
+        />
+      ) : null}
+      {job.guaranteeClaims.map((claim) => (
+        <Notice
+          key={claim.id}
+          tone={claim.status === 'OPEN' ? 'warning' : 'info'}
+          text={[
+            `${t('guarantee.claim')}: ${t(`guarantee.status.${claim.status}`)}`,
+            claim.description,
+            claim.adminNote ? `${t('complaint.answer')}: ${claim.adminNote}` : null,
+          ]
+            .filter(Boolean)
+            .join('\n')}
+        />
+      ))}
+      {job.canClaimGuarantee ? (
+        <BigButton
+          label={t('guarantee.button')}
+          variant="outline"
+          onPress={() => router.push({ pathname: '/guarantee/[jobId]', params: { jobId: job.id } })}
+        />
+      ) : null}
+      <BigButton
+        label={t('complaint.button')}
+        variant="outline"
+        onPress={() => router.push({ pathname: '/complaint/[jobId]', params: { jobId: job.id } })}
+      />
 
       {canCancel ? (
         <BigButton
