@@ -236,6 +236,21 @@ One mobile app with **two modes**. The user chooses the mode at first launch and
 
 ---
 
+## 7a. Payment model (decided)
+
+Platform-held payment (escrow) via a **licensed payment provider**.
+
+- **Flow:** the customer pays online (Click/Payme) when choosing the master → the money is held by the payment provider, **not by us** → the customer taps "Job done" → the money is released to the master minus our commission. If the customer reports a problem, the money is frozen and an admin decides.
+- **Auto-release:** if the customer neither confirms nor complains within 24 h after the master marks the job done, release automatically (send reminders first).
+- **Labor and parts:** split the price into "labor" and "parts". The master uploads a receipt photo for parts; after the customer approves it, the parts money is released immediately.
+- **Price changes:** an approved price change charges only the difference.
+- **Payouts** to masters on the same day.
+- **Cash:** allowed at the start, but online payment gives bonus cashback, and only online-paid jobs get the guarantee. For cash jobs the commission is charged to the master's balance.
+- **Legal:** we never hold money ourselves and never use personal cards. Requires a legal entity (MChJ) and a marketplace/split-payment agreement with Click/Payme; check with a lawyer before launch.
+- **MVP and pilot:** cash only, but design the data model now (`Payment`, `Payout`, `Hold`, `Dispute`, `MasterBalance` with statuses) so online escrow can be switched on later without rewriting.
+
+---
+
 ## 8. Milestones (do them in order)
 
 **M0: Setup (week 1)**
