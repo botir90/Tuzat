@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Barcha xizmatlar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0F6B5C}a:hover{color:#0A4F44}
+</style>
+</helmet>
+<div style="width: 390px; height: 1640px; box-sizing: border-box; background: #F6F7F4; font-family: Inter, system-ui, sans-serif; color: #15201E; display: flex; flex-direction: column">
+<div style="padding: 24px 20px 0; display: flex; align-items: center; gap: 12px">
+<a href="Home.dc.html" aria-label="Orqaga" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; text-decoration: none">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15201E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<div style="font-size: 22px; font-weight: 800; letter-spacing: -0.3px">Barcha xizmatlar</div>
+</div>
+<div style="padding: 16px 20px 0">
+<div style="height: 52px; border-radius: 16px; background: #FFFFFF; box-shadow: 0 1px 3px rgba(21,32,30,0.10); display: flex; align-items: center; gap: 10px; padding: 0 16px; font-size: 15px; color: #5B6866">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5B6866" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg>Kasb yoki xizmatni qidiring</div>
+</div>
+
+<div style="padding: 22px 20px 10px; font-size: 17px; font-weight: 800">Ta'mirlash</div>
+<div style="padding: 0 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px">
+<sc-for list="{{repair}}" as="c" hint-placeholder-count="8">
+<a href="NewRequest.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; padding: 4px 0">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+<span style="font-size: 12px; font-weight: 600; color: #15201E; text-align: center; line-height: 1.2">{{c.name}}</span>
+</a>
+</sc-for>
+</div>
+
+<div style="padding: 22px 20px 10px; font-size: 17px; font-weight: 800">Qurilish va pardozlash</div>
+<div style="padding: 0 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px">
+<sc-for list="{{build}}" as="c" hint-placeholder-count="12">
+<a href="NewRequest.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; padding: 4px 0; position: relative">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+<span style="font-size: 12px; font-weight: 600; color: #15201E; text-align: center; line-height: 1.2">{{c.name}}</span>
+</a>
+</sc-for>
+</div>
+
+<div style="padding: 22px 20px 10px; font-size: 17px; font-weight: 800">Maishiy texnika</div>
+<div style="padding: 0 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px">
+<sc-for list="{{tech}}" as="c" hint-placeholder-count="8">
+<a href="NewRequest.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; padding: 4px 0">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+<span style="font-size: 12px; font-weight: 600; color: #15201E; text-align: center; line-height: 1.2">{{c.name}}</span>
+</a>
+</sc-for>
+</div>
+
+<div style="padding: 22px 20px 10px; font-size: 17px; font-weight: 800">Mebel va uy xizmatlari</div>
+<div style="padding: 0 20px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px 6px">
+<sc-for list="{{home}}" as="c" hint-placeholder-count="8">
+<a href="NewRequest.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-decoration: none; padding: 4px 0">
+<span style="width: 56px; height: 56px; border-radius: 18px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
+<span style="font-size: 12px; font-weight: 600; color: #15201E; text-align: center; line-height: 1.2">{{c.name}}</span>
+</a>
+</sc-for>
+</div>
+
+<div style="padding: 24px 20px 0">
+<a href="NewRequest.dc.html" style="border-radius: 18px; background: #FFFFFF; border: 1.5px dashed #9AA6A3; padding: 16px; display: flex; align-items: center; gap: 14px; text-decoration: none; color: #15201E">
+<span style="width: 48px; height: 48px; border-radius: 16px; background: #E3F1EE; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+<span style="display: flex; flex-direction: column; gap: 3px">
+<span style="font-size: 15px; font-weight: 800">Kerakli usta topilmadimi?</span>
+<span style="font-size: 13px; line-height: 1.4; color: #4F5B59">Muammoni yozing yoki ayting, mos ustani o'zimiz topamiz</span></span>
+</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1640}}'>
+class Component extends DCLogic {
+renderVals() {
+const blue = { bg: '#E4EEFB', fg: '#1F5FAE' }, gold = { bg: '#FFF3D6', fg: '#9A6400' }, cyan = { bg: '#E0F4F8', fg: '#0B6E85' };
+const violet = { bg: '#EEE8FA', fg: '#6B3FA0' }, teal = { bg: '#E3F1EE', fg: '#0F6B5C' }, orange = { bg: '#FDECE2', fg: '#B4471A' };
+const pink = { bg: '#FBE7EF', fg: '#A3305E' }, gray = { bg: '#ECEFEE', fg: '#3E4B49' };
+return {
+repair: [
+{ name: 'Santexnik', icon: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z', ...blue },
+{ name: 'Elektrik', icon: 'M13 2L4 14h7l-1 8 9-12h-7z', ...gold },
+{ name: 'Konditsioner', icon: 'M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5', ...cyan },
+{ name: 'Gaz qozon, isitish', icon: 'M12 22a6 6 0 0 0 6-6c0-4-3-5-3-9-2 1-3 3-3 5-1-1-1.5-2-1.5-3C8 11 6 13 6 16a6 6 0 0 0 6 6z', ...orange },
+{ name: 'Payvandchi', icon: 'M4 20l6-6M14 4l6 6-8 8-6-6zM17 3l4 4', ...gray },
+{ name: 'Duradgor', icon: 'M3 17l11-11 4 4-11 11H3zM14 6l2-2 4 4-2 2', ...gold },
+{ name: 'Qulf ustasi', icon: 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4', ...violet },
+{ name: 'Suv isitgich', icon: 'M7 2h10v16H7zM12 18v4M10 7h4M12 11v3', ...blue }
+],
+build: [
+{ name: 'Malyar (bo\'yoqchi)', icon: 'M4 4h13v5H4zM17 6.5h3v6h-8v3M11 15.5h2v6h-2z', ...pink },
+{ name: 'Natyajnoy potolok', icon: 'M3 5h18M4 5c2 4 14 4 16 0M12 9v4M10 13h4l-2 5z', ...violet },
+{ name: 'Gipsokarton', icon: 'M4 4h16v16H4zM4 12h16M12 4v16', ...gray },
+{ name: 'Kafelchi', icon: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z', ...cyan },
+{ name: 'Suvoqchi', icon: 'M3 14l8-8 4 4-8 8H3zM14 7l3-3 3 3-3 3', ...gold },
+{ name: 'Oboy yopishtirish', icon: 'M5 3h10v18H5zM15 6h4v12h-4M8 7h4M8 11h4', ...pink },
+{ name: 'Laminat, parket', icon: 'M3 6h18v12H3zM3 10h18M3 14h18M9 6v4M15 10v4M7 14v4', ...orange },
+{ name: 'Plastik deraza', icon: 'M5 3h14v18H5zM12 3v18M5 12h14', ...blue },
+{ name: 'Eshik o\'rnatish', icon: 'M6 3h12v18H6zM14 12h.01', ...teal },
+{ name: 'Tom yopish', icon: 'M3 11l9-7 9 7M5 10v10h14V10', ...orange },
+{ name: 'G\'isht teruvchi', icon: 'M3 5h18v14H3zM3 9.7h18M3 14.3h18M9 5v4.7M15 5v4.7M6 9.7v4.6M12 9.7v4.6M18 9.7v4.6M9 14.3V19M15 14.3V19', ...gray },
+{ name: 'Ta\'mir "kalitda"', icon: 'M3 11l9-7 9 7v9H3zM9 20v-6h6v6', ...teal }
+],
+tech: [
+{ name: 'Kir mashina', icon: 'M5 3h14v18H5zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 6h1', ...violet },
+{ name: 'Muzlatgich', icon: 'M6 2h12v20H6zM6 10h12M9 5v2M9 13v3', ...teal },
+{ name: 'Televizor', icon: 'M3 5h18v11H3zM8 20h8M12 16v4', ...blue },
+{ name: 'Kompyuter, noutbuk', icon: 'M5 5h14v10H5zM2 19h20', ...gray },
+{ name: 'Gaz plita', icon: 'M4 3h16v18H4zM4 9h16M8 6h.01M12 6h.01M16 6h.01', ...orange },
+{ name: 'Mikroto\'lqinli pech', icon: 'M3 6h18v12H3zM15 6v12M6 9h6v6H6zM18 10h.01M18 13h.01', ...gold },
+{ name: 'Videokuzatuv', icon: 'M3 7l13-3 2 7-13 3zM9 13l1 5H5M18 9l3-1', ...cyan },
+{ name: 'Internet, antenna', icon: 'M5 12a10 10 0 0 1 14 0M8.5 15.5a5 5 0 0 1 7 0M12 19h.01', ...blue }
+],
+home: [
+{ name: 'Mebel yig\'ish', icon: 'M3 10h18v8H3zM5 18v3M19 18v3M7 10V6h10v4', ...pink },
+{ name: 'Mebel ta\'miri', icon: 'M4 18h16M6 18V8h12v10M9 8V5h6v3', ...gold },
+{ name: 'Oshxona mebeli', icon: 'M3 4h18v16H3zM3 11h18M12 4v16M8 7h1M15 7h1M8 14h1M15 14h1', ...orange },
+{ name: 'Tozalash', icon: 'M9 3h6l-1 7h-4zM6 10h12l-1 11H7zM10 14v4M14 14v4', ...gray },
+{ name: 'Gilam yuvish', icon: 'M4 4h16v16H4zM8 8h8v8H8z', ...violet },
+{ name: 'Yuk tashish', icon: 'M2 7h12v9H2zM14 10h4l3 3v3h-7M6 19a2 2 0 1 0 0-.01M17 19a2 2 0 1 0 0-.01', ...blue },
+{ name: 'Bog\'bon', icon: 'M12 21V10M12 10C12 6 9 3 5 3c0 4 3 7 7 7zM12 13c0-3 3-6 7-6 0 4-3 6-7 6z', ...teal },
+{ name: 'Dezinfeksiya', icon: 'M12 6a3 3 0 0 1 3 3v6a3 3 0 0 1-6 0V9a3 3 0 0 1 3-3zM9 10H5M9 14H5M15 10h4M15 14h4M10 4l-1-2M14 4l1-2', ...cyan }
+]
+};
+}
+}
+</script>
+</body>
+</html>

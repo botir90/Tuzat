@@ -54,11 +54,14 @@ design/
 |---|---|---|---|
 | `Main.html` | Language picker + role choice | both | M0 / M1 |
 | `Home.html` | Customer home (scrolls): address, search with mic, promo banner, 24/7 emergency, categories, seasonal tip, top masters, popular services with prices, before/after, referral banner, trust row, tab bar | customer | M2 (core blocks); promo, referral, before/after in Phase 2 |
+| `Categories.html` | All services: search + 35 trades in 4 groups (repair; construction and finishing incl. painter, stretch ceiling, drywall, tiler, plasterer, wallpaper, laminate, PVC windows, doors, roofing, bricklayer, turnkey renovation; appliances; furniture and home services) + "can't find your master?" card | customer | M2 |
 | `NewRequest.html` | Create request in 3 steps: problem (text/photo/voice), address + landmark, time | customer | M3 |
 | `Offers.html` | Offers list: master, rating, jobs, price, arrival, select | customer | M5 |
 | `MasterProfile.html` | Master profile: badges, stats, about, prices, portfolio, reviews, chat + select | customer | M5 / M6 |
 | `JobStatus.html` | Job status timeline, master card with chat + call, price change approval card | customer | M5 |
 | `Chat.html` | Chat with text, voice, photos, system messages, quick replies | both | Phase 2 |
+| `AddressMap.html` | Map address picker: search, center pin "master comes here", my-location button, bottom sheet with address, landmark, apartment, floor, confirm | customer | M3 (Yandex MapKit) |
+| `Tracking.html` | Live tracking: map with master's route and ETA card, bottom sheet with master, car, chat and call, held-money note | customer | Phase 2 (live location) |
 | `Call.html` | In-app voice call (dark screen), hidden numbers, mute / speaker / chat / end, fallback to normal call | both | M6.5 (in-app calls) |
 | `Review.html` | Job done: stars, tags, comment, photo, payment summary, tip, bonus earned | customer | M6 (payment block: Phase 2) |
 | `Payment.html` | Pay when choosing master: "your money is safe" steps, price split (labor/parts), Click / Payme / cash | customer | Phase 2 (escrow) |
@@ -75,6 +78,7 @@ Build screens **in the milestone order from `CLAUDE.md`**. A screen marked for a
 
 ## Behaviour notes the mockups can't show
 
+- **Maps** use Yandex MapKit (already chosen by Botir). The mockup maps are drawings: use real map tiles; keep the pin, buttons and bottom sheets as drawn.
 - **Home** scrolls vertically; the tab bar is fixed at the bottom. The "top masters" row scrolls horizontally.
 - **Search with mic** and **NewRequest voice button**: hold-to-record or tap-to-start/stop, show recording time, allow re-record.
 - **Emergency (24/7)** creates a request with time = "Now" and a higher priority for nearby available masters.

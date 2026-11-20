@@ -61,11 +61,11 @@ a{color:#0F6B5C}a:hover{color:#0A4F44}
 
 <div style="padding: 24px 20px 0; display: flex; justify-content: space-between; align-items: baseline">
 <span style="font-size: 20px; font-weight: 800">Xizmatlar</span>
-<a href="Home.dc.html" style="font-size: 14px; font-weight: 700; text-decoration: none">Barchasi</a>
+<a href="Categories.dc.html" style="font-size: 14px; font-weight: 700; text-decoration: none">Barchasi (35)</a>
 </div>
 <div style="padding: 12px 20px 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
 <sc-for list="{{cats}}" as="c" hint-placeholder-count="8">
-<a href="NewRequest.dc.html" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; padding: 4px 0">
+<a href="{{c.href}}" style="display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; padding: 4px 0">
 <span style="width: 64px; height: 64px; border-radius: 20px; background: {{c.bg}}; display: flex; align-items: center; justify-content: center">
 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="{{c.fg}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.icon}}"></path></svg></span>
 <span style="font-size: 12px; font-weight: 600; color: #15201E; text-align: center; line-height: 1.2">{{c.name}}</span>
@@ -163,12 +163,12 @@ cats: [
 { name: 'Santexnik', bg: '#E4EEFB', fg: '#1F5FAE', icon: 'M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z' },
 { name: 'Elektrik', bg: '#FFF3D6', fg: '#9A6400', icon: 'M13 2L4 14h7l-1 8 9-12h-7z' },
 { name: 'Konditsioner', bg: '#E0F4F8', fg: '#0B6E85', icon: 'M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5' },
-{ name: 'Kir mashina', bg: '#EEE8FA', fg: '#6B3FA0', icon: 'M5 3h14v18H5zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 6h1' },
-{ name: 'Muzlatgich', bg: '#E3F1EE', fg: '#0F6B5C', icon: 'M6 2h12v20H6zM6 10h12M9 5v2M9 13v3' },
+{ name: 'Malyar', bg: '#FBE7EF', fg: '#A3305E', icon: 'M4 4h13v5H4zM17 6.5h3v6h-8v3M11 15.5h2v6h-2z' },
+{ name: 'Natyajnoy potolok', bg: '#EEE8FA', fg: '#6B3FA0', icon: 'M3 5h18M4 5c2 4 14 4 16 0M12 9v4M10 13h4l-2 5z' },
 { name: 'Gaz qozon', bg: '#FDECE2', fg: '#B4471A', icon: 'M12 22a6 6 0 0 0 6-6c0-4-3-5-3-9-2 1-3 3-3 5-1-1-1.5-2-1.5-3C8 11 6 13 6 16a6 6 0 0 0 6 6z' },
-{ name: 'Mebel', bg: '#FBE7EF', fg: '#A3305E', icon: 'M3 10h18v8H3zM5 18v3M19 18v3M7 10V6h10v4' },
-{ name: 'Tozalash', bg: '#ECEFEE', fg: '#3E4B49', icon: 'M9 3h6l-1 7h-4zM6 10h12l-1 11H7zM10 14v4M14 14v4' }
-],
+{ name: 'Kir mashina', bg: '#E3F1EE', fg: '#0F6B5C', icon: 'M5 3h14v18H5zM12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 6h1' },
+{ name: 'Barchasi', bg: '#0F6B5C', fg: '#FFFFFF', icon: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z', href: 'Categories.dc.html' }
+].map((c) => ({ href: 'NewRequest.dc.html', ...c })),
 masters: [
 { name: 'Sardor A.', cat: 'Santexnik', initial: 'S', bg: '#3D6E8F', rating: '4.9', jobs: 128 },
 { name: 'Dilshod K.', cat: 'Elektrik', initial: 'D', bg: '#8A5A1E', rating: '4.9', jobs: 96 },
