@@ -1,9 +1,13 @@
-import type {
-  CategoryDto,
-  DistrictDto,
-  LocalizedText,
-  PriceItemDto,
-  RegionDto,
+import {
+  CATEGORY_COLORS,
+  CATEGORY_ICONS,
+  type CategoryColor,
+  type CategoryIcon,
+  type CategoryDto,
+  type DistrictDto,
+  type LocalizedText,
+  type PriceItemDto,
+  type RegionDto,
 } from '@usta/shared';
 import type { Category, District, PriceItem, Region } from '../generated/prisma/client';
 
@@ -35,11 +39,19 @@ export const toDistrictDto = (d: District): DistrictDto => ({
   lng: d.lng,
 });
 
+/** Unknown values (e.g. an icon removed from the app) fall back to safe defaults. */
+const asIcon = (value: string): CategoryIcon =>
+  (CATEGORY_ICONS as readonly string[]).includes(value) ? (value as CategoryIcon) : 'circle-help';
+const asColor = (value: string): CategoryColor =>
+  (CATEGORY_COLORS as readonly string[]).includes(value) ? (value as CategoryColor) : 'gray';
+
 export const toCategoryDto = (c: Category): CategoryDto => ({
   id: c.id,
   slug: c.slug,
   name: names(c),
-  icon: c.icon,
+  icon: asIcon(c.icon),
+  color: asColor(c.color),
+  groupId: c.groupId,
 });
 
 export const toPriceItemDto = (

@@ -3,7 +3,9 @@ import { z } from 'zod';
 import {
   regionPriceSchema,
   updateRegionSchema,
+  upsertCategoryGroupSchema,
   upsertCategorySchema,
+  type UpsertCategoryBody,
   upsertPriceItemSchema,
 } from '@usta/shared';
 import type { AppContext } from '../context';
@@ -54,6 +56,33 @@ export function registerAdminCatalogRoutes(app: FastifyInstance, ctx: AppContext
     return reply.code(204).send();
   });
 
+  /** The chosen group must exist (null = no group). */
+  async function assertGroup(groupId: UpsertCategoryBody['groupId']): Promise<void> {
+    if (groupId && !(await prisma.categoryGroup.findUnique({ where: { id: groupId } }))) {
+      throw notFound();
+    }
+  }
+
+  app.get('/admin/category-groups', async (request) => {
+    await requireAdmin(ctx, request);
+    return prisma.categoryGroup.findMany({ orderBy: { sortOrder: 'asc' } });
+  });
+
+  app.post('/admin/category-groups', async (request, reply) => {
+    await requireAdmin(ctx, request);
+    const data = upsertCategoryGroupSchema.parse(request.body);
+    const group = await withUniqueSlug(() => prisma.categoryGroup.create({ data }));
+    return reply.code(201).send(group);
+  });
+
+  app.put('/admin/category-groups/:id', async (request) => {
+    await requireAdmin(ctx, request);
+    const { id } = idParams.parse(request.params);
+    const data = upsertCategoryGroupSchema.parse(request.body);
+    if (!(await prisma.categoryGroup.findUnique({ where: { id } }))) throw notFound();
+    return withUniqueSlug(() => prisma.categoryGroup.update({ where: { id }, data }));
+  });
+
   app.get('/admin/categories', async (request) => {
     await requireAdmin(ctx, request);
     return prisma.category.findMany({
@@ -70,6 +99,7 @@ export function registerAdminCatalogRoutes(app: FastifyInstance, ctx: AppContext
   app.post('/admin/categories', async (request, reply) => {
     await requireAdmin(ctx, request);
     const data = upsertCategorySchema.parse(request.body);
+    await assertGroup(data.groupId);
     const category = await withUniqueSlug(() => prisma.category.create({ data }));
     return reply.code(201).send(category);
   });
@@ -79,6 +109,7 @@ export function registerAdminCatalogRoutes(app: FastifyInstance, ctx: AppContext
     const { id } = idParams.parse(request.params);
     const data = upsertCategorySchema.parse(request.body);
     if (!(await prisma.category.findUnique({ where: { id } }))) throw notFound();
+    await assertGroup(data.groupId);
     return withUniqueSlug(() => prisma.category.update({ where: { id }, data }));
   });
 

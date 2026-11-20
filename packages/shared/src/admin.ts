@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { USER_ROLES, VERIFICATION_STATUSES, JOB_STATUSES, REQUEST_STATUSES } from './enums';
+import { CATEGORY_COLORS, CATEGORY_ICONS } from './catalog';
 import { CLAIM_STATUSES, COMPLAINT_STATUSES } from './trust';
 
 /**
@@ -88,11 +89,24 @@ export const upsertCategorySchema = namesSchema.extend({
     .string()
     .trim()
     .regex(/^[a-z0-9-]{2,50}$/, 'SLUG_FORMAT'),
-  icon: z.string().trim().min(1).max(50),
+  /** Only icons the app knows (CATEGORY_ICONS), so a new trade never shows a broken icon. */
+  icon: z.enum(CATEGORY_ICONS),
+  color: z.enum(CATEGORY_COLORS),
+  /** null = no group (e.g. the 'Other' category). */
+  groupId: z.string().min(1).nullable(),
   sortOrder: z.number().int().min(0).max(1000),
   isActive: z.boolean(),
 });
 export type UpsertCategoryBody = z.infer<typeof upsertCategorySchema>;
+
+export const upsertCategoryGroupSchema = namesSchema.extend({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9-]{2,50}$/, 'SLUG_FORMAT'),
+  sortOrder: z.number().int().min(0).max(1000),
+});
+export type UpsertCategoryGroupBody = z.infer<typeof upsertCategoryGroupSchema>;
 
 export const upsertPriceItemSchema = namesSchema
   .extend({

@@ -192,6 +192,67 @@ describe('admin', () => {
       expect(regions.json().every((r: { isActive: boolean }) => r.isActive)).toBe(true);
     });
 
+    it('adds a new trade into a new group without code changes', async () => {
+      const auth = await adminAuth(t);
+      const group = await t.app.inject({
+        method: 'POST',
+        url: '/admin/category-groups',
+        headers: auth,
+        payload: {
+          slug: 'auto',
+          nameUzLatn: 'Avto',
+          nameUzCyrl: 'Авто',
+          nameRu: 'Авто',
+          sortOrder: 5,
+        },
+      });
+      expect(group.statusCode).toBe(201);
+
+      const trade = {
+        slug: 'tire-service',
+        nameUzLatn: 'Shinomontaj',
+        nameUzCyrl: 'Шиномонтаж',
+        nameRu: 'Шиномонтаж',
+        icon: 'truck',
+        color: 'blue',
+        groupId: group.json().id,
+        sortOrder: 50,
+        isActive: true,
+      };
+      const created = await t.app.inject({
+        method: 'POST',
+        url: '/admin/categories',
+        headers: auth,
+        payload: trade,
+      });
+      expect(created.statusCode).toBe(201);
+
+      // The app sees it right away, inside its group.
+      const groups = await t.app.inject({ method: 'GET', url: '/category-groups' });
+      expect(groups.json()).toEqual([
+        expect.objectContaining({
+          slug: 'auto',
+          categories: [expect.objectContaining({ slug: 'tire-service', icon: 'truck' })],
+        }),
+      ]);
+
+      // Unknown icons and groups are refused.
+      const badIcon = await t.app.inject({
+        method: 'POST',
+        url: '/admin/categories',
+        headers: auth,
+        payload: { ...trade, slug: 'x-1', icon: 'not-an-icon' },
+      });
+      const badGroup = await t.app.inject({
+        method: 'POST',
+        url: '/admin/categories',
+        headers: auth,
+        payload: { ...trade, slug: 'x-2', groupId: 'nope' },
+      });
+      expect(badIcon.statusCode).toBe(400);
+      expect(badGroup.statusCode).toBe(404);
+    });
+
     it('creates and edits categories, refusing a duplicate slug', async () => {
       const auth = await adminAuth(t);
       const body = {
@@ -199,7 +260,9 @@ describe('admin', () => {
         nameUzLatn: "Bo'yoqchi",
         nameUzCyrl: 'Бўёқчи',
         nameRu: 'Маляр',
-        icon: 'format-paint',
+        icon: 'paintbrush',
+        color: 'pink',
+        groupId: null,
         sortOrder: 10,
         isActive: true,
       };

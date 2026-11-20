@@ -114,7 +114,7 @@ One mobile app with **two modes**. The user chooses the mode at first launch and
 
 ### Customer flow (MVP)
 1. Open the app → choose language → choose "I need a master".
-2. Home: big category tiles (Plumber, Electrician, AC, Washing machine, Fridge, Gas boiler, Furniture assembly, Other).
+2. Home: big category tiles (the first trades of section 7b) + "All services" with every group.
 3. Category → see the **price list** for typical jobs (e.g. "Replace a faucet: 80 000–150 000 so'm").
 4. Create request: photo / voice / text, address (map pin + text landmark, e.g. "near the 5th school"; landmarks matter in Uzbekistan), preferred time (Now / Today / Choose a time).
 5. Phone login (OTP) if not logged in yet.
@@ -217,7 +217,8 @@ One mobile app with **two modes**. The user chooses the mode at first launch and
 
 - **User**: id, phone (unique), name, language, role (`CUSTOMER` | `MASTER` | `ADMIN`), createdAt, isBlocked
 - **MasterProfile**: userId, photoUrl, bio, categories[], districts[], verificationStatus (`PENDING` | `VERIFIED` | `REJECTED`), isAvailable, ratingAvg, ratingCount, completedJobsCount
-- **Category**: id, slug, names (uz-Latn / uz-Cyrl / ru), icon, sortOrder, isActive
+- **CategoryGroup**: id, slug, names (uz-Latn / uz-Cyrl / ru), sortOrder (admin-managed, see 7b)
+- **Category**: id, slug, names (uz-Latn / uz-Cyrl / ru), icon, color, groupId (null for "Other"), sortOrder, isActive
 - **PriceItem**: id, categoryId, names (3 languages), minPrice, maxPrice (in so'm)
 - **Region**: id, names (3 languages), isActive (true when we have launched there), sortOrder. 14 regions: Toshkent shahri, Toshkent viloyati, Andijon, Farg'ona, Namangan, Samarqand, Buxoro, Navoiy, Qashqadaryo, Surxondaryo, Jizzax, Sirdaryo, Xorazm, Qoraqalpog'iston Respublikasi
 - **District**: id, regionId, names (3 languages), lat, lng (center). Seed **all districts and district-level cities of Uzbekistan**; verify the list against an official source before seeding
@@ -255,6 +256,74 @@ Platform-held payment (escrow) via a **licensed payment provider**.
 - **MVP and pilot:** cash only, but design the data model now (`Payment`, `Payout`, `Hold`, `Dispute`, `MasterBalance` with statuses) so online escrow can be switched on later without rewriting.
 
 ---
+
+## 7b. Service categories (decided)
+
+The list from `design/screens/Categories.html`: 36 trades in 4 groups, plus **"Other / can't find a master"** (no group, always last; the customer describes the problem and we find a suitable master).
+
+- Categories and groups are **managed in the admin panel** (add, rename, reorder, hide, choose an icon and a color from the allowed lists). Adding a trade needs no code change.
+- The seed (`apps/api/prisma/seed-data/categories.ts`) creates this list once; admins own it afterwards. Seed prices are estimates to check with real masters.
+
+**Ta'mirlash / Таъмирлаш / Ремонт**
+
+| uz-Latn | uz-Cyrl | ru |
+|---|---|---|
+| Santexnik | Сантехник | Сантехник |
+| Elektrik | Электрик | Электрик |
+| Konditsioner | Кондиционер | Кондиционеры |
+| Gaz qozon, isitish | Газ қозон, иситиш | Газовые котлы, отопление |
+| Payvandchi | Пайвандчи | Сварщик |
+| Duradgor | Дурадгор | Плотник |
+| Qulf ustasi | Қулф устаси | Мастер по замкам |
+| Suv isitgich | Сув иситгич | Водонагреватели |
+
+**Qurilish va pardozlash / Қурилиш ва пардозлаш / Строительство и отделка**
+
+| uz-Latn | uz-Cyrl | ru |
+|---|---|---|
+| Malyar (bo'yoqchi) | Маляр (бўёқчи) | Маляр |
+| Natyajnoy potolok | Натяжной потолок | Натяжные потолки |
+| Gipsokarton | Гипсокартон | Гипсокартон |
+| Kafelchi | Кафелчи | Плиточник |
+| Suvoqchi | Сувоқчи | Штукатур |
+| Oboy yopishtirish | Обой ёпиштириш | Поклейка обоев |
+| Laminat, parket | Ламинат, паркет | Ламинат, паркет |
+| Plastik deraza | Пластик дераза | Пластиковые окна |
+| Eshik o'rnatish | Эшик ўрнатиш | Установка дверей |
+| Tom yopish | Том ёпиш | Кровельные работы |
+| G'isht teruvchi | Ғишт терувчи | Каменщик |
+| Ta'mir "kalitda" | Таъмир "калитда" | Ремонт под ключ |
+
+**Maishiy texnika / Маиший техника / Бытовая техника**
+
+| uz-Latn | uz-Cyrl | ru |
+|---|---|---|
+| Kir mashina | Кир машина | Стиральные машины |
+| Muzlatgich | Музлатгич | Холодильники |
+| Televizor | Телевизор | Телевизоры |
+| Kompyuter, noutbuk | Компьютер, ноутбук | Компьютеры, ноутбуки |
+| Gaz plita | Газ плита | Газовые плиты |
+| Mikroto'lqinli pech | Микротўлқинли печ | Микроволновые печи |
+| Videokuzatuv | Видеокузатув | Видеонаблюдение |
+| Internet, antenna | Интернет, антенна | Интернет, антенны |
+
+**Mebel va uy xizmatlari / Мебель ва уй хизматлари / Мебель и услуги для дома**
+
+| uz-Latn | uz-Cyrl | ru |
+|---|---|---|
+| Mebel yig'ish | Мебель йиғиш | Сборка мебели |
+| Mebel ta'miri | Мебель таъмири | Ремонт мебели |
+| Oshxona mebeli | Ошхона мебели | Кухонная мебель |
+| Tozalash | Тозалаш | Уборка |
+| Gilam yuvish | Гилам ювиш | Стирка ковров |
+| Yuk tashish | Юк ташиш | Грузоперевозки |
+| Bog'bon | Боғбон | Садовник |
+| Dezinfeksiya | Дезинфекция | Дезинфекция |
+
+**Other:** Boshqa usta / Бошқа уста / Другой мастер
+
+---
+
 
 ## 8. Milestones (do them in order)
 

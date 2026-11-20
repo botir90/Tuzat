@@ -92,16 +92,32 @@ model District {
   @@index([regionId])
 }
 
-model Category {
-  id         String  @id @default(cuid())
-  slug       String  @unique
+/// A group of trades on the "All services" screen ("Repair", "Appliances", ...).
+/// Managed from the admin panel.
+model CategoryGroup {
+  id         String     @id @default(cuid())
+  slug       String     @unique
   nameUzLatn String
   nameUzCyrl String
   nameRu     String
-  /// Icon name from MaterialCommunityIcons (@expo/vector-icons).
+  sortOrder  Int        @default(0)
+  categories Category[]
+}
+
+model Category {
+  id         String         @id @default(cuid())
+  slug       String         @unique
+  nameUzLatn String
+  nameUzCyrl String
+  nameRu     String
+  /// Lucide icon name from CATEGORY_ICONS in @usta/shared.
   icon       String
-  sortOrder  Int     @default(0)
-  isActive   Boolean @default(true)
+  /// Tile color from CATEGORY_COLORS in @usta/shared.
+  color      String         @default("gray")
+  groupId    String?
+  group      CategoryGroup? @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  sortOrder  Int            @default(0)
+  isActive   Boolean        @default(true)
 
   priceItems PriceItem[]
   waitlist   WaitlistEntry[]

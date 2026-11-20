@@ -4,16 +4,29 @@ import {
   waitlistBodySchema,
   type AvailabilityDto,
   type CategoryDto,
+  type CategoryGroupDto,
   type DistrictDto,
+  type PopularService,
   type PriceItemDto,
   type RegionDto,
+  type TopMaster,
 } from '@usta/shared';
 import type { AppContext } from '../context';
+import { toMasterCard } from '../jobs/dto';
 import { notFound } from '../lib/errors';
-import { toCategoryDto, toDistrictDto, toPriceItemDto, toRegionDto } from './dto';
+import { publicStorageEndpoint } from '../storage/public-endpoint';
+import { names, toCategoryDto, toDistrictDto, toPriceItemDto, toRegionDto } from './dto';
 
 const idParams = z.object({ id: z.string().min(1) });
 const pricesQuery = z.object({ regionId: z.string().min(1).optional() });
+const popularQuery = z.object({
+  regionId: z.string().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(20).default(6),
+});
+const topMastersQuery = z.object({
+  regionId: z.string().min(1).optional(),
+  limit: z.coerce.number().int().min(1).max(20).default(10),
+});
 const availabilityQuery = z.object({
   districtId: z.string().min(1),
   categoryId: z.string().min(1).optional(),
@@ -48,6 +61,25 @@ export function registerCatalogRoutes(app: FastifyInstance, ctx: AppContext): vo
       orderBy: { sortOrder: 'asc' },
     });
     return categories.map(toCategoryDto);
+  });
+
+  /**
+   * "All services" screen: groups with their active trades. Groups without active trades
+   * are hidden. Trades without a group (and "Other") are not here: see GET /categories.
+   */
+  app.get('/category-groups', async (): Promise<CategoryGroupDto[]> => {
+    const groups = await prisma.categoryGroup.findMany({
+      orderBy: { sortOrder: 'asc' },
+      include: { categories: { where: { isActive: true }, orderBy: { sortOrder: 'asc' } } },
+    });
+    return groups
+      .filter((g) => g.categories.length > 0)
+      .map((g) => ({
+        id: g.id,
+        slug: g.slug,
+        name: names(g),
+        categories: g.categories.map(toCategoryDto),
+      }));
   });
 
   /** Price list of a category. With ?regionId= the region's own prices are used where set. */
@@ -87,6 +119,64 @@ export function registerCatalogRoutes(app: FastifyInstance, ctx: AppContext): vo
       },
     });
     return { available: masters > 0 };
+  });
+
+  /**
+   * Home screen "Popular services": the first typical job of each active category,
+   * with the region's own price when there is one.
+   */
+  app.get('/catalog/popular', async (request): Promise<PopularService[]> => {
+    const { regionId, limit } = popularQuery.parse(request.query);
+    const categories = await prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+      take: limit,
+      include: {
+        priceItems: {
+          orderBy: { sortOrder: 'asc' },
+          take: 1,
+          include: { regionOverrides: { where: { regionId: regionId ?? '' } } },
+        },
+      },
+    });
+    return categories.flatMap((category) =>
+      category.priceItems.map((item) => ({
+        id: item.id,
+        categoryId: category.id,
+        name: names(item),
+        minPrice: item.regionOverrides[0]?.minPrice ?? item.minPrice,
+      })),
+    );
+  });
+
+  /**
+   * Home screen "Top masters": verified, not blocked, working in this region,
+   * best rated first (then the most finished jobs).
+   */
+  app.get('/masters/top', async (request): Promise<TopMaster[]> => {
+    const { regionId, limit } = topMastersQuery.parse(request.query);
+    const profiles = await prisma.masterProfile.findMany({
+      where: {
+        verificationStatus: 'VERIFIED',
+        user: { isBlocked: false },
+        ...(regionId ? { districts: { some: { regionId } } } : {}),
+      },
+      orderBy: [{ ratingAvg: 'desc' }, { completedJobsCount: 'desc' }, { createdAt: 'asc' }],
+      take: limit,
+      include: {
+        user: { include: { masterProfile: true } },
+        categories: { orderBy: { sortOrder: 'asc' }, take: 1 },
+      },
+    });
+    const endpoint = publicStorageEndpoint(ctx.env, request);
+    return Promise.all(
+      profiles
+        .filter((p) => p.categories[0])
+        .map(async (p) => ({
+          ...(await toMasterCard(p.user, ctx.storage, endpoint)),
+          categoryName: names(p.categories[0]!),
+        })),
+    );
   });
 
   /** "No masters here yet, leave your number and we'll notify you." */

@@ -164,6 +164,86 @@ describe('catalog', () => {
     });
   });
 
+  it('GET /catalog/popular returns the first job of each category with region prices', async () => {
+    const { plumber, buxoro } = await fixture();
+    const res = await t.app.inject({
+      method: 'GET',
+      url: `/catalog/popular?regionId=${buxoro.id}`,
+    });
+    expect(res.json()).toEqual([
+      expect.objectContaining({ categoryId: plumber.id, minPrice: 90_000 }),
+    ]);
+  });
+
+  it('GET /masters/top lists verified masters of the region, best rated first', async () => {
+    const { plumber, urganch, xorazm, buxoro } = await fixture();
+    const good = await createMaster(t, '+998905556601', {
+      categoryIds: [plumber.id],
+      districtIds: [urganch.id],
+      name: 'Akmal',
+    });
+    const better = await createMaster(t, '+998905556602', {
+      categoryIds: [plumber.id],
+      districtIds: [urganch.id],
+      name: 'Bekzod',
+    });
+    await createMaster(t, '+998905556603', {
+      categoryIds: [plumber.id],
+      districtIds: [urganch.id],
+      name: 'Pending',
+      verified: false,
+    });
+    await t.ctx.prisma.masterProfile.update({
+      where: { userId: good.userId },
+      data: { ratingAvg: 4.5 },
+    });
+    await t.ctx.prisma.masterProfile.update({
+      where: { userId: better.userId },
+      data: { ratingAvg: 4.9 },
+    });
+
+    const inXorazm = await t.app.inject({
+      method: 'GET',
+      url: `/masters/top?regionId=${xorazm.id}`,
+    });
+    const inBuxoro = await t.app.inject({
+      method: 'GET',
+      url: `/masters/top?regionId=${buxoro.id}`,
+    });
+
+    expect(inXorazm.json().map((m: { name: string }) => m.name)).toEqual(['Bekzod', 'Akmal']);
+    expect(inXorazm.json()[0].categoryName['uz-Latn']).toBe('Santexnik');
+    expect(inBuxoro.json()).toEqual([]);
+  });
+
+  it('GET /category-groups returns groups with their active trades', async () => {
+    const { prisma } = t.ctx;
+    const group = await prisma.categoryGroup.create({
+      data: { slug: 'repair', nameUzLatn: "Ta'mirlash", nameUzCyrl: 'Таъмирлаш', nameRu: 'Ремонт' },
+    });
+    await prisma.categoryGroup.create({
+      data: { slug: 'empty', nameUzLatn: 'Bo‘sh', nameUzCyrl: 'Бўш', nameRu: 'Пусто' },
+    });
+    await prisma.category.create({
+      data: {
+        slug: 'plumber',
+        icon: 'droplet',
+        color: 'blue',
+        groupId: group.id,
+        nameUzLatn: 'Santexnik',
+        nameUzCyrl: 'Сантехник',
+        nameRu: 'Сантехник',
+      },
+    });
+    const res = await t.app.inject({ method: 'GET', url: '/category-groups' });
+    expect(res.json()).toEqual([
+      expect.objectContaining({
+        slug: 'repair',
+        categories: [expect.objectContaining({ slug: 'plumber', icon: 'droplet', color: 'blue' })],
+      }),
+    ]);
+  });
+
   it('seed creates all regions and districts and can run twice', async () => {
     await seedCatalog(t.ctx.prisma);
     await seedCatalog(t.ctx.prisma);
@@ -177,5 +257,12 @@ describe('catalog', () => {
     // Only the pilot region is active at first.
     const active = await t.ctx.prisma.region.findMany({ where: { isActive: true } });
     expect(active.map((r) => r.slug)).toEqual(['xorazm']);
-  }, 60_000);
+
+    // 36 trades in 4 groups (design/screens/Categories.html) + "Other", which is last.
+    expect(await t.ctx.prisma.categoryGroup.count()).toBe(4);
+    const categories = await t.ctx.prisma.category.findMany({ orderBy: { sortOrder: 'asc' } });
+    expect(categories).toHaveLength(37);
+    expect(categories.at(-1)).toMatchObject({ slug: 'other', groupId: null });
+    expect(categories.filter((c) => c.groupId === null)).toHaveLength(1);
+  }, 120_000);
 });

@@ -6,7 +6,7 @@
 import 'dotenv/config';
 import { createPrismaClient } from '../src/db';
 import type { PrismaClient } from '../src/generated/prisma/client';
-import { CATEGORIES } from './seed-data/categories';
+import { CATEGORY_GROUPS, OTHER_CATEGORY, type CategorySeed } from './seed-data/categories';
 import { REGIONS } from './seed-data/regions';
 
 /** "Qo'shko'pir" → "qoshkopir", "Mirzo Ulug'bek" → "mirzo-ulugbek". */
@@ -63,40 +63,66 @@ export async function seedCatalog(prisma: PrismaClient): Promise<void> {
     }
   }
 
-  for (const [categoryIndex, category] of CATEGORIES.entries()) {
-    const [nameUzLatn, nameUzCyrl, nameRu] = category.name;
-    const data = {
-      slug: category.slug,
-      nameUzLatn,
-      nameUzCyrl,
-      nameRu,
-      icon: category.icon,
-      sortOrder: categoryIndex,
-    };
-    const saved = await prisma.category.upsert({
-      where: { slug: category.slug },
-      update: data,
-      create: data,
+  // Groups and their trades, in the order of design/screens/Categories.html.
+  // sortOrder is global, so the home screen can show the first N trades in a stable order.
+  let order = 0;
+  for (const [groupIndex, group] of CATEGORY_GROUPS.entries()) {
+    const [nameUzLatn, nameUzCyrl, nameRu] = group.name;
+    const groupData = { slug: group.slug, nameUzLatn, nameUzCyrl, nameRu, sortOrder: groupIndex };
+    const savedGroup = await prisma.categoryGroup.upsert({
+      where: { slug: group.slug },
+      update: groupData,
+      create: groupData,
     });
-
-    for (const [index, price] of category.prices.entries()) {
-      const [pLatn, pCyrl, pRu] = price.name;
-      const priceData = {
-        slug: price.slug,
-        categoryId: saved.id,
-        nameUzLatn: pLatn,
-        nameUzCyrl: pCyrl,
-        nameRu: pRu,
-        minPrice: price.min,
-        maxPrice: price.max,
-        sortOrder: index,
-      };
-      await prisma.priceItem.upsert({
-        where: { slug: price.slug },
-        update: priceData,
-        create: priceData,
-      });
+    for (const category of group.categories) {
+      await seedCategory(prisma, category, savedGroup.id, order++);
     }
+  }
+  // "Other / can't find a master" is always last and in no group.
+  await seedCategory(prisma, OTHER_CATEGORY, null, 1000);
+}
+
+/** Creates or updates one category and its price items. isActive is never overwritten. */
+async function seedCategory(
+  prisma: PrismaClient,
+  category: CategorySeed,
+  groupId: string | null,
+  sortOrder: number,
+): Promise<void> {
+  const [nameUzLatn, nameUzCyrl, nameRu] = category.name;
+  const data = {
+    slug: category.slug,
+    nameUzLatn,
+    nameUzCyrl,
+    nameRu,
+    icon: category.icon,
+    color: category.color,
+    groupId,
+    sortOrder,
+  };
+  const saved = await prisma.category.upsert({
+    where: { slug: category.slug },
+    update: data,
+    create: data,
+  });
+
+  for (const [index, price] of category.prices.entries()) {
+    const [pLatn, pCyrl, pRu] = price.name;
+    const priceData = {
+      slug: price.slug,
+      categoryId: saved.id,
+      nameUzLatn: pLatn,
+      nameUzCyrl: pCyrl,
+      nameRu: pRu,
+      minPrice: price.min,
+      maxPrice: price.max,
+      sortOrder: index,
+    };
+    await prisma.priceItem.upsert({
+      where: { slug: price.slug },
+      update: priceData,
+      create: priceData,
+    });
   }
 }
 

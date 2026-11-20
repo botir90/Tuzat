@@ -11,3 +11,10 @@ export const masterCardSchema = z.object({
   verified: z.boolean(),
 });
 export type MasterCard = z.infer<typeof masterCardSchema>;
+
+/** A master in the "Top masters" carousel on the customer home screen. */
+export const topMasterSchema = masterCardSchema.extend({
+  /** Main category (the first one the master chose). */
+  categoryName: z.object({ 'uz-Latn': z.string(), 'uz-Cyrl': z.string(), ru: z.string() }),
+});
+export type TopMaster = z.infer<typeof topMasterSchema>;
