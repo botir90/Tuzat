@@ -22,6 +22,11 @@
 - If something needs my action (installing a tool, creating an account, testing on my phone, talking to real users), stop and tell me exactly what to do, step by step.
 - Never put secrets (API keys, tokens, passwords) in code or in git. Use `.env` files and add them to `.gitignore`. Provide `.env.example`.
 - Prefer simple, boring, well-known solutions over clever ones. I need to understand and maintain this code myself.
+- **`design/` is the visual source of truth.** Every screen must follow `design/screens/*.html` and `design/theme.ts` (colors, fonts, spacing). Read `design/DESIGN.md` before building any screen.
+- **Progress file:** keep `PROGRESS.md` in the repo root up to date after every step (current milestone, done, next, open questions, things Botir must do). After a restarted conversation, read `CLAUDE.md`, `design/DESIGN.md` and `PROGRESS.md` and continue from there.
+- Work autonomously through the milestones in order. Stop and ask only for things only Botir can do (install a tool, create an account, get an API key, test on the phone, make a business decision), with exact steps in Uzbek.
+- One git branch per milestone; merge into `main` when the milestone is finished and checked. At the end of each milestone: a short summary in Uzbek (what was built, how to test it on the phone, what Botir must do, 1–3 new concepts explained simply).
+- If something in the plan is unclear or impossible, choose the simplest safe solution, write the decision into `PROGRESS.md`, and mention it in the milestone summary.
 
 ---
 
@@ -260,46 +265,77 @@ Platform-held payment (escrow) via a **licensed payment provider**.
 - `packages/shared`: first shared types
 - README with "how to run" instructions in simple English
 
-**M1: Auth and roles (week 2)**
-- OTP login (console OTP in development), JWT, refresh, logout
+**M1: Auth and roles**
+- Phone OTP login (console OTP in development), JWT access + refresh, logout
 - Role choice: Customer / Master
 - Secure token storage in the app
+- Language picker screen rebuilt exactly like `design/screens/Main.html` with `design/theme.ts` and the Inter font
 
-**M2: Catalog (week 3)**
+**M2: Catalog**
 - Categories, price list, all regions and districts of Uzbekistan (seed data)
-- Region/district picker; "no masters yet" screen + waitlist
 - Prices may differ by region: support an optional per-region price override
-- Customer home screen and price list screen
+- Region/district picker; "no masters yet" screen + waitlist
+- Customer Home (`design/screens/Home.html`, core blocks) and price list screen
 
-**M3: Requests (weeks 4–5)**
-- Create a request with photos, voice, address, landmark and time
+**M3: Requests**
+- Create a request with text, up to 5 photos, voice recording, address + landmark + map pin, time (Now / Today / Choose)
 - File uploads via pre-signed URLs
 - "My requests" screen
 
-**M4: Master side (weeks 5–6)**
-- Master onboarding and profile, verification status
-- Orders feed, send offer, availability toggle
+**M4: Master side**
+- Master onboarding (max 3 screens) and profile, verification status
+- Orders feed with voice/photo playback, send offer, availability toggle
 - Push notifications for new matching requests
 
-**M5: Jobs (week 7)**
-- Customer sees offers and chooses one
-- Job status flow, one-tap call, open address in maps
+**M5: Jobs**
+- Offers list; master profile (portfolio, prices, reviews); choose a master
+- Job status timeline, one-tap call (phone dialer for now), open address in maps
 - Price change request and approval
 
-**M6: Trust (week 8)**
-- Reviews and ratings, guarantee claim, complaints
-- Basic admin panel: verify masters, manage categories and prices, view orders and complaints
+**M6: Trust + admin**
+- Reviews with tags and photos (only for DONE jobs), guarantee claim, complaints/disputes
+- Master earnings screen
+- Admin web panel: verify masters, regions, categories, prices, orders, complaints, block users
 
-**M7: Pilot in Khorezm, then other regions (weeks 9–10)**
-- Bug fixes from real tests with 10–20 masters and first customers in Urgench (Khorezm pilot)
-- Prepare a simple playbook for launching the next region (onboard masters first, then open the region for customers)
+**M6.5: In-app chat and calls**
+- Chat: text, photos, voice, quick replies, system messages
+- In-app voice calls over the internet with LiveKit: phone numbers hidden; the backend issues short-lived tokens only for the customer and the master of an active job; incoming calls ring when the app is closed (push + CallKit / ConnectionService); mute, speaker, chat, end; fallback "switch to a normal phone call"; save call history (no audio recording)
+- Needs an Expo development build: explain step by step how to build and install it on Botir's Android phone
+
+**M6.7: Payments (escrow-ready)** — see section 7a
+- Data model `Payment`, `Hold`, `Payout`, `Dispute`, `MasterBalance` with statuses
+- Price split into labor and parts; parts receipt photo → customer approves → parts money released immediately
+- Approved price changes charge only the difference
+- Customer "Job done" releases the money minus commission; auto-release 24 h after the master marks the job done if there is no complaint (with reminders); a dispute freezes the money and an admin decides; same-day payouts
+- Cash works now (commission goes to the master's balance)
+- Online Click/Payme behind a feature flag, with a provider interface and a fake provider for development and tests. Real integration only after we have an MChJ and a marketplace contract (never hold money ourselves, never personal cards)
+- Screens: Payment, ConfirmJob, Dispute, MasterPayout from `design/screens`
+
+**M6.9: Growth**
+- First-order promo code; seasonal promotions (admin-managed)
+- 24/7 emergency request with priority
+- Top masters and badges (TOP, verified, on time); before/after photos
+- Bonus system: cashback per order, Bronze / Silver / Gold levels, referral code shared via Telegram (30 000 so'm for both), bonus pays up to 50% of an order
+- "My home" (appliances with service reminders), favorite masters, saved addresses, order history, support chat
+
+**M7: Release prep and pilot**
+- Empty / loading / error states everywhere, offline handling
 - Performance check on a low-end Android phone
-- EAS build, Google Play internal testing, then release
+- Security review
+- EAS build, Google Play internal testing checklist, README update
+- Pilot in Khorezm: bug fixes from real tests with 10–20 masters and first customers in Urgench
+- A simple playbook for launching the next region (onboard masters first, then open the region for customers)
+
+**Later (do NOT build now)**
+- AI diagnosis from photo/voice
+- iOS release
+- Region expansion tools
 
 ---
 
 ## 9. Definition of "done" for every feature
-- Works on a real Android phone via Expo Go
+- Works on a real Android phone via Expo Go (or the dev build, once M6.5 needs it)
+- Screens match `design/screens/*.html` and use `design/theme.ts`
 - All user-facing text is in 3 languages
 - Loading, empty and error states are designed (not just the happy path)
 - Backend validates input and enforces the business rules
