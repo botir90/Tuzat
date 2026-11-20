@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Usta profili</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0F6B5C}a:hover{color:#0A4F44}
+</style>
+</helmet>
+<div style="width: 390px; height: 1480px; box-sizing: border-box; background: #F6F7F4; font-family: Inter, system-ui, sans-serif; color: #15201E; display: flex; flex-direction: column">
+<div style="background: #0F6B5C; height: 150px; padding: 24px 20px 0; box-sizing: border-box; display: flex; justify-content: space-between; align-items: flex-start">
+<a href="Offers.dc.html" aria-label="Orqaga" style="width: 44px; height: 44px; border-radius: 22px; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center; text-decoration: none">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<button aria-label="Sevimlilarga qo'shish" style="width: 44px; height: 44px; border-radius: 22px; border: none; background: rgba(255,255,255,0.18); display: flex; align-items: center; justify-content: center">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.4-9-9a5 5 0 0 1 9-3 5 5 0 0 1 9 3c-2 4.6-9 9-9 9z"></path></svg></button>
+</div>
+<div style="padding: 0 20px; margin-top: -56px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+<div style="width: 112px; height: 112px; border-radius: 56px; background: #3D6E8F; border: 5px solid #F6F7F4; color: #FFFFFF; font-size: 44px; font-weight: 800; display: flex; align-items: center; justify-content: center">S</div>
+<div style="font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 6px">Sardor Azimov
+<svg width="22" height="22" viewBox="0 0 24 24" fill="#0F6B5C" role="img" aria-label="Tasdiqlangan usta"><circle cx="12" cy="12" r="10"></circle><path d="M8 12l3 3 5-6" stroke="#FFFFFF" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div style="font-size: 15px; color: #4F5B59">Santexnik · Urganch · 8 yillik tajriba</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 4px">
+<span style="font-size: 12px; font-weight: 800; color: #5A3D00; background: #FFE8A8; border-radius: 8px; padding: 5px 10px">TOP USTA</span>
+<span style="font-size: 12px; font-weight: 700; color: #0F6B5C; background: #E3F1EE; border-radius: 8px; padding: 5px 10px">Pasport tekshirilgan</span>
+<span style="font-size: 12px; font-weight: 700; color: #1F5FAE; background: #E4EEFB; border-radius: 8px; padding: 5px 10px">Vaqtida keladi</span>
+</div>
+</div>
+<div style="padding: 18px 20px 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{stats}}" as="s" hint-placeholder-count="3">
+<div style="border-radius: 16px; background: #FFFFFF; padding: 12px 6px; display: flex; flex-direction: column; align-items: center; gap: 2px">
+<span style="font-size: 20px; font-weight: 800">{{s.v}}</span>
+<span style="font-size: 12px; color: #5B6866; text-align: center">{{s.l}}</span>
+</div>
+</sc-for>
+</div>
+<div style="padding: 20px 20px 0; display: flex; flex-direction: column; gap: 8px">
+<div style="font-size: 18px; font-weight: 800">O'zi haqida</div>
+<div style="font-size: 15px; line-height: 1.5; color: #3E4B49">Kran, unitaz, quvur va isitish tizimlari. Ehtiyot qismlarni o'zim olib kelaman. Ishimga 30 kun kafolat beraman.</div>
+</div>
+<div style="padding: 20px 20px 0; display: flex; flex-direction: column; gap: 10px">
+<div style="font-size: 18px; font-weight: 800">Narxlar</div>
+<div style="border-radius: 18px; background: #FFFFFF; padding: 4px 16px">
+<sc-for list="{{prices}}" as="p" hint-placeholder-count="3">
+<div style="display: flex; justify-content: space-between; padding: 13px 0; border-bottom: {{p.border}}; font-size: 15px">
+<span>{{p.n}}</span><b>{{p.v}}</b></div>
+</sc-for>
+</div>
+</div>
+<div style="padding: 20px 20px 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 800">Ish namunalari</span><span style="font-size: 14px; color: #5B6866">24 ta rasm</span></div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{photos}}" as="ph" hint-placeholder-count="6">
+<div style="height: 104px; border-radius: 14px; background: {{ph}}; display: flex; align-items: center; justify-content: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#5B6866" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ish rasmi"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-8 8"></path></svg></div>
+</sc-for>
+</div>
+</div>
+<div style="padding: 20px 20px 0; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 18px; font-weight: 800">Sharhlar</span><span style="font-size: 14px; color: #5B6866">96 ta, faqat haqiqiy mijozlardan</span></div>
+<sc-for list="{{reviews}}" as="r" hint-placeholder-count="2">
+<div style="border-radius: 18px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 15px; font-weight: 700">{{r.name}}</span>
+<span style="font-size: 13px; color: #5B6866">{{r.date}}</span></div>
+<span style="font-size: 14px; color: #C77700; letter-spacing: 2px" aria-label="{{r.aria}}">{{r.stars}}</span>
+<span style="font-size: 14px; line-height: 1.45; color: #3E4B49">{{r.text}}</span>
+</div>
+</sc-for>
+</div>
+<div style="flex-grow: 1"></div>
+<div style="padding: 16px 20px 28px; background: #FFFFFF; border-top: 1px solid #E3E7E5; display: flex; gap: 10px">
+<a href="Chat.dc.html" aria-label="Ustaga yozish" style="width: 60px; height: 60px; border-radius: 16px; border: 1.5px solid #0F6B5C; display: flex; align-items: center; justify-content: center; text-decoration: none; box-sizing: border-box">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F6B5C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path></svg></a>
+<a href="JobStatus.dc.html" style="flex-grow: 1; height: 60px; border-radius: 16px; background: #0F6B5C; color: #FFFFFF; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none">Tanlash · 120 000 so'm</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1480}}'>
+class Component extends DCLogic {
+renderVals() {
+const sep = '1px solid #E3E7E5';
+return {
+stats: [ { v: '4.9', l: 'reyting' }, { v: '128', l: 'bajarilgan ish' }, { v: '5 daq', l: 'javob berish' } ],
+prices: [
+{ n: 'Kran almashtirish', v: '80 000', border: sep },
+{ n: 'Unitaz ta\'miri', v: '100 000', border: sep },
+{ n: 'Quvur almashtirish (1 m)', v: '60 000', border: 'none' }
+],
+photos: ['#D9E6E2', '#E4E1D6', '#DCE3EC', '#E6DDE4', '#DDE6D9', '#E3E3E3'],
+reviews: [
+{ name: 'Nilufar', date: '3 kun oldin', stars: '★★★★★', aria: '5 yulduz', text: 'Aytgan vaqtida keldi, juda toza ishladi. Narx kelishilganidek bo\'ldi.' },
+{ name: 'Rustam', date: '1 hafta oldin', stars: '★★★★☆', aria: '4 yulduz', text: 'Ishi yaxshi, faqat 15 daqiqa kechikdi, oldindan qo\'ng\'iroq qilib aytdi.' }
+]
+};
+}
+}
+</script>
+</body>
+</html>
