@@ -21,6 +21,7 @@ export default function MyRequestsScreen() {
   return (
     <Screen
       title={t('requests.myRequests')}
+      tabBar="orders"
       footer={
         <>
           <BigButton label={t('jobs.myJobs')} onPress={() => router.push('/jobs')} />

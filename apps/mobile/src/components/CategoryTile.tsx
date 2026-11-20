@@ -1,20 +1,20 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import type { ComponentProps } from 'react';
-import { Pressable, StyleSheet, Text } from 'react-native';
-import { colors, fontSize, spacing } from '@/theme';
-
-type IconName = ComponentProps<typeof MaterialCommunityIcons>['name'];
+import { Pressable, StyleSheet } from 'react-native';
+import type { CategoryColor, CategoryIcon as IconName } from '@usta/shared';
+import { spacing } from '@/theme';
+import { AppText } from './AppText';
+import { CategoryIcon } from './CategoryIcon';
 
 interface CategoryTileProps {
   label: string;
-  icon: string;
+  icon: IconName;
+  color: CategoryColor;
   onPress: () => void;
+  /** 64 on the home screen, 56 on "All services". */
+  size?: number;
 }
 
-/** Big square tile with an icon and a label (customer home). */
-export function CategoryTile({ label, icon, onPress }: CategoryTileProps) {
-  // Icon names come from the server; fall back to a generic one if unknown.
-  const name: IconName = icon in MaterialCommunityIcons.glyphMap ? (icon as IconName) : 'tools';
+/** Icon square + label below (design: CategoryTile). Four per row. */
+export function CategoryTile({ label, icon, color, onPress, size = 64 }: CategoryTileProps) {
   return (
     <Pressable
       onPress={onPress}
@@ -22,28 +22,16 @@ export function CategoryTile({ label, icon, onPress }: CategoryTileProps) {
       accessibilityLabel={label}
       style={({ pressed }) => [styles.tile, pressed && styles.pressed]}
     >
-      <MaterialCommunityIcons name={name} size={40} color={colors.primary} />
-      <Text style={styles.label} numberOfLines={2}>
+      <CategoryIcon icon={icon} color={color} size={size} />
+      <AppText variant="tiny" align="center" numberOfLines={2} style={styles.label}>
         {label}
-      </Text>
+      </AppText>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  tile: {
-    flexBasis: '47%',
-    flexGrow: 1,
-    minHeight: 120,
-    borderRadius: 16,
-    backgroundColor: colors.surface,
-    borderWidth: 2,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.md,
-    gap: spacing.sm,
-  },
-  pressed: { opacity: 0.7 },
-  label: { fontSize: fontSize.body, fontWeight: '600', color: colors.text, textAlign: 'center' },
+  tile: { width: '25%', alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.xs },
+  pressed: { opacity: 0.6 },
+  label: { lineHeight: 15, paddingHorizontal: 2 },
 });

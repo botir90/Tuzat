@@ -2,6 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import type {
   AvailabilityDto,
   CategoryDto,
+  CategoryGroupDto,
+  PopularService,
+  TopMaster,
   DistrictDto,
   PriceItemDto,
   RegionDto,
@@ -53,5 +56,32 @@ export function useAvailability(districtId: string | null, categoryId?: string) 
     queryKey: ['availability', districtId, categoryId],
     queryFn: () => api<AvailabilityDto>(`/availability?${params.toString()}`, { auth: false }),
     enabled: districtId !== null,
+  });
+}
+
+export function useCategoryGroups() {
+  return useQuery({
+    queryKey: ['category-groups'],
+    queryFn: () => api<CategoryGroupDto[]>('/category-groups', { auth: false }),
+    staleTime: CATALOG_STALE_MS,
+  });
+}
+
+export function usePopularServices(regionId: string | null) {
+  const query = regionId ? `?regionId=${encodeURIComponent(regionId)}` : '';
+  return useQuery({
+    queryKey: ['popular', regionId],
+    queryFn: () => api<PopularService[]>(`/catalog/popular${query}`, { auth: false }),
+    staleTime: CATALOG_STALE_MS,
+  });
+}
+
+/** Ratings change after every job, so this list is refreshed more often than the catalog. */
+export function useTopMasters(regionId: string | null) {
+  const query = regionId ? `?regionId=${encodeURIComponent(regionId)}` : '';
+  return useQuery({
+    queryKey: ['top-masters', regionId],
+    queryFn: () => api<TopMaster[]>(`/masters/top${query}`, { auth: false }),
+    staleTime: 5 * 60_000,
   });
 }

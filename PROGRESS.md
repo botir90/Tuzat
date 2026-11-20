@@ -4,11 +4,10 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M2 Catalog — rebuild the customer Home from `design/screens/Home.html`.**
+**M3 Requests — restyle NewRequest (3 steps) and AddressMap from the design.**
 
-M1 design done (2026-11-20): theme tokens from `design/theme.ts`, Inter font, lucide icons, base components
-(AppText, PrimaryButton, SecondaryButton, Card, InfoBanner, ScreenHeader, LanguageOption), shared
-components restyled, welcome screen = `Main.html` (language + role on one screen).
+M2 done (2026-11-21): 36 trades in 4 admin-managed groups + "Other" (design/screens/Categories.html),
+admin can add trades without code, customer Home (Home.html core blocks), "All services" screen, tab bar.
 
 ## Status by milestone
 
@@ -33,6 +32,11 @@ components restyled, welcome screen = `Main.html` (language + role on one screen
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-21: Categories.html lists **36** trades (8+12+8+8), not 35; the app uses exactly the file.
+- 2026-11-21: Customer tab bar has 3 tabs (Home, Orders, Profile). The "Bonuses" tab from Home.html comes with M6.9.
+- 2026-11-21: Home search opens "All services" with a search field (searches trade names in all 3 languages). Voice search needs speech-to-text (Phase 3).
+- 2026-11-21: Dev DB and storage use 127.0.0.1 instead of localhost (localhost hit a broken IPv6 WSL relay on this laptop).
 
 - 2026-11-20: design files arrived (design.zip) and live in `design/`.
 - 2026-11-20: Main.html shows language + role on one screen, so the old separate language-first step is gone; `/language` stays only for changing the language from Settings.

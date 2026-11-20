@@ -72,7 +72,19 @@
     "welcome": "Xush kelibsiz!",
     "subtitle": "Uy ta'miri uchun ishonchli usta toping.",
     "login": "Kirish",
-    "loggedInAs": "Siz {{phone}} raqami bilan kirgansiz."
+    "loggedInAs": "Siz {{phone}} raqami bilan kirgansiz.",
+    "address": "Manzil",
+    "changeAddress": "Manzilni o'zgartirish",
+    "searchPlaceholder": "Nima buzildi? Yozing yoki ayting",
+    "services": "Xizmatlar",
+    "seeAll": "Barchasi",
+    "topMasters": "Eng yaxshi ustalar",
+    "popular": "Ommabop xizmatlar",
+    "priceFrom": "{{price}} dan",
+    "jobsCount": "{{count}} ish",
+    "trustVerified": "Tasdiqlangan ustalar",
+    "trustGuarantee": "14 kun kafolat",
+    "trustPayAfter": "Ish tugagach to'lov"
   },
   "master": {
     "title": "Usta paneli",
@@ -374,5 +386,17 @@
     "workPhotos": "Bajargan ishlari",
     "reviews": "Sharhlar ({{count}})",
     "noReviews": "Hali sharhlar yo'q."
+  },
+  "tabs": {
+    "home": "Asosiy",
+    "orders": "Buyurtmalar",
+    "profile": "Profil"
+  },
+  "services": {
+    "title": "Barcha xizmatlar",
+    "searchPlaceholder": "Kasb yoki xizmatni qidiring",
+    "nothingFound": "Hech narsa topilmadi. Boshqacha yozib ko'ring yoki pastdagi tugmani bosing.",
+    "notFoundTitle": "Kerakli usta topilmadimi?",
+    "notFoundText": "Muammoni yozing yoki ayting, mos ustani o'zimiz topamiz"
   }
 }

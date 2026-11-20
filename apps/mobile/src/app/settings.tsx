@@ -37,6 +37,7 @@ export default function SettingsScreen() {
   return (
     <Screen
       title={t('settings.title')}
+      tabBar={mode === 'CUSTOMER' ? 'profile' : undefined}
       footer={
         <BigButton label={t('common.back')} variant="outline" onPress={() => router.back()} />
       }

@@ -4,6 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/theme';
 import { AppText } from './AppText';
 import { ScreenHeader } from './ScreenHeader';
+import { TabBar, type CustomerTab } from './TabBar';
 
 interface ScreenProps {
   title?: string;
@@ -13,12 +14,15 @@ interface ScreenProps {
   footer?: ReactNode;
   /** Show the design's round back button next to the title. */
   back?: boolean;
+  /** Show the customer tab bar at the bottom with this tab active. */
+  tabBar?: CustomerTab;
 }
 
 /** Common screen layout: safe area, warm background, scrolling, keyboard handling, title. */
-export function Screen({ title, subtitle, children, footer, back }: ScreenProps) {
+export function Screen({ title, subtitle, children, footer, back, tabBar }: ScreenProps) {
   return (
-    <SafeAreaView style={styles.safe}>
+    // With a tab bar, the bar itself handles the bottom safe area.
+    <SafeAreaView style={styles.safe} edges={tabBar ? ['top', 'left', 'right'] : undefined}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -41,6 +45,7 @@ export function Screen({ title, subtitle, children, footer, back }: ScreenProps)
         </ScrollView>
         {footer ? <View style={styles.footer}>{footer}</View> : null}
       </KeyboardAvoidingView>
+      {tabBar ? <TabBar active={tabBar} /> : null}
     </SafeAreaView>
   );
 }

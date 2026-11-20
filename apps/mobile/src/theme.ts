@@ -50,18 +50,17 @@ export const colors = {
   warningSoft: '#FFF1EA',
 } as const;
 
-/** Category tile colors (background + icon). Keys are category slugs from the API. */
-export const categoryColors: Record<string, { bg: string; fg: string }> = {
-  plumber: { bg: '#E4EEFB', fg: '#1F5FAE' },
-  electrician: { bg: '#FFF3D6', fg: '#9A6400' },
-  'air-conditioner': { bg: '#E0F4F8', fg: '#0B6E85' },
-  'washing-machine': { bg: '#EEE8FA', fg: '#6B3FA0' },
-  fridge: { bg: '#E3F1EE', fg: '#0F6B5C' },
-  'gas-boiler': { bg: '#FDECE2', fg: '#B4471A' },
-  furniture: { bg: '#FBE7EF', fg: '#A3305E' },
-  other: { bg: '#ECEFEE', fg: '#3E4B49' },
-};
-export const defaultCategoryColor = { bg: '#ECEFEE', fg: '#3E4B49' };
+/** Category tile colors (background + icon) from design/theme.ts, by color name (CATEGORY_COLORS). */
+export const categoryPalette = {
+  blue: { bg: '#E4EEFB', fg: '#1F5FAE' },
+  gold: { bg: '#FFF3D6', fg: '#9A6400' },
+  cyan: { bg: '#E0F4F8', fg: '#0B6E85' },
+  violet: { bg: '#EEE8FA', fg: '#6B3FA0' },
+  teal: { bg: '#E3F1EE', fg: '#0F6B5C' },
+  orange: { bg: '#FDECE2', fg: '#B4471A' },
+  pink: { bg: '#FBE7EF', fg: '#A3305E' },
+  gray: { bg: '#ECEFEE', fg: '#3E4B49' },
+} as const;
 
 export const spacing = {
   xs: 4,
