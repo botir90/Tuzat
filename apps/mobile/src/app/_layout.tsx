@@ -1,3 +1,10 @@
+import {
+  Inter_400Regular,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/inter';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -6,6 +13,7 @@ import { useAuth } from '@/auth/store';
 import { initI18n } from '@/i18n';
 import { useLocation } from '@/location/store';
 import { listenForNotificationTaps } from '@/push/register';
+import { colors } from '@/theme';
 
 // One cache for all server data. Retries once (slow mobile networks) and keeps data 1 minute.
 const queryClient = new QueryClient({
@@ -17,6 +25,13 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [ready, setReady] = useState(false);
+  // Inter (design/DESIGN.md). If a font fails to load, the system font is used instead.
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+  });
 
   useEffect(() => {
     // allSettled: show the app even if something failed (defaults are used then).
@@ -30,13 +45,13 @@ export default function RootLayout() {
   // Tapping a notification opens the matching screen.
   useEffect(() => (ready ? listenForNotificationTaps() : undefined), [ready]);
 
-  // Loading takes a few milliseconds; until then the native splash screen stays visible.
-  if (!ready) return null;
+  // Loading takes a moment; until then the native splash screen stays visible.
+  if (!ready || (!fontsLoaded && !fontError)) return null;
 
   return (
     <QueryClientProvider client={queryClient}>
       <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
     </QueryClientProvider>
   );
 }

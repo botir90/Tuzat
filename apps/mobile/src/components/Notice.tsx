@@ -1,28 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { colors, fontSize, spacing } from '@/theme';
+import { InfoBanner, type BannerVariant } from './InfoBanner';
 
 interface NoticeProps {
   text: string;
-  tone?: 'info' | 'error' | 'warning';
+  tone?: 'info' | 'error' | 'warning' | 'safe' | 'promo';
+  title?: string;
 }
 
-/** A colored box with a short message (errors, hints, statuses). */
-export function Notice({ text, tone = 'info' }: NoticeProps) {
-  return (
-    <View
-      style={[styles.box, styles[tone]]}
-      accessibilityRole={tone === 'error' ? 'alert' : undefined}
-      accessibilityLiveRegion="polite"
-    >
-      <Text style={styles.text}>{text}</Text>
-    </View>
-  );
-}
+const TONE_TO_VARIANT: Record<NonNullable<NoticeProps['tone']>, BannerVariant> = {
+  info: 'info',
+  error: 'error',
+  warning: 'urgent',
+  safe: 'safe',
+  promo: 'promo',
+};
 
-const styles = StyleSheet.create({
-  box: { borderRadius: 12, padding: spacing.md },
-  info: { backgroundColor: colors.primarySoft },
-  error: { backgroundColor: colors.dangerSoft },
-  warning: { backgroundColor: colors.warningSoft },
-  text: { fontSize: fontSize.small, color: colors.text, lineHeight: 24 },
-});
+/** A short message on a soft colored background (errors, hints, statuses). */
+export function Notice({ text, tone = 'info', title }: NoticeProps) {
+  return <InfoBanner variant={TONE_TO_VARIANT[tone]} title={title} text={text} />;
+}

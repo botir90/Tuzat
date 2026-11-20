@@ -51,7 +51,8 @@
     "customer": "Menga usta kerak",
     "customerHint": "Uy ta'miri uchun ishonchli usta toping",
     "master": "Men ustaman",
-    "masterHint": "Buyurtmalar oling va daromad qiling"
+    "masterHint": "Buyurtmalar oling va daromad qiling",
+    "tagline": "Ishonchli usta, aniq narx va kafolat"
   },
   "login": {
     "phoneTitle": "Telefon raqamingiz",

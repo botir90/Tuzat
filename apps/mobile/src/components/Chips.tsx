@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { MIN_TOUCH, colors, fontSize, spacing } from '@/theme';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { colors, radius, sizes, spacing } from '@/theme';
+import { AppText } from './AppText';
 
 interface Option<T extends string> {
   value: T;
@@ -13,7 +14,7 @@ interface ChipsProps<T extends string> {
   label: string;
 }
 
-/** A row of big selectable buttons (choose one). */
+/** Choose one: selected chip = 2px teal border + teal soft background (design/DESIGN.md). */
 export function Chips<T extends string>({ options, value, onChange, label }: ChipsProps<T>) {
   return (
     <View style={styles.wrap} accessibilityRole="radiogroup" accessibilityLabel={label}>
@@ -28,10 +29,12 @@ export function Chips<T extends string>({ options, value, onChange, label }: Chi
             style={({ pressed }) => [
               styles.chip,
               selected && styles.selected,
-              pressed && styles.pressed,
+              pressed && !selected && styles.pressed,
             ]}
           >
-            <Text style={[styles.text, selected && styles.textSelected]}>{option.label}</Text>
+            <AppText variant="label" color={selected ? 'primary' : 'text'}>
+              {option.label}
+            </AppText>
           </Pressable>
         );
       })}
@@ -42,16 +45,14 @@ export function Chips<T extends string>({ options, value, onChange, label }: Chi
 const styles = StyleSheet.create({
   wrap: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
-    minHeight: MIN_TOUCH,
-    paddingHorizontal: spacing.md,
-    borderRadius: 24,
-    borderWidth: 2,
+    minHeight: sizes.touchMin,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
     borderColor: colors.border,
     justifyContent: 'center',
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
   },
-  selected: { borderColor: colors.primary, backgroundColor: colors.primary },
-  pressed: { opacity: 0.7 },
-  text: { fontSize: fontSize.small, color: colors.text, fontWeight: '600' },
-  textSelected: { color: colors.onPrimary },
+  selected: { borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.primarySoft },
+  pressed: { backgroundColor: colors.primarySoft },
 });

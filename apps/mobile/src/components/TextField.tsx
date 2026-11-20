@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
-import { MIN_TOUCH, colors, fontSize, spacing } from '@/theme';
+import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { colors, fonts, radius, sizes, spacing } from '@/theme';
+import { AppText } from './AppText';
 
 interface TextFieldProps extends TextInputProps {
   label: string;
@@ -8,13 +9,17 @@ interface TextFieldProps extends TextInputProps {
   prefix?: string;
 }
 
-/** A labelled text input with a big touch area and an error line. */
+/** A labelled text input (height 56, radius 14) with an error line. */
 export function TextField({ label, error, prefix, style, ...inputProps }: TextFieldProps) {
   return (
     <View style={styles.wrapper}>
-      <Text style={styles.label}>{label}</Text>
+      <AppText variant="label">{label}</AppText>
       <View style={[styles.box, error ? styles.boxError : null]}>
-        {prefix ? <Text style={styles.prefix}>{prefix}</Text> : null}
+        {prefix ? (
+          <AppText variant="bodyStrong" style={styles.prefix}>
+            {prefix}
+          </AppText>
+        ) : null}
         <TextInput
           accessibilityLabel={label}
           placeholderTextColor={colors.textMuted}
@@ -23,29 +28,33 @@ export function TextField({ label, error, prefix, style, ...inputProps }: TextFi
         />
       </View>
       {error ? (
-        <Text style={styles.error} accessibilityLiveRegion="polite">
+        <AppText variant="caption" color="danger" accessibilityLiveRegion="polite">
           {error}
-        </Text>
+        </AppText>
       ) : null}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: { gap: spacing.xs },
-  label: { fontSize: fontSize.small, color: colors.text, fontWeight: '600' },
+  wrapper: { gap: spacing.sm },
   box: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: MIN_TOUCH + 8,
-    borderWidth: 2,
+    minHeight: sizes.input,
+    borderWidth: 1.5,
     borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md,
-    backgroundColor: colors.background,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.lg,
+    backgroundColor: colors.surface,
   },
   boxError: { borderColor: colors.danger },
-  prefix: { fontSize: fontSize.body, color: colors.text, marginRight: spacing.sm },
-  input: { flex: 1, fontSize: fontSize.body, color: colors.text, paddingVertical: spacing.sm },
-  error: { fontSize: fontSize.small, color: colors.danger },
+  prefix: { marginRight: spacing.sm },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    fontFamily: fonts.regular,
+    color: colors.text,
+    paddingVertical: spacing.md,
+  },
 });

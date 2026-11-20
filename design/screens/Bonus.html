@@ -1,94 +1,294 @@
 <!doctype html>
 <html lang="uz">
-<head>
-<meta charset="utf-8">
-<title>Bonuslar va do'stlar</title>
-<script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
-<style>
-body{margin:0}
-a{color:#0F6B5C}a:hover{color:#0A4F44}
-</style>
-</helmet>
-<div style="width: 390px; height: 1100px; box-sizing: border-box; background: #F6F7F4; font-family: Inter, system-ui, sans-serif; color: #15201E; display: flex; flex-direction: column">
-<div style="padding: 28px 20px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.3px">Bonuslar</div>
-<div style="padding: 16px 20px 0">
-<div style="border-radius: 24px; background: #2D2A6E; color: #FFFFFF; padding: 22px; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 14px">
-<div style="position: absolute; right: -30px; top: -30px; width: 140px; height: 140px; border-radius: 70px; background: #3A3690"></div>
-<div style="position: relative; display: flex; justify-content: space-between; align-items: flex-start">
-<span style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 14px; color: #D6D4F5">Bonus hisobingiz</span>
-<span style="font-size: 34px; font-weight: 800; letter-spacing: -0.5px">34 800 so'm</span></span>
-<span style="font-size: 12px; font-weight: 800; color: #3A2600; background: #F2B544; border-radius: 8px; padding: 5px 10px">KUMUSH</span>
-</div>
-<div style="position: relative; display: flex; flex-direction: column; gap: 8px">
-<div style="height: 10px; border-radius: 5px; background: rgba(255,255,255,0.2)"><div style="width: 60%; height: 10px; border-radius: 5px; background: #F2B544"></div></div>
-<span style="font-size: 13px; color: #E6E4FA">Oltin darajaga yana 2 ta buyurtma: har buyurtmadan 7% bonus</span>
-</div>
-</div>
-</div>
-<div style="padding: 16px 20px 0">
-<div style="border-radius: 20px; background: #FFFFFF; padding: 18px; display: flex; flex-direction: column; gap: 14px">
-<div style="display: flex; flex-direction: column; gap: 4px">
-<span style="font-size: 18px; font-weight: 800">Do'stingizni taklif qiling</span>
-<span style="font-size: 14px; line-height: 1.45; color: #4F5B59">Do'stingiz birinchi buyurtmasini bersa, ikkalangizga 30 000 so'mdan bonus beriladi.</span>
-</div>
-<div style="height: 56px; border-radius: 14px; border: 1.5px dashed #9AA6A3; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 16px">
-<span style="font-size: 20px; font-weight: 800; letter-spacing: 2px">BOTIR30</span>
-<button style="height: 40px; border-radius: 10px; border: none; background: #E3F1EE; color: #0F6B5C; font-family: inherit; font-size: 14px; font-weight: 800; padding: 0 14px">Nusxa olish</button>
-</div>
-<button style="height: 56px; border-radius: 16px; border: none; background: #229ED9; color: #FFFFFF; font-family: inherit; font-size: 16px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 10px">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>Telegram orqali yuborish</button>
-<span style="font-size: 13px; color: #4F5B59; text-align: center">3 ta do'stingiz qo'shildi · 90 000 so'm topdingiz</span>
-</div>
-</div>
-<div style="padding: 20px 20px 0; font-size: 18px; font-weight: 800">Bonus qanday yig'iladi</div>
-<div style="padding: 12px 20px 0; display: flex; flex-direction: column; gap: 10px">
-<sc-for list="{{ways}}" as="w" hint-placeholder-count="3">
-<div style="border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; align-items: center; gap: 14px">
-<span style="width: 44px; height: 44px; border-radius: 14px; background: {{w.bg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0">
-<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{w.fg}}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{w.icon}}"></path></svg></span>
-<span style="flex-grow: 1; font-size: 15px; font-weight: 600">{{w.label}}</span>
-<span style="font-size: 15px; font-weight: 800; color: #0F6B5C">{{w.value}}</span>
-</div>
-</sc-for>
-</div>
-<div style="padding: 16px 20px 0">
-<div style="border-radius: 16px; background: #E3F1EE; padding: 14px 16px; font-size: 14px; line-height: 1.45; color: #24403B">Bonus bilan keyingi buyurtmaning 50% gacha qismini to'lash mumkin.</div>
-</div>
-<div style="flex-grow: 1"></div>
-<nav style="height: 76px; background: #FFFFFF; border-top: 1px solid #E3E7E5; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr))">
-<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
-<a href="{{t.href}}" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: {{t.color}}; font-size: 12px; font-weight: 700">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{t.icon}}"></path></svg>{{t.label}}</a>
-</sc-for>
-</nav>
-</div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1100}}'>
-class Component extends DCLogic {
-renderVals() {
-const tab = (label, href, icon, active) => ({ label, href, icon, color: active ? '#0F6B5C' : '#5B6866' });
-return {
-ways: [
-{ label: 'Har bir buyurtmadan', value: '5%', bg: '#E3F1EE', fg: '#0F6B5C', icon: 'M5 4h14v17H5zM9 9h6M9 13h6' },
-{ label: 'Rasm bilan sharh uchun', value: '+3 000', bg: '#FFF3D6', fg: '#9A6400', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' },
-{ label: 'Taklif qilingan do\'st uchun', value: '+30 000', bg: '#EEE8FA', fg: '#6B3FA0', icon: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c1-4 4-6 7-6s6 2 7 6M19 8v6M16 11h6' }
-],
-tabs: [
-tab('Asosiy', 'Home.dc.html', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z', false),
-tab('Buyurtmalar', 'JobStatus.dc.html', 'M5 4h14v17H5zM9 9h6M9 13h6M9 17h3', false),
-tab('Bonuslar', 'Bonus.dc.html', 'M3 8h18v13H3zM3 12h18M12 8v13', true),
-tab('Uyim', 'Profile.dc.html', 'M12 8a4 4 0 1 0 0-.01M4 21c1-4 4.5-6 8-6s7 2 8 6', false)
-]
-};
-}
-}
-</script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Bonuslar va do'stlar</title>
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
+          rel="stylesheet"
+        />
+        <style>
+          body {
+            margin: 0;
+          }
+          a {
+            color: #0f6b5c;
+          }
+          a:hover {
+            color: #0a4f44;
+          }
+        </style>
+      </helmet>
+      <div
+        style="
+          width: 390px;
+          height: 1100px;
+          box-sizing: border-box;
+          background: #f6f7f4;
+          font-family: Inter, system-ui, sans-serif;
+          color: #15201e;
+          display: flex;
+          flex-direction: column;
+        "
+      >
+        <div
+          style="padding: 28px 20px 0; font-size: 24px; font-weight: 800; letter-spacing: -0.3px"
+        >
+          Bonuslar
+        </div>
+        <div style="padding: 16px 20px 0">
+          <div
+            style="
+              border-radius: 24px;
+              background: #2d2a6e;
+              color: #ffffff;
+              padding: 22px;
+              position: relative;
+              overflow: hidden;
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+            "
+          >
+            <div
+              style="
+                position: absolute;
+                right: -30px;
+                top: -30px;
+                width: 140px;
+                height: 140px;
+                border-radius: 70px;
+                background: #3a3690;
+              "
+            ></div>
+            <div
+              style="
+                position: relative;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+              "
+            >
+              <span style="display: flex; flex-direction: column; gap: 4px">
+                <span style="font-size: 14px; color: #d6d4f5">Bonus hisobingiz</span>
+                <span style="font-size: 34px; font-weight: 800; letter-spacing: -0.5px"
+                  >34 800 so'm</span
+                ></span
+              >
+              <span
+                style="
+                  font-size: 12px;
+                  font-weight: 800;
+                  color: #3a2600;
+                  background: #f2b544;
+                  border-radius: 8px;
+                  padding: 5px 10px;
+                "
+                >KUMUSH</span
+              >
+            </div>
+            <div style="position: relative; display: flex; flex-direction: column; gap: 8px">
+              <div style="height: 10px; border-radius: 5px; background: rgba(255, 255, 255, 0.2)">
+                <div
+                  style="width: 60%; height: 10px; border-radius: 5px; background: #f2b544"
+                ></div>
+              </div>
+              <span style="font-size: 13px; color: #e6e4fa"
+                >Oltin darajaga yana 2 ta buyurtma: har buyurtmadan 7% bonus</span
+              >
+            </div>
+          </div>
+        </div>
+        <div style="padding: 16px 20px 0">
+          <div
+            style="
+              border-radius: 20px;
+              background: #ffffff;
+              padding: 18px;
+              display: flex;
+              flex-direction: column;
+              gap: 14px;
+            "
+          >
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <span style="font-size: 18px; font-weight: 800">Do'stingizni taklif qiling</span>
+              <span style="font-size: 14px; line-height: 1.45; color: #4f5b59"
+                >Do'stingiz birinchi buyurtmasini bersa, ikkalangizga 30 000 so'mdan bonus
+                beriladi.</span
+              >
+            </div>
+            <div
+              style="
+                height: 56px;
+                border-radius: 14px;
+                border: 1.5px dashed #9aa6a3;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 8px 0 16px;
+              "
+            >
+              <span style="font-size: 20px; font-weight: 800; letter-spacing: 2px">BOTIR30</span>
+              <button
+                style="
+                  height: 40px;
+                  border-radius: 10px;
+                  border: none;
+                  background: #e3f1ee;
+                  color: #0f6b5c;
+                  font-family: inherit;
+                  font-size: 14px;
+                  font-weight: 800;
+                  padding: 0 14px;
+                "
+              >
+                Nusxa olish
+              </button>
+            </div>
+            <button
+              style="
+                height: 56px;
+                border-radius: 16px;
+                border: none;
+                background: #229ed9;
+                color: #ffffff;
+                font-family: inherit;
+                font-size: 16px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+              "
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#FFFFFF"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path>
+                <path d="M9 13l12-9"></path></svg
+              >Telegram orqali yuborish
+            </button>
+            <span style="font-size: 13px; color: #4f5b59; text-align: center"
+              >3 ta do'stingiz qo'shildi · 90 000 so'm topdingiz</span
+            >
+          </div>
+        </div>
+        <div style="padding: 20px 20px 0; font-size: 18px; font-weight: 800">
+          Bonus qanday yig'iladi
+        </div>
+        <div style="padding: 12px 20px 0; display: flex; flex-direction: column; gap: 10px">
+          <sc-for list="{{ways}}" as="w" hint-placeholder-count="3">
+            <div
+              style="
+                border-radius: 16px;
+                background: #ffffff;
+                padding: 14px 16px;
+                display: flex;
+                align-items: center;
+                gap: 14px;
+              "
+            >
+              <span
+                style="width: 44px; height: 44px; border-radius: 14px; background: {{w.bg}}; display: flex; align-items: center; justify-content: center; flex-shrink: 0"
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="{{w.fg}}"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="{{w.icon}}"></path></svg
+              ></span>
+              <span style="flex-grow: 1; font-size: 15px; font-weight: 600">{{w.label}}</span>
+              <span style="font-size: 15px; font-weight: 800; color: #0f6b5c">{{w.value}}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="padding: 16px 20px 0">
+          <div
+            style="
+              border-radius: 16px;
+              background: #e3f1ee;
+              padding: 14px 16px;
+              font-size: 14px;
+              line-height: 1.45;
+              color: #24403b;
+            "
+          >
+            Bonus bilan keyingi buyurtmaning 50% gacha qismini to'lash mumkin.
+          </div>
+        </div>
+        <div style="flex-grow: 1"></div>
+        <nav
+          style="
+            height: 76px;
+            background: #ffffff;
+            border-top: 1px solid #e3e7e5;
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+          "
+        >
+          <sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+            <a
+              href="{{t.href}}"
+              style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: {{t.color}}; font-size: 12px; font-weight: 700"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="{{t.icon}}"></path></svg
+              >{{t.label}}</a
+            >
+          </sc-for>
+        </nav>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":1100}}'>
+      class Component extends DCLogic {
+      renderVals() {
+      const tab = (label, href, icon, active) => ({ label, href, icon, color: active ? '#0F6B5C' : '#5B6866' });
+      return {
+      ways: [
+      { label: 'Har bir buyurtmadan', value: '5%', bg: '#E3F1EE', fg: '#0F6B5C', icon: 'M5 4h14v17H5zM9 9h6M9 13h6' },
+      { label: 'Rasm bilan sharh uchun', value: '+3 000', bg: '#FFF3D6', fg: '#9A6400', icon: 'M4 8h3l2-3h6l2 3h3v11H4zM12 16a3 3 0 1 0 0-6 3 3 0 0 0 0 6z' },
+      { label: 'Taklif qilingan do\'st uchun', value: '+30 000', bg: '#EEE8FA', fg: '#6B3FA0', icon: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c1-4 4-6 7-6s6 2 7 6M19 8v6M16 11h6' }
+      ],
+      tabs: [
+      tab('Asosiy', 'Home.dc.html', 'M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z', false),
+      tab('Buyurtmalar', 'JobStatus.dc.html', 'M5 4h14v17H5zM9 9h6M9 13h6M9 17h3', false),
+      tab('Bonuslar', 'Bonus.dc.html', 'M3 8h18v13H3zM3 12h18M12 8v13', true),
+      tab('Uyim', 'Profile.dc.html', 'M12 8a4 4 0 1 0 0-.01M4 21c1-4 4.5-6 8-6s7 2 8 6', false)
+      ]
+      };
+      }
+      }
+    </script>
+  </body>
 </html>

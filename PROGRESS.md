@@ -4,10 +4,11 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**Blocked on design files** — the roadmap needs `design/DESIGN.md`, `design/theme.ts` and
-`design/screens/*.html`, but there is no `design/` folder in the repo yet (see "Botir must do").
+**M2 Catalog — rebuild the customer Home from `design/screens/Home.html`.**
 
-Meanwhile: work that doesn't depend on the design (backend, business rules, tests).
+M1 design done (2026-11-20): theme tokens from `design/theme.ts`, Inter font, lucide icons, base components
+(AppText, PrimaryButton, SecondaryButton, Card, InfoBanner, ScreenHeader, LanguageOption), shared
+components restyled, welcome screen = `Main.html` (language + role on one screen).
 
 ## Status by milestone
 
@@ -33,17 +34,18 @@ Meanwhile: work that doesn't depend on the design (backend, business rules, test
 
 ## Decisions
 
-- 2026-11-20: `design/` is missing, so screen work waits; backend work continues in roadmap order where possible.
+- 2026-11-20: design files arrived (design.zip) and live in `design/`.
+- 2026-11-20: Main.html shows language + role on one screen, so the old separate language-first step is gone; `/language` stays only for changing the language from Settings.
+- 2026-11-20: Screens not rebuilt yet keep working with the restyled shared components (BigButton, Notice, Screen, TextField, ListItem, Chips now follow the design).
 - Guarantee during the cash-only pilot: _waiting for Botir_ (see open questions). Current code gives every DONE job a 14-day guarantee.
 
 ## Open questions (for Botir)
 
-1. **Design files:** where are `design/DESIGN.md`, `design/theme.ts`, `design/screens/*.html`?
 2. **Guarantee and cash:** CLAUDE.md 7a says only online-paid jobs get the guarantee, but the pilot is cash-only. Proposal: cash jobs keep the guarantee until online payment is switched on.
 
 ## Botir must do
 
-- [ ] Put the `design/` folder into the repo root (or send the files).
+- [x] Put the `design/` folder into the repo root.
 - [ ] Before M6.5: create a LiveKit Cloud account (free tier) — exact steps will follow.
 - [ ] Before M6.7 real payments: MChJ, bank account, Click/Payme marketplace contract, lawyer check.
-- [ ] Free disk space on `C:` (only ~1 GB left; it made Docker hang). Optional: limit WSL memory.
+- [ ] **Urgent:** free disk space on `C:` (0.4 GB left; Docker hangs when it is full). Move Docker's disk to `D:` (Docker Desktop → Settings → Resources → Disk image location). Optional: limit WSL memory.

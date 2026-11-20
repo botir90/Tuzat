@@ -1,5 +1,6 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
-import { MIN_TOUCH, colors, fontSize, spacing } from '@/theme';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { colors, radius, sizes, spacing } from '@/theme';
+import { AppText } from './AppText';
 
 interface BigButtonProps {
   label: string;
@@ -13,7 +14,10 @@ interface BigButtonProps {
   accessibilityHint?: string;
 }
 
-/** A large, accessible button used across the app. */
+/**
+ * General-purpose button in the design style (see design/DESIGN.md).
+ * New screens should prefer PrimaryButton / SecondaryButton from ./buttons.
+ */
 export function BigButton({
   label,
   onPress,
@@ -39,24 +43,26 @@ export function BigButton({
         isPrimary ? styles.primary : styles.outline,
         variant === 'danger' && styles.danger,
         selected && styles.selected,
+        pressed && (isPrimary ? styles.primaryPressed : styles.outlinePressed),
         inactive && styles.inactive,
-        pressed && styles.pressed,
       ]}
     >
       {loading ? (
         <ActivityIndicator color={isPrimary ? colors.onPrimary : colors.primary} />
       ) : (
         <View style={styles.texts}>
-          <Text
-            style={[
-              styles.label,
-              isPrimary ? styles.labelPrimary : styles.labelOutline,
-              variant === 'danger' && styles.labelDanger,
-            ]}
+          <AppText
+            variant={isPrimary ? 'button' : 'bodyStrong'}
+            color={isPrimary ? 'onPrimary' : variant === 'danger' ? 'danger' : 'text'}
+            align="center"
           >
             {label}
-          </Text>
-          {hint ? <Text style={styles.hint}>{hint}</Text> : null}
+          </AppText>
+          {hint ? (
+            <AppText variant="caption" color="textSecondary" align="center">
+              {hint}
+            </AppText>
+          ) : null}
         </View>
       )}
     </Pressable>
@@ -65,24 +71,19 @@ export function BigButton({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: MIN_TOUCH + 8,
-    borderRadius: 12,
-    paddingHorizontal: spacing.lg,
+    minHeight: sizes.buttonPrimary,
+    borderRadius: radius.xl,
+    paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
   },
-  primary: { backgroundColor: colors.primary, borderColor: colors.primary },
-  outline: { backgroundColor: colors.background, borderColor: colors.border },
+  primary: { backgroundColor: colors.primary },
+  primaryPressed: { backgroundColor: colors.primaryDark },
+  outline: { backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.border },
+  outlinePressed: { backgroundColor: colors.primarySoft },
   danger: { borderColor: colors.danger },
-  selected: { borderColor: colors.primary, backgroundColor: colors.surface },
+  selected: { borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.primarySoft },
   inactive: { opacity: 0.5 },
-  pressed: { opacity: 0.7 },
   texts: { alignItems: 'center', gap: spacing.xs },
-  label: { fontSize: fontSize.button, fontWeight: '600', textAlign: 'center' },
-  labelPrimary: { color: colors.onPrimary },
-  labelOutline: { color: colors.text },
-  labelDanger: { color: colors.danger },
-  hint: { fontSize: fontSize.small, color: colors.textMuted, textAlign: 'center' },
 });

@@ -1,6 +1,7 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { MIN_TOUCH, colors, fontSize, spacing } from '@/theme';
+import { ChevronRight } from 'lucide-react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { colors, radius, sizes, spacing } from '@/theme';
+import { AppText } from './AppText';
 
 interface ListItemProps {
   title: string;
@@ -11,7 +12,7 @@ interface ListItemProps {
   onPress?: () => void;
 }
 
-/** A big tappable row with an arrow. */
+/** A big tappable white row with an arrow. */
 export function ListItem({ title, subtitle, badge, selected, onPress }: ListItemProps) {
   return (
     <Pressable
@@ -23,42 +24,45 @@ export function ListItem({ title, subtitle, badge, selected, onPress }: ListItem
       style={({ pressed }) => [styles.row, selected && styles.selected, pressed && styles.pressed]}
     >
       <View style={styles.texts}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle ? <Text style={styles.subtitle}>{subtitle}</Text> : null}
+        <AppText variant="bodyStrong">{title}</AppText>
+        {subtitle ? (
+          <AppText variant="caption" color="textSecondary">
+            {subtitle}
+          </AppText>
+        ) : null}
       </View>
-      {badge ? <Text style={styles.badge}>{badge}</Text> : null}
-      {onPress ? (
-        <MaterialCommunityIcons name="chevron-right" size={28} color={colors.textMuted} />
+      {badge ? (
+        <View style={styles.badge}>
+          <AppText variant="tiny" color="primary">
+            {badge}
+          </AppText>
+        </View>
       ) : null}
+      {onPress ? <ChevronRight size={22} color={colors.textMuted} strokeWidth={2} /> : null}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   row: {
-    minHeight: MIN_TOUCH + 8,
+    minHeight: sizes.input,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.md,
-    borderWidth: 2,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    borderWidth: 1.5,
     borderColor: colors.border,
-    borderRadius: 12,
-    backgroundColor: colors.background,
+    borderRadius: radius.xl,
+    backgroundColor: colors.surface,
   },
-  selected: { borderColor: colors.primary, backgroundColor: colors.surface },
-  pressed: { opacity: 0.7 },
+  selected: { borderWidth: 2, borderColor: colors.primary, backgroundColor: colors.primarySoft },
+  pressed: { backgroundColor: colors.primarySoft },
   texts: { flex: 1, gap: 2 },
-  title: { fontSize: fontSize.body, color: colors.text, fontWeight: '600' },
-  subtitle: { fontSize: fontSize.small, color: colors.textMuted },
   badge: {
-    fontSize: 14,
-    color: colors.primary,
     backgroundColor: colors.primarySoft,
     paddingHorizontal: spacing.sm,
     paddingVertical: 2,
-    borderRadius: 8,
-    overflow: 'hidden',
+    borderRadius: radius.sm,
   },
 });
