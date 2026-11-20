@@ -1,230 +1,69 @@
 <!doctype html>
 <html lang="uz">
-  <head>
-    <meta charset="utf-8" />
-    <title>Muammo bor</title>
-    <script src="./support.js"></script>
-  </head>
-  <body>
-    <x-dc>
-      <helmet>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-          rel="stylesheet"
-        />
-        <style>
-          body {
-            margin: 0;
-          }
-          a {
-            color: #0f6b5c;
-          }
-          a:hover {
-            color: #0a4f44;
-          }
-        </style>
-      </helmet>
-      <div
-        style="
-          width: 390px;
-          height: 844px;
-          box-sizing: border-box;
-          background: #f6f7f4;
-          font-family: Inter, system-ui, sans-serif;
-          color: #15201e;
-          display: flex;
-          flex-direction: column;
-        "
-      >
-        <div style="padding: 24px 20px 0; display: flex; align-items: center; gap: 12px">
-          <a
-            href="ConfirmJob.dc.html"
-            aria-label="Orqaga"
-            style="
-              width: 44px;
-              height: 44px;
-              border-radius: 22px;
-              background: #ffffff;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              text-decoration: none;
-            "
-          >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#15201E"
-              stroke-width="2.2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M15 5l-7 7 7 7"></path></svg
-          ></a>
-          <div style="font-size: 20px; font-weight: 800">Muammo haqida xabar</div>
-        </div>
-        <div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 16px">
-          <div
-            style="
-              border-radius: 18px;
-              background: #e4eefb;
-              padding: 14px 16px;
-              display: flex;
-              gap: 12px;
-              align-items: center;
-            "
-          >
-            <svg
-              width="26"
-              height="26"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#1F5FAE"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"></path>
-            </svg>
-            <span style="font-size: 14px; line-height: 1.4; color: #1b3f6b"
-              ><b>96 000 so'm muzlatildi.</b> Masala hal bo'lmaguncha pul hech kimga o'tmaydi.</span
-            >
-          </div>
-          <div style="font-size: 15px; font-weight: 700">Nima bo'ldi?</div>
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <sc-for list="{{reasons}}" as="r" hint-placeholder-count="4">
-              <button
-                style="min-height: 52px; border-radius: 14px; border: {{r.border}}; background: {{r.bg}}; font-family: inherit; font-size: 15px; font-weight: 600; color: #15201E; text-align: left; padding: 0 16px"
-              >
-                {{r.label}}
-              </button>
-            </sc-for>
-          </div>
-          <div style="display: flex; gap: 10px">
-            <button
-              style="
-                flex: 1;
-                height: 56px;
-                border-radius: 14px;
-                border: 1.5px dashed #9aa6a3;
-                background: transparent;
-                font-family: inherit;
-                font-size: 14px;
-                font-weight: 700;
-                color: #3e4b49;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-              "
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#3E4B49"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M4 8h3l2-3h6l2 3h3v11H4z"></path>
-                <circle cx="12" cy="13" r="3"></circle></svg
-              >Rasm
-            </button>
-            <button
-              style="
-                flex: 1;
-                height: 56px;
-                border-radius: 14px;
-                border: none;
-                background: #0f6b5c;
-                font-family: inherit;
-                font-size: 14px;
-                font-weight: 700;
-                color: #ffffff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 8px;
-              "
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#FFFFFF"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                aria-hidden="true"
-              >
-                <rect x="9" y="3" width="6" height="11" rx="3"></rect>
-                <path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg
-              >Ovoz bilan
-            </button>
-          </div>
-          <div
-            style="
-              border-radius: 16px;
-              background: #ffffff;
-              padding: 14px 16px;
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-            "
-          >
-            <span style="font-size: 14px; font-weight: 700">Keyin nima bo'ladi?</span>
-            <span style="font-size: 13px; line-height: 1.5; color: #3e4b49"
-              >1. Usta muammoni bepul tuzatish uchun qaytib keladi.<br />2. Kelishilmasa, operator
-              24 soat ichida chat, rasm va qo'ng'iroqlar tarixini ko'rib, adolatli qaror
-              qiladi.</span
-            >
-          </div>
-        </div>
-        <div style="flex-grow: 1"></div>
-        <div style="padding: 0 20px 28px">
-          <a
-            href="JobStatus.dc.html"
-            style="
-              height: 60px;
-              border-radius: 16px;
-              background: #15201e;
-              color: #ffffff;
-              font-size: 17px;
-              font-weight: 800;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              text-decoration: none;
-            "
-            >Xabar yuborish</a
-          >
-        </div>
-      </div>
-    </x-dc>
-    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
-      class Component extends DCLogic {
-      renderVals() {
-      const on = { border: '2px solid #0F6B5C', bg: '#E3F1EE' };
-      const off = { border: '1.5px solid #D5DBD9', bg: '#FFFFFF' };
-      return {
-      reasons: [
-      { label: 'Muammo tuzalmadi', ...on },
-      { label: 'Ish sifatsiz bajarildi', ...off },
-      { label: 'Usta kelishilganidan ko\'p pul so\'radi', ...off },
-      { label: 'Boshqa sabab', ...off }
-      ]
-      };
-      }
-      }
-    </script>
-  </body>
+<head>
+<meta charset="utf-8">
+<title>Muammo bor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0F6B5C}a:hover{color:#0A4F44}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F7F4; font-family: Inter, system-ui, sans-serif; color: #15201E; display: flex; flex-direction: column">
+<div style="padding: 24px 20px 0; display: flex; align-items: center; gap: 12px">
+<a href="ConfirmJob.dc.html" aria-label="Orqaga" style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; text-decoration: none">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#15201E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></a>
+<div style="font-size: 20px; font-weight: 800">Muammo haqida xabar</div>
+</div>
+<div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 16px">
+<div style="border-radius: 18px; background: #E4EEFB; padding: 14px 16px; display: flex; gap: 12px; align-items: center">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1F5FAE" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20M4.9 6.5l14.2 11M19.1 6.5L4.9 17.5"></path></svg>
+<span style="font-size: 14px; line-height: 1.4; color: #1B3F6B"><b>96 000 so'm muzlatildi.</b> Masala hal bo'lmaguncha pul hech kimga o'tmaydi.</span>
+</div>
+<div style="font-size: 15px; font-weight: 700">Nima bo'ldi?</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{reasons}}" as="r" hint-placeholder-count="4">
+<button style="min-height: 52px; border-radius: 14px; border: {{r.border}}; background: {{r.bg}}; font-family: inherit; font-size: 15px; font-weight: 600; color: #15201E; text-align: left; padding: 0 16px">{{r.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px">
+<button style="flex: 1; height: 56px; border-radius: 14px; border: 1.5px dashed #9AA6A3; background: transparent; font-family: inherit; font-size: 14px; font-weight: 700; color: #3E4B49; display: flex; align-items: center; justify-content: center; gap: 8px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3E4B49" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3"></circle></svg>Rasm</button>
+<button style="flex: 1; height: 56px; border-radius: 14px; border: none; background: #0F6B5C; font-family: inherit; font-size: 14px; font-weight: 700; color: #FFFFFF; display: flex; align-items: center; justify-content: center; gap: 8px">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg>Ovoz bilan</button>
+</div>
+<div style="border-radius: 16px; background: #FFFFFF; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 14px; font-weight: 700">Keyin nima bo'ladi?</span>
+<span style="font-size: 13px; line-height: 1.5; color: #3E4B49">1. Usta muammoni bepul tuzatish uchun qaytib keladi.<br>2. Kelishilmasa, operator 24 soat ichida chat, rasm va qo'ng'iroqlar tarixini ko'rib, adolatli qaror qiladi.</span>
+</div>
+</div>
+<div style="flex-grow: 1"></div>
+<div style="padding: 0 20px 28px">
+<a href="JobStatus.dc.html" style="height: 60px; border-radius: 16px; background: #15201E; color: #FFFFFF; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; text-decoration: none">Xabar yuborish</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const on = { border: '2px solid #0F6B5C', bg: '#E3F1EE' };
+const off = { border: '1.5px solid #D5DBD9', bg: '#FFFFFF' };
+return {
+reasons: [
+{ label: 'Muammo tuzalmadi', ...on },
+{ label: 'Ish sifatsiz bajarildi', ...off },
+{ label: 'Usta kelishilganidan ko\'p pul so\'radi', ...off },
+{ label: 'Boshqa sabab', ...off }
+]
+};
+}
+}
+</script>
+</body>
 </html>

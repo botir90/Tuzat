@@ -28,48 +28,48 @@ design/
 
 ## Reusable components to build (in `apps/mobile/src/components/`)
 
-| Component                   | Used on                                        | Notes                                                                                                              |
-| --------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `PrimaryButton`             | almost every screen                            | height 60, radius 16, teal bg, white 18/700 text; loading + disabled states                                        |
-| `SecondaryButton`           | offers, dispute                                | height 50–56, teal or warm outline                                                                                 |
-| `ScreenHeader`              | inner screens                                  | 44×44 round white back button + title (20/800) + optional subtitle                                                 |
-| `Card`                      | everywhere                                     | white, radius 18, padding 16, soft shadow                                                                          |
-| `InfoBanner`                | home, payment, profile                         | icon + title + text; variants: `safe` (teal soft), `promo` (gold soft), `urgent` (orange soft), `info` (blue soft) |
-| `CategoryTile`              | home                                           | 64×64 colored rounded square + label below; colors from `categoryColors`                                           |
-| `MasterCard`                | home carousel, offers                          | avatar with verified mark, name, category, rating + jobs count                                                     |
-| `OfferCard`                 | offers                                         | master row + price/arrival boxes + select button                                                                   |
-| `Chip` / `ChipGroup`        | time picker, review tags, ETA, dispute reasons | selected = 2px teal border + teal soft bg                                                                          |
-| `VoiceRecorderButton`       | new request, chat, dispute                     | big teal button with mic icon                                                                                      |
-| `VoiceMessagePlayer`        | master feed, chat                              | round play button + waveform + duration                                                                            |
-| `PhotoPicker`               | new request, review, dispute                   | thumbnails + dashed "add photo" tile, max 5                                                                        |
-| `StatusTimeline`            | job status                                     | vertical steps: done (filled teal), current (teal ring, bold), upcoming (gray)                                     |
-| `PriceRow` / `PriceSummary` | payment, review, master payout                 | label left, amount right, total row bold                                                                           |
-| `TabBar`                    | customer & master home                         | 4 tabs (customer) / 3 tabs (master), height 76, active = teal                                                      |
-| `RatingStars`               | review, profiles                               | 44px tappable stars on review screen, small read-only stars elsewhere                                              |
-| `Badge`                     | profiles, payment                              | small rounded label: TOP USTA (gold), verified (teal), on time (blue)                                              |
+| Component | Used on | Notes |
+|---|---|---|
+| `PrimaryButton` | almost every screen | height 60, radius 16, teal bg, white 18/700 text; loading + disabled states |
+| `SecondaryButton` | offers, dispute | height 50–56, teal or warm outline |
+| `ScreenHeader` | inner screens | 44×44 round white back button + title (20/800) + optional subtitle |
+| `Card` | everywhere | white, radius 18, padding 16, soft shadow |
+| `InfoBanner` | home, payment, profile | icon + title + text; variants: `safe` (teal soft), `promo` (gold soft), `urgent` (orange soft), `info` (blue soft) |
+| `CategoryTile` | home | 64×64 colored rounded square + label below; colors from `categoryColors` |
+| `MasterCard` | home carousel, offers | avatar with verified mark, name, category, rating + jobs count |
+| `OfferCard` | offers | master row + price/arrival boxes + select button |
+| `Chip` / `ChipGroup` | time picker, review tags, ETA, dispute reasons | selected = 2px teal border + teal soft bg |
+| `VoiceRecorderButton` | new request, chat, dispute | big teal button with mic icon |
+| `VoiceMessagePlayer` | master feed, chat | round play button + waveform + duration |
+| `PhotoPicker` | new request, review, dispute | thumbnails + dashed "add photo" tile, max 5 |
+| `StatusTimeline` | job status | vertical steps: done (filled teal), current (teal ring, bold), upcoming (gray) |
+| `PriceRow` / `PriceSummary` | payment, review, master payout | label left, amount right, total row bold |
+| `TabBar` | customer & master home | 4 tabs (customer) / 3 tabs (master), height 76, active = teal |
+| `RatingStars` | review, profiles | 44px tappable stars on review screen, small read-only stars elsewhere |
+| `Badge` | profiles, payment | small rounded label: TOP USTA (gold), verified (teal), on time (blue) |
 
 ## Screens
 
-| Ref file              | Screen                                                                                                                                                                                                  | Role     | Milestone / phase                                          |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------------------- |
-| `Main.html`           | Language picker + role choice                                                                                                                                                                           | both     | M0 / M1                                                    |
-| `Home.html`           | Customer home (scrolls): address, search with mic, promo banner, 24/7 emergency, categories, seasonal tip, top masters, popular services with prices, before/after, referral banner, trust row, tab bar | customer | M2 (core blocks); promo, referral, before/after in Phase 2 |
-| `NewRequest.html`     | Create request in 3 steps: problem (text/photo/voice), address + landmark, time                                                                                                                         | customer | M3                                                         |
-| `Offers.html`         | Offers list: master, rating, jobs, price, arrival, select                                                                                                                                               | customer | M5                                                         |
-| `MasterProfile.html`  | Master profile: badges, stats, about, prices, portfolio, reviews, chat + select                                                                                                                         | customer | M5 / M6                                                    |
-| `JobStatus.html`      | Job status timeline, master card with chat + call, price change approval card                                                                                                                           | customer | M5                                                         |
-| `Chat.html`           | Chat with text, voice, photos, system messages, quick replies                                                                                                                                           | both     | Phase 2                                                    |
-| `Call.html`           | In-app voice call (dark screen), hidden numbers, mute / speaker / chat / end, fallback to normal call                                                                                                   | both     | M6.5 (in-app calls)                                        |
-| `Review.html`         | Job done: stars, tags, comment, photo, payment summary, tip, bonus earned                                                                                                                               | customer | M6 (payment block: Phase 2)                                |
-| `Payment.html`        | Pay when choosing master: "your money is safe" steps, price split (labor/parts), Click / Payme / cash                                                                                                   | customer | Phase 2 (escrow)                                           |
-| `ConfirmJob.html`     | "Was the job done well?": held amount, approved parts receipt, auto-release countdown, release / problem                                                                                                | customer | Phase 2 (escrow)                                           |
-| `Dispute.html`        | Report a problem: money frozen notice, reasons, photo/voice, what happens next                                                                                                                          | customer | M6 (complaint) / Phase 2 (frozen money)                    |
-| `Bonus.html`          | Bonus balance + level, referral code, share via Telegram, ways to earn                                                                                                                                  | customer | Phase 3                                                    |
-| `Profile.html`        | "My home": appliances with service reminders, active guarantee, menu (favorites, addresses, history, language, support, become a master)                                                                | customer | Phase 2–3                                                  |
-| `MasterFeed.html`     | Master: availability toggle, new requests with voice + photo, distance, time, send offer                                                                                                                | master   | M4                                                         |
-| `MasterOffer.html`    | Master: send offer (price, ETA chips, message)                                                                                                                                                          | master   | M4                                                         |
-| `MasterEarnings.html` | Master: weekly earnings chart, month, rating, recent jobs                                                                                                                                               | master   | M6                                                         |
-| `MasterPayout.html`   | Master: payment held by platform, parts receipt upload, payout breakdown with commission                                                                                                                | master   | Phase 2 (escrow)                                           |
+| Ref file | Screen | Role | Milestone / phase |
+|---|---|---|---|
+| `Main.html` | Language picker + role choice | both | M0 / M1 |
+| `Home.html` | Customer home (scrolls): address, search with mic, promo banner, 24/7 emergency, categories, seasonal tip, top masters, popular services with prices, before/after, referral banner, trust row, tab bar | customer | M2 (core blocks); promo, referral, before/after in Phase 2 |
+| `NewRequest.html` | Create request in 3 steps: problem (text/photo/voice), address + landmark, time | customer | M3 |
+| `Offers.html` | Offers list: master, rating, jobs, price, arrival, select | customer | M5 |
+| `MasterProfile.html` | Master profile: badges, stats, about, prices, portfolio, reviews, chat + select | customer | M5 / M6 |
+| `JobStatus.html` | Job status timeline, master card with chat + call, price change approval card | customer | M5 |
+| `Chat.html` | Chat with text, voice, photos, system messages, quick replies | both | Phase 2 |
+| `Call.html` | In-app voice call (dark screen), hidden numbers, mute / speaker / chat / end, fallback to normal call | both | M6.5 (in-app calls) |
+| `Review.html` | Job done: stars, tags, comment, photo, payment summary, tip, bonus earned | customer | M6 (payment block: Phase 2) |
+| `Payment.html` | Pay when choosing master: "your money is safe" steps, price split (labor/parts), Click / Payme / cash | customer | Phase 2 (escrow) |
+| `ConfirmJob.html` | "Was the job done well?": held amount, approved parts receipt, auto-release countdown, release / problem | customer | Phase 2 (escrow) |
+| `Dispute.html` | Report a problem: money frozen notice, reasons, photo/voice, what happens next | customer | M6 (complaint) / Phase 2 (frozen money) |
+| `Bonus.html` | Bonus balance + level, referral code, share via Telegram, ways to earn | customer | Phase 3 |
+| `Profile.html` | "My home": appliances with service reminders, active guarantee, menu (favorites, addresses, history, language, support, become a master) | customer | Phase 2–3 |
+| `MasterFeed.html` | Master: availability toggle, new requests with voice + photo, distance, time, send offer | master | M4 |
+| `MasterOffer.html` | Master: send offer (price, ETA chips, message) | master | M4 |
+| `MasterEarnings.html` | Master: weekly earnings chart, month, rating, recent jobs | master | M6 |
+| `MasterPayout.html` | Master: payment held by platform, parts receipt upload, payout breakdown with commission | master | Phase 2 (escrow) |
 
 Build screens **in the milestone order from `CLAUDE.md`**. A screen marked for a later phase may be built early only as a UI shell if Botir asks.
 

@@ -1,358 +1,77 @@
 <!doctype html>
 <html lang="uz">
-  <head>
-    <meta charset="utf-8" />
-    <title>Usta: yangi buyurtmalar</title>
-    <script src="./support.js"></script>
-  </head>
-  <body>
-    <x-dc>
-      <helmet>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap"
-          rel="stylesheet"
-        />
-        <style>
-          body {
-            margin: 0;
-          }
-          a {
-            color: #0f6b5c;
-          }
-          a:hover {
-            color: #0a4f44;
-          }
-        </style>
-      </helmet>
-      <div
-        style="
-          width: 390px;
-          height: 844px;
-          box-sizing: border-box;
-          background: #f6f7f4;
-          font-family: Inter, system-ui, sans-serif;
-          color: #15201e;
-          display: flex;
-          flex-direction: column;
-        "
-      >
-        <div style="padding: 32px 20px 0; display: flex; flex-direction: column; gap: 14px">
-          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.3px">
-            Yangi buyurtmalar
-          </div>
-          <div
-            style="
-              border-radius: 16px;
-              background: #e3f1ee;
-              padding: 12px 16px;
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-            "
-          >
-            <div style="display: flex; flex-direction: column; gap: 2px">
-              <span style="font-size: 15px; font-weight: 700">Buyurtma qabul qilyapman</span>
-              <span style="font-size: 13px; color: #3e4b49">Santexnik · Urganch, Xiva</span>
-            </div>
-            <button
-              aria-label="Buyurtma qabul qilish: yoqilgan"
-              style="
-                width: 56px;
-                height: 32px;
-                border-radius: 16px;
-                border: none;
-                background: #0f6b5c;
-                position: relative;
-                padding: 0;
-              "
-            >
-              <span
-                style="
-                  position: absolute;
-                  right: 4px;
-                  top: 4px;
-                  width: 24px;
-                  height: 24px;
-                  border-radius: 12px;
-                  background: #ffffff;
-                "
-              ></span>
-            </button>
-          </div>
-        </div>
-        <div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 12px">
-          <sc-for list="{{orders}}" as="o" hint-placeholder-count="2">
-            <div
-              style="
-                border-radius: 18px;
-                background: #ffffff;
-                box-shadow: 0 1px 2px rgba(21, 32, 30, 0.08);
-                padding: 16px;
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-              "
-            >
-              <div style="display: flex; justify-content: space-between; align-items: center">
-                <span
-                  style="
-                    font-size: 13px;
-                    font-weight: 700;
-                    color: #0f6b5c;
-                    background: #e3f1ee;
-                    border-radius: 8px;
-                    padding: 4px 10px;
-                  "
-                  >{{o.tag}}</span
-                >
-                <span style="font-size: 13px; color: #5b6866">{{o.ago}}</span>
-              </div>
-              <div style="font-size: 16px; font-weight: 600; line-height: 1.4">{{o.text}}</div>
-              <div style="display: flex; gap: 8px; align-items: center">
-                <button
-                  aria-label="Ovozli xabarni tinglash"
-                  style="
-                    height: 44px;
-                    border-radius: 22px;
-                    border: none;
-                    background: #f6f7f4;
-                    padding: 0 14px 0 6px;
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    font-family: inherit;
-                    font-size: 13px;
-                    font-weight: 600;
-                    color: #15201e;
-                  "
-                >
-                  <span
-                    style="
-                      width: 32px;
-                      height: 32px;
-                      border-radius: 16px;
-                      background: #0f6b5c;
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                    "
-                    ><svg
-                      width="14"
-                      height="14"
-                      viewBox="0 0 24 24"
-                      fill="#FFFFFF"
-                      aria-hidden="true"
-                    >
-                      <path d="M7 4l13 8-13 8z"></path></svg
-                  ></span>
-                  <svg
-                    width="70"
-                    height="20"
-                    viewBox="0 0 70 20"
-                    fill="none"
-                    stroke="#7E8A87"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M3 8v4M10 5v10M17 9v2M24 3v14M31 7v6M38 5v10M45 9v2M52 6v8M59 8v4M66 9v2"
-                    ></path></svg
-                  >{{o.voice}}
-                </button>
-                <div
-                  style="
-                    width: 44px;
-                    height: 44px;
-                    border-radius: 10px;
-                    background: #cfe3de;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                  "
-                >
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#0F6B5C"
-                    stroke-width="1.8"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    role="img"
-                    aria-label="Mijoz yuborgan rasm"
-                  >
-                    <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-                    <circle cx="9" cy="10" r="2"></circle>
-                    <path d="M21 16l-5-5-8 8"></path>
-                  </svg>
-                </div>
-              </div>
-              <div style="display: flex; gap: 16px; font-size: 13px; color: #4f5b59">
-                <span style="display: flex; align-items: center; gap: 4px"
-                  ><svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#4F5B59"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path></svg
-                  >{{o.place}}</span
-                >
-                <span style="display: flex; align-items: center; gap: 4px"
-                  ><svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#4F5B59"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    aria-hidden="true"
-                  >
-                    <circle cx="12" cy="12" r="9"></circle>
-                    <path d="M12 7v5l3 2"></path></svg
-                  >{{o.when}}</span
-                >
-              </div>
-              <a
-                href="MasterOffer.dc.html"
-                style="
-                  height: 50px;
-                  border-radius: 14px;
-                  background: #0f6b5c;
-                  color: #ffffff;
-                  font-size: 16px;
-                  font-weight: 700;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  text-decoration: none;
-                "
-                >Taklif berish</a
-              >
-            </div>
-          </sc-for>
-        </div>
-        <div style="flex-grow: 1"></div>
-        <nav
-          style="
-            height: 76px;
-            background: #ffffff;
-            border-top: 1px solid #e3e7e5;
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-          "
-        >
-          <a
-            href="MasterFeed.dc.html"
-            style="
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              gap: 4px;
-              text-decoration: none;
-              color: #0f6b5c;
-              font-size: 12px;
-              font-weight: 700;
-            "
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"></path></svg
-            >Buyurtmalar</a
-          >
-          <a
-            href="MasterFeed.dc.html"
-            style="
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              gap: 4px;
-              text-decoration: none;
-              color: #5b6866;
-              font-size: 12px;
-              font-weight: 600;
-            "
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <path
-                d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"
-              ></path></svg
-            >Ishlarim</a
-          >
-          <a
-            href="MasterEarnings.dc.html"
-            style="
-              display: flex;
-              flex-direction: column;
-              align-items: center;
-              justify-content: center;
-              gap: 4px;
-              text-decoration: none;
-              color: #5b6866;
-              font-size: 12px;
-              font-weight: 600;
-            "
-          >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              aria-hidden="true"
-            >
-              <rect x="3" y="6" width="18" height="13" rx="2"></rect>
-              <path d="M3 10h18M16 15h2"></path></svg
-            >Daromad</a
-          >
-        </nav>
-      </div>
-    </x-dc>
-    <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
-      class Component extends DCLogic {
-      renderVals() {
-      return {
-      orders: [
-      { tag: 'Kran ta\'miri', ago: '2 daqiqa oldin', text: 'Oshxonadagi kran oqyapti, yopilmayapti', voice: '0:12', place: 'Urganch · 2,1 km', when: 'Hozir' },
-      { tag: 'Unitaz', ago: '15 daqiqa oldin', text: 'Unitaz bachogi suv to\'xtatmayapti', voice: '0:20', place: 'Urganch · 4,5 km', when: 'Bugun 17:00' }
-      ]
-      };
-      }
-      }
-    </script>
-  </body>
+<head>
+<meta charset="utf-8">
+<title>Usta: yangi buyurtmalar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#0F6B5C}a:hover{color:#0A4F44}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #F6F7F4; font-family: Inter, system-ui, sans-serif; color: #15201E; display: flex; flex-direction: column">
+<div style="padding: 32px 20px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="font-size: 24px; font-weight: 800; letter-spacing: -0.3px">Yangi buyurtmalar</div>
+<div style="border-radius: 16px; background: #E3F1EE; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 15px; font-weight: 700">Buyurtma qabul qilyapman</span>
+<span style="font-size: 13px; color: #3E4B49">Santexnik · Urganch, Xiva</span>
+</div>
+<button aria-label="Buyurtma qabul qilish: yoqilgan" style="width: 56px; height: 32px; border-radius: 16px; border: none; background: #0F6B5C; position: relative; padding: 0">
+<span style="position: absolute; right: 4px; top: 4px; width: 24px; height: 24px; border-radius: 12px; background: #FFFFFF"></span></button>
+</div>
+</div>
+<div style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 12px">
+<sc-for list="{{orders}}" as="o" hint-placeholder-count="2">
+<div style="border-radius: 18px; background: #FFFFFF; box-shadow: 0 1px 2px rgba(21,32,30,0.08); padding: 16px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center">
+<span style="font-size: 13px; font-weight: 700; color: #0F6B5C; background: #E3F1EE; border-radius: 8px; padding: 4px 10px">{{o.tag}}</span>
+<span style="font-size: 13px; color: #5B6866">{{o.ago}}</span>
+</div>
+<div style="font-size: 16px; font-weight: 600; line-height: 1.4">{{o.text}}</div>
+<div style="display: flex; gap: 8px; align-items: center">
+<button aria-label="Ovozli xabarni tinglash" style="height: 44px; border-radius: 22px; border: none; background: #F6F7F4; padding: 0 14px 0 6px; display: flex; align-items: center; gap: 10px; font-family: inherit; font-size: 13px; font-weight: 600; color: #15201E">
+<span style="width: 32px; height: 32px; border-radius: 16px; background: #0F6B5C; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#FFFFFF" aria-hidden="true"><path d="M7 4l13 8-13 8z"></path></svg></span>
+<svg width="70" height="20" viewBox="0 0 70 20" fill="none" stroke="#7E8A87" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M3 8v4M10 5v10M17 9v2M24 3v14M31 7v6M38 5v10M45 9v2M52 6v8M59 8v4M66 9v2"></path></svg>{{o.voice}}</button>
+<div style="width: 44px; height: 44px; border-radius: 10px; background: #CFE3DE; display: flex; align-items: center; justify-content: center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0F6B5C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Mijoz yuborgan rasm"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="2"></circle><path d="M21 16l-5-5-8 8"></path></svg></div>
+</div>
+<div style="display: flex; gap: 16px; font-size: 13px; color: #4F5B59">
+<span style="display: flex; align-items: center; gap: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F5B59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"></path></svg>{{o.place}}</span>
+<span style="display: flex; align-items: center; gap: 4px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4F5B59" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>{{o.when}}</span>
+</div>
+<a href="MasterOffer.dc.html" style="height: 50px; border-radius: 14px; background: #0F6B5C; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-decoration: none">Taklif berish</a>
+</div>
+</sc-for>
+</div>
+<div style="flex-grow: 1"></div>
+<nav style="height: 76px; background: #FFFFFF; border-top: 1px solid #E3E7E5; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr))">
+<a href="MasterFeed.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #0F6B5C; font-size: 12px; font-weight: 700">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4"></path></svg>Buyurtmalar</a>
+<a href="MasterFeed.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6866; font-size: 12px; font-weight: 600">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.6 2.6-2.4-.6-.6-2.4z"></path></svg>Ishlarim</a>
+<a href="MasterEarnings.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; color: #5B6866; font-size: 12px; font-weight: 600">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M3 10h18M16 15h2"></path></svg>Daromad</a>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+return {
+orders: [
+{ tag: 'Kran ta\'miri', ago: '2 daqiqa oldin', text: 'Oshxonadagi kran oqyapti, yopilmayapti', voice: '0:12', place: 'Urganch · 2,1 km', when: 'Hozir' },
+{ tag: 'Unitaz', ago: '15 daqiqa oldin', text: 'Unitaz bachogi suv to\'xtatmayapti', voice: '0:20', place: 'Urganch · 4,5 km', when: 'Bugun 17:00' }
+]
+};
+}
+}
+</script>
+</body>
 </html>
