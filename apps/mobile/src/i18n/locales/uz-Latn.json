@@ -5,7 +5,8 @@
     "back": "Orqaga",
     "settings": "Sozlamalar",
     "loading": "Yuklanmoqda…",
-    "refresh": "Yangilash"
+    "refresh": "Yangilash",
+    "cancel": "Bekor qilish"
   },
   "errors": {
     "NETWORK_ERROR": "Internet aloqasi yo'q yoki server javob bermayapti. Aloqani tekshirib, qayta urinib ko'ring.",
@@ -158,10 +159,13 @@
     "limit": "Ko'pi bilan {{max}} ta rasm qo'shish mumkin.",
     "cameraDenied": "Kameraga ruxsat berilmagan. Telefon sozlamalarida ruxsat bering.",
     "galleryDenied": "Galereyaga ruxsat berilmagan. Telefon sozlamalarida ruxsat bering.",
-    "failed": "Rasmni tayyorlab bo'lmadi. Boshqa rasm tanlab ko'ring."
+    "failed": "Rasmni tayyorlab bo'lmadi. Boshqa rasm tanlab ko'ring.",
+    "add": "Rasm qo'shish",
+    "addTitle": "Rasmni qayerdan olamiz?",
+    "short": "Rasm"
   },
   "voice": {
-    "record": "Ovozli xabar yozish",
+    "record": "Ovoz bilan ayting",
     "stop": "To'xtatish ({{time}})",
     "play": "Tinglash",
     "pause": "Pauza",
@@ -199,7 +203,18 @@
     "loginAndSubmit": "Kirish va so'rov yuborish",
     "uploadingPhotos": "Rasmlar yuklanmoqda…",
     "uploadingVoice": "Ovozli xabar yuklanmoqda…",
-    "saving": "So'rov saqlanmoqda…"
+    "saving": "So'rov saqlanmoqda…",
+    "usualPrice": "Odatiy narx: {{min}} – {{max}} so'm",
+    "step1": "1. Muammo nima?",
+    "step2": "2. Manzil",
+    "step3": "3. Qachon?",
+    "pickOnMap": "Xaritadan tanlash",
+    "addressEmpty": "Manzilni kiriting",
+    "landmarkShort": "Mo'ljal: {{value}}",
+    "changeDistrict": "Hudud: {{place}} · o'zgartirish",
+    "findMasters": "Ustalarni topish",
+    "loginAndFind": "Kirish va ustalarni topish",
+    "freeNote": "Bepul. Usta tanlashni o'zingiz hal qilasiz."
   },
   "requests": {
     "myRequests": "Mening so'rovlarim",
@@ -326,9 +341,19 @@
     "title": "Uyingizni xaritada belgilang",
     "tapHint": "Xaritada kerakli joyni bosing yoki qizil belgini suring.",
     "pointChosen": "Joy tanlandi",
-    "confirm": "Shu joyni tanlash",
+    "confirm": "Manzilni tasdiqlash",
     "failed": "Xarita yuklanmadi. Internetni tekshiring yoki manzilni yozib qoldiring.",
-    "noKey": "Xarita hali sozlanmagan. Manzilni yozib qoldiring."
+    "noKey": "Xarita hali sozlanmagan. Manzilni yozib qoldiring.",
+    "pinLabel": "Usta shu yerga keladi",
+    "myLocation": "Mening joylashuvim",
+    "searchPlaceholder": "Manzil yoki joyni qidirish",
+    "notFound": "Bunday manzil topilmadi. Boshqacha yozib ko'ring yoki xaritani suring.",
+    "selectedAddress": "Tanlangan manzil",
+    "landmark": "Mo'ljal",
+    "apartment": "Xonadon",
+    "floor": "Qavat",
+    "apartmentShort": "{{value}}-xonadon",
+    "floorShort": "{{value}}-qavat"
   },
   "review": {
     "title": "Ustaga baho qo'ying",

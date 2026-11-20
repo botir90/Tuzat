@@ -4,10 +4,11 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M3 Requests — restyle NewRequest (3 steps) and AddressMap from the design.**
+**M4 Master side — restyle MasterFeed and MasterOffer from the design.**
 
-M2 done (2026-11-21): 36 trades in 4 admin-managed groups + "Other" (design/screens/Categories.html),
-admin can add trades without code, customer Home (Home.html core blocks), "All services" screen, tab bar.
+M3 done (2026-11-21): NewRequest in 3 sections (NewRequest.html), AddressMap with a center pin,
+address search, my-location, landmark/apartment/floor (AddressMap.html), new PhotoPicker,
+voice recorder and voice player.
 
 ## Status by milestone
 
@@ -32,6 +33,9 @@ admin can add trades without code, customer Home (Home.html core blocks), "All s
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-21: Maps stay on the Yandex **JavaScript API in a WebView** (works in Expo Go). DESIGN.md mentions Yandex MapKit (native SDK); switch when we move to the dev build (M6.5), the screen layout stays the same.
+- 2026-11-21: Apartment and floor are added to the address line sent to the API (no new DB fields).
 
 - 2026-11-21: Categories.html lists **36** trades (8+12+8+8), not 35; the app uses exactly the file.
 - 2026-11-21: Customer tab bar has 3 tabs (Home, Orders, Profile). The "Bonuses" tab from Home.html comes with M6.9.

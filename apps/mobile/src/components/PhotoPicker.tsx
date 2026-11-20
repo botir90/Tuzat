@@ -1,24 +1,36 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { Camera, X } from 'lucide-react-native';
+import { useState, type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, View } from 'react-native';
 import { MAX_PHOTOS_PER_REQUEST } from '@usta/shared';
 import { compressPhoto } from '@/media/compress';
 import type { DraftPhoto } from '@/requests/draft';
-import { colors, spacing } from '@/theme';
-import { BigButton } from './BigButton';
+import { colors, radius, spacing } from '@/theme';
+import { AppText } from './AppText';
 import { Notice } from './Notice';
+
+const TILE = 72;
 
 interface PhotoPickerProps {
   photos: DraftPhoto[];
   onChange: (photos: DraftPhoto[]) => void;
   /** Maximum number of photos (default: 5, the request limit). */
   max?: number;
+  /** Shown after the "add photo" tile in the same row (e.g. the voice button). */
+  trailing?: ReactNode;
 }
 
-/** Up to 5 photos from the camera or the gallery, compressed on the phone. */
-export function PhotoPicker({ photos, onChange, max = MAX_PHOTOS_PER_REQUEST }: PhotoPickerProps) {
+/**
+ * Thumbnails + dashed "add photo" tile (design: PhotoPicker). Photos come from the camera
+ * or the gallery and are compressed on the phone before upload.
+ */
+export function PhotoPicker({
+  photos,
+  onChange,
+  max = MAX_PHOTOS_PER_REQUEST,
+  trailing,
+}: PhotoPickerProps) {
   const { t } = useTranslation();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -62,52 +74,59 @@ export function PhotoPicker({ photos, onChange, max = MAX_PHOTOS_PER_REQUEST }: 
     }
   }
 
+  function chooseSource() {
+    // A native dialog with two big choices; works on every Android phone.
+    Alert.alert(t('photos.addTitle'), undefined, [
+      { text: t('photos.camera'), onPress: () => void add('camera') },
+      { text: t('photos.gallery'), onPress: () => void add('gallery') },
+      { text: t('common.cancel'), style: 'cancel' },
+    ]);
+  }
+
   return (
     <View style={styles.wrapper}>
-      {photos.length > 0 ? (
-        <View style={styles.grid}>
-          {photos.map((photo, index) => (
-            <View key={photo.uri} style={styles.thumbWrap}>
-              <Image
-                source={{ uri: photo.uri }}
-                style={styles.thumb}
-                accessibilityIgnoresInvertColors
-              />
-              <Pressable
-                onPress={() => onChange(photos.filter((_, i) => i !== index))}
-                accessibilityRole="button"
-                accessibilityLabel={t('photos.remove', { number: index + 1 })}
-                style={styles.remove}
-                hitSlop={8}
-              >
-                <MaterialCommunityIcons name="close" size={20} color={colors.onPrimary} />
-              </Pressable>
-            </View>
-          ))}
-        </View>
-      ) : null}
-      {left > 0 ? (
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <BigButton
-              label={t('photos.camera')}
-              variant="outline"
-              loading={busy}
-              onPress={() => void add('camera')}
+      <View style={styles.row}>
+        {photos.map((photo, index) => (
+          <View key={photo.uri} style={styles.tile}>
+            <Image
+              source={{ uri: photo.uri }}
+              style={styles.thumb}
+              accessibilityLabel={t('photos.number', { number: index + 1 })}
             />
+            <Pressable
+              onPress={() => onChange(photos.filter((_, i) => i !== index))}
+              accessibilityRole="button"
+              accessibilityLabel={t('photos.remove', { number: index + 1 })}
+              style={styles.remove}
+              hitSlop={10}
+            >
+              <X size={16} color={colors.onPrimary} strokeWidth={2.6} />
+            </Pressable>
           </View>
-          <View style={styles.flex}>
-            <BigButton
-              label={t('photos.gallery')}
-              variant="outline"
-              disabled={busy}
-              onPress={() => void add('gallery')}
-            />
-          </View>
-        </View>
-      ) : (
-        <Notice text={t('photos.limit', { max })} />
-      )}
+        ))}
+        {left > 0 ? (
+          <Pressable
+            onPress={chooseSource}
+            disabled={busy}
+            accessibilityRole="button"
+            accessibilityLabel={t('photos.add')}
+            style={({ pressed }) => [styles.tile, styles.add, pressed && styles.pressed]}
+          >
+            {busy ? (
+              <ActivityIndicator color={colors.primary} />
+            ) : (
+              <>
+                <Camera size={24} color={colors.textSecondary} strokeWidth={2} />
+                <AppText variant="tiny" color="textSecondary">
+                  {t('photos.short')}
+                </AppText>
+              </>
+            )}
+          </Pressable>
+        ) : null}
+        {trailing ? <View style={styles.trailing}>{trailing}</View> : null}
+      </View>
+      {left === 0 ? <Notice text={t('photos.limit', { max })} /> : null}
       {error ? <Notice tone="error" text={error} /> : null}
     </View>
   );
@@ -115,20 +134,34 @@ export function PhotoPicker({ photos, onChange, max = MAX_PHOTOS_PER_REQUEST }: 
 
 const styles = StyleSheet.create({
   wrapper: { gap: spacing.sm },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
-  thumbWrap: { width: 96, height: 96 },
-  thumb: { width: 96, height: 96, borderRadius: 8, backgroundColor: colors.surface },
+  row: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  tile: { width: TILE, height: TILE },
+  thumb: {
+    width: TILE,
+    height: TILE,
+    borderRadius: radius.lg,
+    backgroundColor: colors.primaryMuted,
+  },
   remove: {
     position: 'absolute',
     top: 4,
     right: 4,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    borderRadius: 14,
-    width: 28,
-    height: 28,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(21,32,30,0.65)',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  row: { flexDirection: 'row', gap: spacing.sm },
-  flex: { flex: 1 },
+  add: {
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderColor: colors.placeholderBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
+  pressed: { backgroundColor: colors.primarySoft },
+  trailing: { flexGrow: 1, minWidth: 150 },
 });
