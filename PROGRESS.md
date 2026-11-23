@@ -4,11 +4,11 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M6.5 chat + calls: code done; Botir builds the development APK and tests calls on two phones. Next: M6.7 Payments.**
+**M6.9 Growth: promo codes, 24/7 emergency, badges, bonuses + referral, "My home" (Bonus.html, Profile.html).**
 
-M6.5 (2026-11-23): Chat.html (text, photo, voice, quick replies, system events, 4 s polling, push),
-Call.html (LiveKit voice, hidden numbers, mute / speaker / chat / end, normal-call fallback,
-incoming call via high-priority push on a "calls" channel, history, no recording).
+M6.7 done (2026-11-23): cash now (commission to the master balance, 90 free days), online escrow
+behind ONLINE_PAYMENTS_ENABLED with a fake provider; Payment.html, ConfirmJob.html, MasterPayout
+(job payment card), parts receipts, 24 h auto-release, disputes freeze money, admin API.
 
 ## Status by milestone
 
@@ -33,6 +33,11 @@ incoming call via high-priority push on a "calls" channel, history, no recording
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: Commission = COMMISSION_PERCENT (5%) of labor only (parts are not charged); first 90 days free. Cash jobs: commission is recorded as the master's debt; an admin records when it is paid.
+- 2026-11-23: Guarantee stays for cash jobs during the pilot (open question answered by default: we keep it until online payment is on). Payment.html shows cash as "to the master after the job", not "no guarantee".
+- 2026-11-23: After choosing a master the customer lands on the Payment screen; cash is the default and only choice until the flag is on.
+- 2026-11-23: Auto-release and reminders run in the API every 5 minutes (and on reads), no extra job queue.
 
 - 2026-11-23: Chat uses simple polling (every 4 s while open) + push, not websockets. Boring and works on 3G; switch later if needed.
 - 2026-11-23: In Expo Go the call screen offers a normal phone call (no native WebRTC there). In-app calls work in the development build / store app.

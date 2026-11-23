@@ -6,12 +6,14 @@ import { Linking, Pressable, RefreshControl, ScrollView, StyleSheet, View } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { formatSum, formatUzPhone, type JobDto } from '@usta/shared';
 import { errorMessage } from '@/api/errors';
+import { usePayment } from '@/api/payments';
 import { useAnswerPrice, useCancelJob, useJob, useJobStatus, useProposePrice } from '@/api/jobs';
 import { AppText } from '@/components/AppText';
 import { Avatar } from '@/components/Avatar';
 import { PrimaryButton, SecondaryButton } from '@/components/buttons';
 import { Card } from '@/components/Card';
 import { Chips } from '@/components/Chips';
+import { JobPaymentCard } from '@/components/JobPaymentCard';
 import { Notice } from '@/components/Notice';
 import { QueryState } from '@/components/QueryState';
 import { ReviewCard } from '@/components/ReviewCard';
@@ -67,6 +69,7 @@ function JobView({
   const cancel = useCancelJob(job.id);
   const propose = useProposePrice(job.id);
   const answer = useAnswerPrice(job.id);
+  const payment = usePayment(job.id).data;
 
   const [eta, setEta] = useState<string>('20');
   const [showPriceForm, setShowPriceForm] = useState(false);
@@ -126,6 +129,11 @@ function JobView({
       label: isMaster ? t('jobs.finish') : t('jobs.confirmDone'),
       onPress: () => setStatus.mutate({ status: 'DONE' }),
       disabled: Boolean(job.pendingPriceChange),
+    };
+  } else if (!isMaster && payment?.canConfirm) {
+    mainAction = {
+      label: t('confirm.open'),
+      onPress: () => router.push({ pathname: '/confirm/[jobId]', params: { jobId: job.id } }),
     };
   } else if (job.canReview) {
     mainAction = {
@@ -265,6 +273,8 @@ function JobView({
             </Pressable>
           ) : null}
         </Card>
+
+        <JobPaymentCard job={job} />
 
         {/* Money and guarantee once done */}
         {job.status === 'DONE' ? (

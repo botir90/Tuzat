@@ -42,6 +42,7 @@ export default function MasterRequestScreen() {
   const [arrival, setArrival] = useState<string>('30');
   const [showMore, setShowMore] = useState(false);
   const [message, setMessage] = useState('');
+  const [parts, setParts] = useState('');
   const [formError, setFormError] = useState<string | null>(null);
 
   const goBack = () => (router.canGoBack() ? router.back() : router.replace('/master'));
@@ -84,7 +85,12 @@ export default function MasterRequestScreen() {
         ? scheduled
         : new Date(Date.now() + Number(arrival) * 60_000).toISOString();
     send.mutate(
-      { price: amount, arrivalAt, message: message.trim() || undefined },
+      {
+        price: amount,
+        partsPrice: Math.min(Number(parts) || 0, amount),
+        arrivalAt,
+        message: message.trim() || undefined,
+      },
       { onSuccess: goBack },
     );
   }
@@ -174,6 +180,15 @@ export default function MasterRequestScreen() {
                 </AppText>
               ) : null}
             </View>
+
+            {/* Parts inside the price (optional): the customer sees labor and parts apart. */}
+            <TextField
+              label={t('master.partsLabel')}
+              value={parts}
+              onChangeText={(text) => setParts(text.replace(/\D/g, '').slice(0, 9))}
+              keyboardType="number-pad"
+              placeholder={t('master.partsPlaceholder')}
+            />
 
             {/* Arrival */}
             <View style={styles.section}>

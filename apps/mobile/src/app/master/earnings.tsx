@@ -5,6 +5,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-n
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { formatSum } from '@usta/shared';
 import { useMasterEarnings } from '@/api/master';
+import { useMasterBalance } from '@/api/payments';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { Notice } from '@/components/Notice';
@@ -22,6 +23,7 @@ export default function EarningsScreen() {
   const { t } = useTranslation();
   const localized = useLocalized();
   const earnings = useMasterEarnings();
+  const balance = useMasterBalance();
   const data = earnings.data;
   const max = data ? Math.max(1, ...data.week.days) : 1;
 
@@ -32,7 +34,7 @@ export default function EarningsScreen() {
         refreshControl={
           <RefreshControl
             refreshing={earnings.isRefetching}
-            onRefresh={() => void earnings.refetch()}
+            onRefresh={() => void Promise.all([earnings.refetch(), balance.refetch()])}
             colors={[colors.primary]}
           />
         }
@@ -122,6 +124,20 @@ export default function EarningsScreen() {
                 </AppText>
               </Card>
             </View>
+
+            {balance.data && balance.data.owed > 0 ? (
+              <Card>
+                <AppText variant="caption" color="textSecondary">
+                  {t('earnings.owed')}
+                </AppText>
+                <AppText variant="h2">
+                  {formatSum(balance.data.owed)} {t('common.sum')}
+                </AppText>
+                <AppText variant="caption" color="textMuted">
+                  {t('earnings.owedNote')}
+                </AppText>
+              </Card>
+            ) : null}
 
             <View style={styles.commission}>
               <Info size={22} color={colors.goldText} strokeWidth={2} />

@@ -44,7 +44,12 @@
     "CHAT_CLOSED": "Bu ish tugaganiga ko'p bo'ldi, chat yopilgan.",
     "CALLS_DISABLED": "Ilova ichidagi qo'ng'iroq hozir ishlamayapti. Oddiy qo'ng'iroq qiling.",
     "JOB_NOT_ACTIVE": "Ish tugagan yoki bekor qilingan.",
-    "CALL_NOT_RINGING": "Qo'ng'iroq allaqachon tugagan."
+    "CALL_NOT_RINGING": "Qo'ng'iroq allaqachon tugagan.",
+    "ONLINE_PAYMENTS_DISABLED": "Onlayn to'lov hozircha yoqilmagan. Naqd pul bilan to'lang.",
+    "PAYMENT_LOCKED": "Pul allaqachon ushlab turilibdi, to'lov usulini o'zgartirib bo'lmaydi.",
+    "PARTS_TOO_EXPENSIVE": "Ehtiyot qism summasi umumiy narxdan oshmasligi kerak.",
+    "RECEIPT_NOT_PENDING": "Bu chekka allaqachon javob berilgan.",
+    "NOTHING_TO_CONFIRM": "Tasdiqlanadigan to'lov yo'q."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -132,7 +137,9 @@
     "eta60": "1 soat",
     "eta120": "2 soat",
     "eta240": "4 soat",
-    "etaOther": "Boshqa"
+    "etaOther": "Boshqa",
+    "partsLabel": "Shundan ehtiyot qism (ixtiyoriy)",
+    "partsPlaceholder": "Masalan, 40 000"
   },
   "settings": {
     "title": "Sozlamalar",
@@ -525,7 +532,9 @@
       "fri": "Ju",
       "sat": "Sh",
       "sun": "Ya"
-    }
+    },
+    "owed": "Komissiya qarzi (naqd ishlardan)",
+    "owedNote": "Operator bilan bog'lanib to'laysiz. Har bir ish Ishlarim bo'limida ko'rinadi."
   },
   "chat": {
     "placeholder": "Xabar yozing",
@@ -572,5 +581,80 @@
     "answer": "Javob berish",
     "decline": "Rad etish",
     "fallback": "Ovoz yomonmi? Oddiy qo'ng'iroqqa o'tish"
+  },
+  "payment": {
+    "title": "To'lov",
+    "safeTitle": "Pulingiz xavfsiz",
+    "step1": "Siz to'laysiz, pul ustaga emas, xavfsiz hisobda ushlab turiladi",
+    "step2": "Usta ishni bajaradi",
+    "step3": "Siz \"Ish bajarildi\" deb tasdiqlaysiz, shundan keyingina pul ustaga o'tadi",
+    "labor": "Ish haqi",
+    "partsEstimate": "Ehtiyot qism (taxminiy)",
+    "total": "Jami",
+    "method": "To'lov usuli",
+    "methods": {
+      "CLICK": "Click",
+      "PAYME": "Payme",
+      "CASH": "Naqd pul"
+    },
+    "onlineNote": "Pul himoyalangan",
+    "cashNote": "Ustaga ish tugagach",
+    "soon": "Tez orada",
+    "onlineLater": "Click va Payme orqali himoyalangan to'lov tez orada qo'shiladi. Hozircha ustaga ish tugagach naqd to'laysiz.",
+    "continueCash": "Naqd to'lash bilan davom etish",
+    "payOnline": "{{price}} so'm to'lash",
+    "change": "To'lov usulini o'zgartirish"
+  },
+  "paymentStatus": {
+    "CASH": "Naqd pul: ish tugagach ustaga",
+    "PENDING": "To'lov kutilmoqda",
+    "HELD": "Mijoz to'ladi, pul xavfsiz ushlab turilibdi",
+    "FROZEN": "Muammo ko'rib chiqilmoqda, pul muzlatilgan",
+    "RELEASED": "Pul ustaga o'tkazildi",
+    "REFUNDED": "Pul mijozga qaytarildi",
+    "CANCELLED": "To'lov bekor qilindi"
+  },
+  "confirm": {
+    "open": "Ish yaxshi bajarildimi?",
+    "masterSaysDone": "{{name}} ishni tugatganini aytdi",
+    "question": "Ish yaxshi bajarildimi?",
+    "held": "Ushlab turilgan pul",
+    "receipt": "Ehtiyot qism cheki",
+    "receiptPaid": "{{description}} · {{amount}} so'm. Bu summa ustaga allaqachon o'tkazildi.",
+    "autoRelease": "Javob bermasangiz, {{count}} soatdan keyin pul ustaga avtomatik o'tadi.",
+    "yes": "Ha, pulni ustaga o'tkazish",
+    "no": "Yo'q, muammo bor",
+    "frozen": "Muammo haqida xabaringiz qabul qilindi. Masala hal bo'lmaguncha pul hech kimga o'tmaydi.",
+    "alreadyReleased": "Pul ustaga o'tkazilgan. Rahmat!",
+    "nothingToConfirm": "Hozir tasdiqlash kerak bo'lgan to'lov yo'q."
+  },
+  "receipts": {
+    "add": "Ehtiyot qism chekini qo'shish",
+    "addMore": "Yana chek qo'shish",
+    "photo": "Chek rasmi",
+    "takePhoto": "Chekni rasmga olish",
+    "retake": "Qayta rasmga olish",
+    "description": "Nima sotib olindi",
+    "descriptionPlaceholder": "Masalan, kran aralashtirgich",
+    "amount": "Summa (so'm)",
+    "send": "Chekni yuborish",
+    "invalid": "Chek rasmi, nomi va summasini kiriting.",
+    "approve": "Tasdiqlash",
+    "reject": "Rad etish",
+    "approved": "TASDIQLANGAN",
+    "status": {
+      "PENDING": "MIJOZ TASDIG'IDA",
+      "APPROVED": "TASDIQLANGAN",
+      "REJECTED": "RAD ETILGAN"
+    }
+  },
+  "payout": {
+    "sameDay": "Ish tasdiqlangach bugunoq kartangizga tushadi (komissiyadan keyin)",
+    "labor": "Ish haqi",
+    "parts": "Ehtiyot qism",
+    "commission": "Komissiya ({{percent}}%)",
+    "youGet": "Sizga tushadi",
+    "cashCommissionNote": "Naqd ishda komissiya balansingizga yoziladi, keyin to'laysiz.",
+    "freeMonths": "Hozir komissiyasiz davr: ishning hammasi sizniki."
   }
 }

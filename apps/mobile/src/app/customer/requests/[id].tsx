@@ -56,7 +56,8 @@ export default function RequestDetailScreen() {
 
   function choose(offerId: string) {
     acceptOffer.mutate(offerId, {
-      onSuccess: (job) => router.replace({ pathname: '/jobs/[id]', params: { id: job.id } }),
+      onSuccess: (job) =>
+        router.replace({ pathname: '/payment/[jobId]', params: { jobId: job.id } }),
     });
   }
 

@@ -176,7 +176,7 @@ export default function MasterPageScreen() {
               acceptOffer.mutate(offer.id, {
                 onSuccess: (job) => {
                   router.dismissAll();
-                  router.push({ pathname: '/jobs/[id]', params: { id: job.id } });
+                  router.push({ pathname: '/payment/[jobId]', params: { jobId: job.id } });
                 },
               })
             }
