@@ -4,11 +4,10 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M4 Master side — restyle MasterFeed and MasterOffer from the design.**
+**Phone test of M1–M4 (2026-11-23), then M5 Jobs: restyle Offers, MasterProfile, JobStatus.**
 
-M3 done (2026-11-21): NewRequest in 3 sections (NewRequest.html), AddressMap with a center pin,
-address search, my-location, landmark/apartment/floor (AddressMap.html), new PhotoPicker,
-voice recorder and voice player.
+M4 done (2026-11-23): MasterFeed.html (availability card with trades and districts, feed cards with
+voice + photo, pull to refresh, master tab bar), MasterOffer.html (big price field, ETA chips, message).
 
 ## Status by milestone
 
@@ -33,6 +32,9 @@ voice recorder and voice player.
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: Feed cards show the district, not the distance in km: the exact address stays hidden until the offer is accepted. Distance needs the master's live location (Phase 2).
+- 2026-11-23: Master tab bar: Orders, My jobs, Settings. The "Earnings" tab (MasterFeed.html) replaces Settings in M6.
 
 - 2026-11-21: Maps stay on the Yandex **JavaScript API in a WebView** (works in Expo Go). DESIGN.md mentions Yandex MapKit (native SDK); switch when we move to the dev build (M6.5), the screen layout stays the same.
 - 2026-11-21: Apartment and floor are added to the address line sent to the API (no new DB fields).

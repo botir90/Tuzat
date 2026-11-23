@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { formatSum } from '@usta/shared';
 import { useJobs } from '@/api/jobs';
-import { BigButton } from '@/components/BigButton';
+import { useAuth } from '@/auth/store';
 import { ListItem } from '@/components/ListItem';
 import { Notice } from '@/components/Notice';
 import { QueryState } from '@/components/QueryState';
@@ -15,14 +15,10 @@ export default function JobsScreen() {
   const { t } = useTranslation();
   const localized = useLocalized();
   const jobs = useJobs();
+  const mode = useAuth((st) => st.mode);
 
   return (
-    <Screen
-      title={t('jobs.myJobs')}
-      footer={
-        <BigButton label={t('common.back')} variant="outline" onPress={() => router.back()} />
-      }
-    >
+    <Screen title={t('jobs.myJobs')} tabBar={mode === 'MASTER' ? 'jobs' : 'orders'}>
       <QueryState
         isLoading={jobs.isLoading}
         error={jobs.error}

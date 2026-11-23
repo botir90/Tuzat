@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors, spacing } from '@/theme';
 import { AppText } from './AppText';
 import { ScreenHeader } from './ScreenHeader';
-import { TabBar, type CustomerTab } from './TabBar';
+import { TabBar, type TabId } from './TabBar';
 
 interface ScreenProps {
   title?: string;
@@ -14,8 +14,8 @@ interface ScreenProps {
   footer?: ReactNode;
   /** Show the design's round back button next to the title. */
   back?: boolean;
-  /** Show the customer tab bar at the bottom with this tab active. */
-  tabBar?: CustomerTab;
+  /** Show the bottom tab bar (customer or master set) with this tab active. */
+  tabBar?: TabId;
 }
 
 /** Common screen layout: safe area, warm background, scrolling, keyboard handling, title. */

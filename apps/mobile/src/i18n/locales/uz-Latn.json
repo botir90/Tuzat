@@ -6,7 +6,8 @@
     "settings": "Sozlamalar",
     "loading": "Yuklanmoqda…",
     "refresh": "Yangilash",
-    "cancel": "Bekor qilish"
+    "cancel": "Bekor qilish",
+    "sum": "so'm"
   },
   "errors": {
     "NETWORK_ERROR": "Internet aloqasi yo'q yoki server javob bermayapti. Aloqani tekshirib, qayta urinib ko'ring.",
@@ -117,7 +118,17 @@
     "messagePlaceholder": "Masalan: kerakli ehtiyot qismlar o'zimda bor",
     "sendOffer": "Taklif yuborish",
     "withdraw": "Taklifni qaytarib olish",
-    "yourOffer": "Sizning taklifingiz: {{price}} so'm, {{time}}. Holati: {{status}}."
+    "yourOffer": "Sizning taklifingiz: {{price}} so'm, {{time}}. Holati: {{status}}.",
+    "feedTitle": "Yangi buyurtmalar",
+    "offerScreenTitle": "Taklif yuborish",
+    "offerSentButton": "Taklifingiz: {{price}} · {{status}}",
+    "offerFreeNote": "Taklif yuborish bepul. Komissiya faqat bajarilgan ishdan olinadi.",
+    "eta15": "15 daq",
+    "eta30": "30 daq",
+    "eta60": "1 soat",
+    "eta120": "2 soat",
+    "eta240": "4 soat",
+    "etaOther": "Boshqa"
   },
   "settings": {
     "title": "Sozlamalar",
@@ -415,7 +426,10 @@
   "tabs": {
     "home": "Asosiy",
     "orders": "Buyurtmalar",
-    "profile": "Profil"
+    "profile": "Profil",
+    "feed": "Buyurtmalar",
+    "myJobs": "Ishlarim",
+    "settings": "Sozlamalar"
   },
   "services": {
     "title": "Barcha xizmatlar",
@@ -423,5 +437,11 @@
     "nothingFound": "Hech narsa topilmadi. Boshqacha yozib ko'ring yoki pastdagi tugmani bosing.",
     "notFoundTitle": "Kerakli usta topilmadimi?",
     "notFoundText": "Muammoni yozing yoki ayting, mos ustani o'zimiz topamiz"
+  },
+  "time": {
+    "justNow": "Hozirgina",
+    "minutesAgo": "{{count}} daqiqa oldin",
+    "hoursAgo": "{{count}} soat oldin",
+    "daysAgo": "{{count}} kun oldin"
   }
 }
