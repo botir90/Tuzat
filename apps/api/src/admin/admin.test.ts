@@ -347,7 +347,7 @@ describe('admin', () => {
         method: 'POST',
         url: `/jobs/${s.jobId}/complaints`,
         headers: s.master.auth,
-        payload: { text: "Mijoz to'lovni kechiktirdi" },
+        payload: { reason: 'OTHER', text: "Mijoz to'lovni kechiktirdi" },
       });
 
       const requests = await t.app.inject({ method: 'GET', url: '/admin/requests', headers: auth });

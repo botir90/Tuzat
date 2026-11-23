@@ -74,3 +74,29 @@ export const pushTokenBodySchema = z.object({
   platform: z.enum(['android', 'ios']),
 });
 export type PushTokenBody = z.infer<typeof pushTokenBodySchema>;
+
+// ---------- Earnings (design/screens/MasterEarnings.html) ----------
+
+export const masterEarningsDtoSchema = z.object({
+  week: z.object({
+    total: z.number().int(),
+    jobs: z.number().int(),
+    /** Monday … Sunday of the current week (Tashkent time), sum per day. */
+    days: z.array(z.number().int()).length(7),
+    /** 0 = Monday … 6 = Sunday. */
+    todayIndex: z.number().int().min(0).max(6),
+  }),
+  month: z.object({ total: z.number().int(), jobs: z.number().int() }),
+  ratingAvg: z.number(),
+  ratingCount: z.number().int(),
+  recent: z.array(
+    z.object({
+      jobId: z.string(),
+      categoryName: localizedTextSchema,
+      doneAt: z.string(),
+      price: z.number().int(),
+      stars: z.number().int().nullable(),
+    }),
+  ),
+});
+export type MasterEarningsDto = z.infer<typeof masterEarningsDtoSchema>;

@@ -19,6 +19,8 @@ export const UPLOAD_KINDS = [
   'master-photo',
   'master-work',
   'review-photo',
+  'complaint-photo',
+  'complaint-voice',
 ] as const;
 export type UploadKind = (typeof UPLOAD_KINDS)[number];
 
@@ -41,6 +43,14 @@ export const UPLOAD_RULES: Record<
   'review-photo': {
     contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
     maxBytes: 5 * 1024 * 1024,
+  },
+  'complaint-photo': {
+    contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxBytes: 5 * 1024 * 1024,
+  },
+  'complaint-voice': {
+    contentTypes: ['audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'audio/mpeg'],
+    maxBytes: 10 * 1024 * 1024,
   },
   'request-voice': {
     contentTypes: ['audio/mp4', 'audio/m4a', 'audio/x-m4a', 'audio/aac', 'audio/mpeg'],

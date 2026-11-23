@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jobDtoSchema, masterPublicDtoSchema } from '@usta/shared';
+import { jobDtoSchema, masterEarningsDtoSchema, masterPublicDtoSchema } from '@usta/shared';
 import { createJob } from '../../test/fixtures';
 import { bearer, login, useTestApp } from '../../test/helpers';
 
@@ -12,11 +12,20 @@ describe('trust', () => {
   describe('reviews', () => {
     it('the customer reviews a finished job and the master rating updates', async () => {
       const s = await createJob(t);
-      const res = await review(s.jobId, s.customerAuth, { stars: 4, comment: 'Yaxshi ishladi' });
+      const res = await review(s.jobId, s.customerAuth, {
+        stars: 4,
+        comment: 'Yaxshi ishladi',
+        tags: ['ON_TIME', 'CLEAN', 'ON_TIME'],
+      });
 
       expect(res.statusCode).toBe(201);
       const job = jobDtoSchema.parse(res.json());
-      expect(job.review).toMatchObject({ stars: 4, comment: 'Yaxshi ishladi' });
+      // A tag ticked twice is stored once.
+      expect(job.review).toMatchObject({
+        stars: 4,
+        comment: 'Yaxshi ishladi',
+        tags: ['ON_TIME', 'CLEAN'],
+      });
       expect(job.canReview).toBe(false);
 
       const profile = await t.ctx.prisma.masterProfile.findUniqueOrThrow({
@@ -127,6 +136,34 @@ describe('trust', () => {
     });
   });
 
+  describe('master earnings', () => {
+    it('counts finished jobs of this week and month, with the latest first', async () => {
+      const s = await createJob(t);
+      await review(s.jobId, s.customerAuth, { stars: 5 });
+      const res = await t.app.inject({
+        method: 'GET',
+        url: '/master/earnings',
+        headers: s.master.auth,
+      });
+      const body = masterEarningsDtoSchema.parse(res.json());
+      expect(body.week.jobs).toBe(1);
+      expect(body.week.total).toBeGreaterThan(0);
+      expect(body.week.days.reduce((a, b) => a + b, 0)).toBe(body.week.total);
+      expect(body.month.total).toBe(body.week.total);
+      expect(body.recent[0]).toMatchObject({ jobId: s.jobId, stars: 5 });
+    });
+
+    it('is only for masters', async () => {
+      const s = await createJob(t);
+      const res = await t.app.inject({
+        method: 'GET',
+        url: '/master/earnings',
+        headers: s.customerAuth,
+      });
+      expect(res.statusCode).toBe(403);
+    });
+  });
+
   describe('complaints', () => {
     const complain = (
       jobId: string,
@@ -137,7 +174,7 @@ describe('trust', () => {
         method: 'POST',
         url: `/jobs/${jobId}/complaints`,
         headers,
-        payload: { text },
+        payload: { reason: 'OTHER', text },
       });
 
     it('both sides can complain and see their own complaints', async () => {
@@ -169,9 +206,17 @@ describe('trust', () => {
       expect(res.statusCode).toBe(404);
     });
 
-    it('validates the text', async () => {
+    it('"Other" needs a description; a listed reason does not', async () => {
       const s = await createJob(t);
       expect((await complain(s.jobId, s.customerAuth, 'abc')).statusCode).toBe(400);
+      const notFixed = await t.app.inject({
+        method: 'POST',
+        url: `/jobs/${s.jobId}/complaints`,
+        headers: s.customerAuth,
+        payload: { reason: 'NOT_FIXED' },
+      });
+      expect(notFixed.statusCode).toBe(201);
+      expect(notFixed.json()).toMatchObject({ reason: 'NOT_FIXED', text: '' });
     });
   });
 });

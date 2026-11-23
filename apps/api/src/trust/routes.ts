@@ -86,6 +86,8 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
             stars: body.stars,
             comment: body.comment || null,
             photoKeys: body.photoKeys,
+            // A tag ticked twice is stored once.
+            tags: [...new Set(body.tags)],
             createdAt: ctx.now(),
           },
         });
@@ -202,8 +204,12 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
   app.post('/jobs/:id/complaints', async (request, reply) => {
     const user = await requireUser(ctx, request);
     const { id } = idParams.parse(request.params);
-    const { text } = createComplaintSchema.parse(request.body);
+    const body = createComplaintSchema.parse(request.body);
     await loadJob(id, user);
+    await Promise.all([
+      ...body.photoKeys.map((key) => assertUpload(storage, user.id, 'complaint-photo', key)),
+      ...(body.voiceKey ? [assertUpload(storage, user.id, 'complaint-voice', body.voiceKey)] : []),
+    ]);
 
     const open = await prisma.complaint.count({
       where: { jobId: id, fromUserId: user.id, status: 'OPEN' },
@@ -211,7 +217,15 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
     if (open >= MAX_OPEN_COMPLAINTS_PER_JOB) throw new AppError('CONFLICT', 409);
 
     const complaint = await prisma.complaint.create({
-      data: { jobId: id, fromUserId: user.id, text, createdAt: ctx.now() },
+      data: {
+        jobId: id,
+        fromUserId: user.id,
+        reason: body.reason,
+        text: body.text,
+        photoKeys: body.photoKeys,
+        voiceKey: body.voiceKey ?? null,
+        createdAt: ctx.now(),
+      },
     });
     return reply.code(201).send(toComplaintDto(complaint));
   });

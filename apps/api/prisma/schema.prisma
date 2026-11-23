@@ -359,6 +359,8 @@ model Review {
   stars      Int
   comment    String?
   photoKeys  String[]
+  /// REVIEW_TAGS from @usta/shared ("on time", "clean", ...).
+  tags       String[] @default([])
   createdAt  DateTime @default(now())
 
   @@index([masterId, createdAt])
@@ -397,7 +399,11 @@ model Complaint {
   job        Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
   fromUserId String
   fromUser   User            @relation("ComplaintsSent", fields: [fromUserId], references: [id], onDelete: Cascade)
+  /// COMPLAINT_REASONS from @usta/shared; null for complaints sent before reasons existed.
+  reason     String?
   text       String
+  photoKeys  String[]        @default([])
+  voiceKey   String?
   status     ComplaintStatus @default(OPEN)
   adminNote  String?
   createdAt  DateTime        @default(now())

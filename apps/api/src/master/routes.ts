@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import {
+  type MasterEarningsDto,
   MAX_OFFERS_PER_REQUEST,
   availabilityBodySchema,
   createOfferSchema,
@@ -22,9 +23,12 @@ import { expireOldRequests } from '../requests/expire';
 import { publicStorageEndpoint } from '../storage/public-endpoint';
 import { assertUpload } from '../storage/uploads';
 import { profileInclude, toMasterProfileDto, toOfferDto } from './dto';
+import { dayIndex, monthStart, sumByDay, weekStart } from './earnings';
 
 const idParams = z.object({ id: z.string().min(1) });
 /** Offers that count towards the 5-per-request limit. */
+/** Finished jobs listed on the earnings screen. */
+const RECENT_EARNINGS_JOBS = 10;
 const ACTIVE_OFFER_STATUSES = ['SENT', 'ACCEPTED'] as const;
 
 export function registerMasterRoutes(app: FastifyInstance, ctx: AppContext): void {
@@ -103,6 +107,59 @@ export function registerMasterRoutes(app: FastifyInstance, ctx: AppContext): voi
   }
 
   // ---------- Profile ----------
+
+  /**
+   * Earnings screen: this week (per day), this month, rating and the last finished jobs.
+   * Money = the final price of DONE jobs (cash goes straight to the master for now).
+   */
+  app.get('/master/earnings', async (request): Promise<MasterEarningsDto> => {
+    const user = await requireMaster(request);
+    const now = ctx.now();
+    const week = weekStart(now);
+    const month = monthStart(now);
+    const from = week < month ? week : month;
+
+    const [periodJobs, recentJobs, profile] = await Promise.all([
+      prisma.job.findMany({
+        where: { masterId: user.id, status: 'DONE', doneAt: { gte: from } },
+        select: { doneAt: true, finalPrice: true, agreedPrice: true },
+      }),
+      prisma.job.findMany({
+        where: { masterId: user.id, status: 'DONE' },
+        orderBy: { doneAt: 'desc' },
+        take: RECENT_EARNINGS_JOBS,
+        include: { request: { include: { category: true } }, review: true },
+      }),
+      prisma.masterProfile.findUnique({ where: { userId: user.id } }),
+    ]);
+
+    const done = periodJobs.map((j) => ({
+      doneAt: j.doneAt ?? now,
+      price: j.finalPrice ?? j.agreedPrice,
+    }));
+    const inWeek = done.filter((j) => j.doneAt >= week);
+    const inMonth = done.filter((j) => j.doneAt >= month);
+    const sum = (list: { price: number }[]) => list.reduce((total, j) => total + j.price, 0);
+
+    return {
+      week: {
+        total: sum(inWeek),
+        jobs: inWeek.length,
+        days: sumByDay(inWeek, week),
+        todayIndex: dayIndex(now),
+      },
+      month: { total: sum(inMonth), jobs: inMonth.length },
+      ratingAvg: profile?.ratingAvg ?? 0,
+      ratingCount: profile?.ratingCount ?? 0,
+      recent: recentJobs.map((j) => ({
+        jobId: j.id,
+        categoryName: names(j.request.category),
+        doneAt: (j.doneAt ?? now).toISOString(),
+        price: j.finalPrice ?? j.agreedPrice,
+        stars: j.review?.stars ?? null,
+      })),
+    };
+  });
 
   app.get('/master/profile', async (request): Promise<MasterProfileDto> => {
     const user = await requireMaster(request);

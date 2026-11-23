@@ -8,10 +8,15 @@ export const COMPLAINT_STATUSES = ['OPEN', 'RESOLVED'] as const;
 
 // ---------- Reviews ----------
 
+/** Quick praise the customer can tick (design/screens/Review.html). */
+export const REVIEW_TAGS = ['ON_TIME', 'CLEAN', 'POLITE', 'FAIR_PRICE', 'FAST'] as const;
+export type ReviewTag = (typeof REVIEW_TAGS)[number];
+
 export const createReviewSchema = z.object({
   stars: z.number().int().min(1).max(5),
   comment: z.string().trim().max(1000).optional(),
   photoKeys: z.array(z.string().min(1)).max(MAX_REVIEW_PHOTOS).default([]),
+  tags: z.array(z.enum(REVIEW_TAGS)).max(REVIEW_TAGS.length).default([]),
 });
 export type CreateReviewBody = z.input<typeof createReviewSchema>;
 
@@ -19,6 +24,7 @@ export const reviewDtoSchema = z.object({
   id: z.string(),
   stars: z.number().int(),
   comment: z.string().nullable(),
+  tags: z.array(z.enum(REVIEW_TAGS)),
   photoUrls: z.array(z.string()),
   /** Short form for privacy, e.g. "Botir Q.". */
   customerName: z.string().nullable(),
@@ -70,13 +76,36 @@ export type GuaranteeClaimDto = z.infer<typeof guaranteeClaimDtoSchema>;
 
 // ---------- Complaints ----------
 
-export const createComplaintSchema = z.object({
-  text: z.string().trim().min(5).max(2000),
-});
-export type CreateComplaintBody = z.infer<typeof createComplaintSchema>;
+/** What went wrong (design/screens/Dispute.html). */
+export const COMPLAINT_REASONS = [
+  'NOT_FIXED',
+  'POOR_QUALITY',
+  'ASKED_MORE_MONEY',
+  'OTHER',
+] as const;
+export type ComplaintReason = (typeof COMPLAINT_REASONS)[number];
+export const MAX_COMPLAINT_PHOTOS = 5;
+
+export const createComplaintSchema = z
+  .object({
+    reason: z.enum(COMPLAINT_REASONS),
+    text: z.string().trim().max(2000).default(''),
+    photoKeys: z.array(z.string().min(1)).max(MAX_COMPLAINT_PHOTOS).default([]),
+    voiceKey: z.string().min(1).optional(),
+  })
+  // 'Other' needs words, a photo or a voice message.
+  .refine(
+    (v) => v.reason !== 'OTHER' || v.text.length >= 5 || v.photoKeys.length > 0 || v.voiceKey,
+    {
+      message: 'DESCRIBE_REQUIRED',
+      path: ['text'],
+    },
+  );
+export type CreateComplaintBody = z.input<typeof createComplaintSchema>;
 
 export const complaintDtoSchema = z.object({
   id: z.string(),
+  reason: z.enum(COMPLAINT_REASONS).nullable(),
   text: z.string(),
   status: z.enum(COMPLAINT_STATUSES),
   adminNote: z.string().nullable(),

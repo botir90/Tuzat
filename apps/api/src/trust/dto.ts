@@ -1,3 +1,4 @@
+import { COMPLAINT_REASONS, REVIEW_TAGS, type ComplaintReason, type ReviewTag } from '@usta/shared';
 import { shortName, type ComplaintDto, type GuaranteeClaimDto, type ReviewDto } from '@usta/shared';
 import { names } from '../catalog/dto';
 import type { Category, Complaint, GuaranteeClaim, Review, User } from '../generated/prisma/client';
@@ -23,6 +24,9 @@ export async function toReviewDto(
     id: review.id,
     stars: review.stars,
     comment: review.comment,
+    tags: review.tags.filter((tag): tag is ReviewTag =>
+      (REVIEW_TAGS as readonly string[]).includes(tag),
+    ),
     photoUrls: await Promise.all(
       review.photoKeys.map((key) => storage.presignDownload(key, publicEndpoint)),
     ),
@@ -43,6 +47,9 @@ export const toClaimDto = (claim: GuaranteeClaim): GuaranteeClaimDto => ({
 
 export const toComplaintDto = (complaint: Complaint): ComplaintDto => ({
   id: complaint.id,
+  reason: (COMPLAINT_REASONS as readonly (string | null)[]).includes(complaint.reason)
+    ? (complaint.reason as ComplaintReason)
+    : null,
   text: complaint.text,
   status: complaint.status,
   adminNote: complaint.adminNote,
