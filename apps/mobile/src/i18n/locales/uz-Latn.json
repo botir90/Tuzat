@@ -287,7 +287,19 @@
     "jobsDone": "{{count}} ta ish bajargan",
     "verified": "Tekshirilgan usta",
     "master": "Usta",
-    "viewMaster": "Sharhlar va ishlarini ko'rish"
+    "viewMaster": "Sharhlar va ishlarini ko'rish",
+    "countTitle": "{{count}} ta usta taklif berdi",
+    "moreMayCome": "Yana takliflar kelishi mumkin",
+    "waitingTitle": "Takliflar kutilmoqda",
+    "viewMasterNamed": "{{name}}: profil va sharhlar",
+    "new": "Yangi",
+    "stats": "{{jobs}} ta ish · {{reviews}} ta sharh",
+    "priceLabel": "Narx",
+    "arrivesLabel": "Keladi",
+    "arriveNow": "Hozir",
+    "inMinutes": "{{count}} daqiqa",
+    "inHours": "{{count}} soat",
+    "inHoursMinutes": "{{hours}} soat {{minutes}} daq"
   },
   "jobStatus": {
     "ACCEPTED": "Qabul qilindi",
@@ -345,7 +357,8 @@
     "decline": "Rad etaman",
     "cancel": "Ishni bekor qilish",
     "cancelledByMe": "Siz ishni bekor qildingiz.",
-    "cancelledByOther": "Ish ikkinchi tomon tomonidan bekor qilindi."
+    "cancelledByOther": "Ish ikkinchi tomon tomonidan bekor qilindi.",
+    "agreedPrice": "Kelishilgan narx:"
   },
   "map": {
     "pickOnMap": "Xaritada belgilash",
@@ -421,7 +434,16 @@
     "title": "Usta haqida",
     "workPhotos": "Bajargan ishlari",
     "reviews": "Sharhlar ({{count}})",
-    "noReviews": "Hali sharhlar yo'q."
+    "noReviews": "Hali sharhlar yo'q.",
+    "rating": "reyting",
+    "jobsDone": "bajarilgan ish",
+    "reviewsCount": "sharh",
+    "about": "O'zi haqida",
+    "prices": "Narxlar",
+    "photosCount": "{{count}} ta rasm",
+    "reviewsTitle": "Sharhlar",
+    "onlyReal": "{{count}} ta, faqat haqiqiy mijozlardan",
+    "chooseFor": "Tanlash · {{price}} so'm"
   },
   "tabs": {
     "home": "Asosiy",
@@ -443,5 +465,17 @@
     "minutesAgo": "{{count}} daqiqa oldin",
     "hoursAgo": "{{count}} soat oldin",
     "daysAgo": "{{count}} kun oldin"
+  },
+  "badges": {
+    "top": "TOP USTA",
+    "verified": "Tekshirilgan",
+    "onTime": "Vaqtida keladi"
+  },
+  "timeline": {
+    "ACCEPTED": "Usta qabul qildi",
+    "ON_THE_WAY": "Usta yo'lda",
+    "IN_PROGRESS": "Ish boshlandi",
+    "DONE": "Ish tugadi, baho qo'ying",
+    "now": "Hozir"
   }
 }

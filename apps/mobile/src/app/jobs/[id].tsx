@@ -1,28 +1,33 @@
 import { router, useLocalSearchParams } from 'expo-router';
+import { ChevronLeft, MapPin, Phone } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { formatSum, formatUzPhone, type JobDto } from '@usta/shared';
 import { errorMessage } from '@/api/errors';
 import { useAnswerPrice, useCancelJob, useJob, useJobStatus, useProposePrice } from '@/api/jobs';
-import { BigButton } from '@/components/BigButton';
+import { AppText } from '@/components/AppText';
+import { Avatar } from '@/components/Avatar';
+import { PrimaryButton, SecondaryButton } from '@/components/buttons';
+import { Card } from '@/components/Card';
 import { Chips } from '@/components/Chips';
-import { MasterInfo } from '@/components/MasterInfo';
 import { Notice } from '@/components/Notice';
 import { QueryState } from '@/components/QueryState';
 import { ReviewCard } from '@/components/ReviewCard';
-import { Screen } from '@/components/Screen';
-import { StatusSteps } from '@/components/StatusSteps';
+import { ScreenHeader } from '@/components/ScreenHeader';
+import { StatusTimeline } from '@/components/StatusTimeline';
 import { TextField } from '@/components/TextField';
 import { useLocalized } from '@/i18n/useLocalized';
 import { callPhone, googleMapsUrl, yandexMapsUrl } from '@/jobs/links';
-import { describeDesiredTime } from '@/requests/describe';
 import { formatDateTime } from '@/requests/schedule';
-import { colors, fontSize, spacing } from '@/theme';
+import { colors, fonts, radius, spacing } from '@/theme';
 
 const ETA_OPTIONS = ['10', '20', '30', '60'] as const;
 
-/** One screen for both sides: what is happening now, what happens next, and the actions. */
+const goBack = () => (router.canGoBack() ? router.back() : router.replace('/'));
+
+/** One screen for both sides (design/screens/JobStatus.html): now, next, and the actions. */
 export default function JobScreen() {
   const { t } = useTranslation();
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -30,19 +35,32 @@ export default function JobScreen() {
 
   if (!job.data) {
     return (
-      <Screen title={t('jobs.title')}>
-        <QueryState
-          isLoading={job.isLoading}
-          error={job.error}
-          onRetry={() => void job.refetch()}
-        />
-      </Screen>
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.content}>
+          <ScreenHeader title={t('jobs.title')} onBack={goBack} />
+          <QueryState
+            isLoading={job.isLoading}
+            error={job.error}
+            onRetry={() => void job.refetch()}
+          />
+        </View>
+      </SafeAreaView>
     );
   }
-  return <JobView job={job.data} />;
+  return (
+    <JobView job={job.data} refreshing={job.isRefetching} onRefresh={() => void job.refetch()} />
+  );
 }
 
-function JobView({ job }: { job: JobDto }) {
+function JobView({
+  job,
+  refreshing,
+  onRefresh,
+}: {
+  job: JobDto;
+  refreshing: boolean;
+  onRefresh: () => void;
+}) {
   const { t } = useTranslation();
   const localized = useLocalized();
   const setStatus = useJobStatus(job.id);
@@ -59,12 +77,18 @@ function JobView({ job }: { job: JobDto }) {
   const isMaster = job.myRole === 'MASTER';
   const active = job.status !== 'DONE' && job.status !== 'CANCELLED';
   const canCancel = job.status === 'ACCEPTED' || job.status === 'ON_THE_WAY';
-  const other = isMaster
-    ? { title: t('jobs.customer'), name: job.customer.name, phone: job.customer.phone }
-    : { title: t('jobs.master'), name: job.master.name, phone: job.master.phone };
   const regionName = localized(job.request.region.name);
   const districtName = localized(job.request.district.name);
   const error = setStatus.error ?? cancel.error ?? propose.error ?? answer.error;
+  const price = job.finalPrice ?? job.currentPrice;
+  const other = isMaster
+    ? { id: `c-${job.id}`, name: job.customer.name, photoUrl: null, phone: job.customer.phone }
+    : {
+        id: job.master.id,
+        name: job.master.name,
+        photoUrl: job.master.photoUrl,
+        phone: job.master.phone,
+      };
 
   function submitPriceChange() {
     const amount = Number(newPrice);
@@ -85,272 +109,382 @@ function JobView({ job }: { job: JobDto }) {
     );
   }
 
+  // The one main action of this moment, pinned at the bottom.
+  let mainAction: { label: string; onPress: () => void; disabled?: boolean } | null = null;
+  if (isMaster && job.status === 'ACCEPTED') {
+    mainAction = {
+      label: t('jobs.onTheWay'),
+      onPress: () => setStatus.mutate({ status: 'ON_THE_WAY', etaMinutes: Number(eta) }),
+    };
+  } else if (isMaster && job.status === 'ON_THE_WAY') {
+    mainAction = {
+      label: t('jobs.start'),
+      onPress: () => setStatus.mutate({ status: 'IN_PROGRESS' }),
+    };
+  } else if (job.status === 'IN_PROGRESS') {
+    mainAction = {
+      label: isMaster ? t('jobs.finish') : t('jobs.confirmDone'),
+      onPress: () => setStatus.mutate({ status: 'DONE' }),
+      disabled: Boolean(job.pendingPriceChange),
+    };
+  } else if (job.canReview) {
+    mainAction = {
+      label: t('review.leave'),
+      onPress: () => router.push({ pathname: '/review/[jobId]', params: { jobId: job.id } }),
+    };
+  }
+
   return (
-    <Screen
-      title={localized(job.request.category.name)}
-      subtitle={t(`jobStatusHint.${isMaster ? 'master' : 'customer'}.${job.status}`, {
-        eta: job.onTheWayEtaMinutes ?? '?',
-      })}
-      footer={
-        <BigButton
-          label={t('common.back')}
-          variant="outline"
-          onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))}
-        />
-      }
-    >
-      {error ? <Notice tone="error" text={errorMessage(t, error)} /> : null}
-
-      {/* The customer must answer a price change before anything else. */}
-      {!isMaster && job.pendingPriceChange ? (
-        <View style={styles.box}>
-          <Text style={styles.boxTitle}>{t('jobs.priceChangeTitle')}</Text>
-          <Text style={styles.body}>
-            {t('jobs.priceChangeText', {
-              old: formatSum(job.currentPrice),
-              new: formatSum(job.pendingPriceChange.newPrice),
+    <View style={styles.safe}>
+      {/* Teal header: what is happening now */}
+      <SafeAreaView edges={['top']} style={[styles.hero, !active && styles.heroDone]}>
+        <View style={styles.heroInner}>
+          <Pressable
+            onPress={goBack}
+            accessibilityRole="button"
+            accessibilityLabel={t('common.back')}
+            style={styles.heroBack}
+          >
+            <ChevronLeft size={24} color={colors.onPrimary} strokeWidth={2.2} />
+          </Pressable>
+          <AppText variant="label" style={styles.heroKicker}>
+            {localized(job.request.category.name)}
+          </AppText>
+          <AppText variant="display" color="onPrimary" accessibilityRole="header">
+            {t(`jobStatus.${job.status}`)}
+          </AppText>
+          <AppText style={styles.heroHint}>
+            {t(`jobStatusHint.${isMaster ? 'master' : 'customer'}.${job.status}`, {
+              eta: job.onTheWayEtaMinutes ?? '?',
             })}
-          </Text>
-          <Text style={styles.body}>
-            {t('jobs.reason')}: {job.pendingPriceChange.reason}
-          </Text>
-          <BigButton
-            label={t('jobs.approve')}
-            loading={answer.isPending}
-            onPress={() => answer.mutate({ pcId: job.pendingPriceChange!.id, approve: true })}
-          />
-          <BigButton
-            label={t('jobs.decline')}
-            variant="danger"
-            disabled={answer.isPending}
-            onPress={() => answer.mutate({ pcId: job.pendingPriceChange!.id, approve: false })}
-          />
+          </AppText>
         </View>
-      ) : null}
-      {isMaster && job.pendingPriceChange ? (
-        <Notice
-          tone="warning"
-          text={t('jobs.priceChangeWaiting', { price: formatSum(job.pendingPriceChange.newPrice) })}
-        />
-      ) : null}
+      </SafeAreaView>
 
-      {job.status === 'CANCELLED' ? (
-        <Notice
-          tone="warning"
-          text={job.cancelledByMe ? t('jobs.cancelledByMe') : t('jobs.cancelledByOther')}
-        />
-      ) : (
-        <StatusSteps status={job.status} />
-      )}
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[colors.primary]} />
+        }
+      >
+        {error ? <Notice tone="error" text={errorMessage(t, error)} /> : null}
 
-      <View style={styles.box}>
-        <Text style={styles.label}>{t('jobs.price')}</Text>
-        <Text style={styles.price}>
-          {formatSum(job.finalPrice ?? job.currentPrice)} {t('jobs.som')}
-        </Text>
-        {job.status === 'DONE' ? (
-          <Text style={styles.body}>{isMaster ? t('jobs.collectCash') : t('jobs.payCash')}</Text>
+        {/* The customer must answer a price change before anything else. */}
+        {!isMaster && job.pendingPriceChange ? (
+          <View style={styles.priceChange}>
+            <AppText variant="label" color="urgentText">
+              {t('jobs.priceChangeTitle')}
+            </AppText>
+            <AppText color="urgentText">
+              {t('jobs.priceChangeText', {
+                old: formatSum(job.currentPrice),
+                new: formatSum(job.pendingPriceChange.newPrice),
+              })}
+            </AppText>
+            <AppText variant="caption" color="urgentText">
+              {t('jobs.reason')}: {job.pendingPriceChange.reason}
+            </AppText>
+            <View style={styles.row}>
+              <View style={styles.flex}>
+                <PrimaryButton
+                  label={t('jobs.approve')}
+                  loading={answer.isPending && answer.variables?.approve === true}
+                  disabled={answer.isPending}
+                  onPress={() => answer.mutate({ pcId: job.pendingPriceChange!.id, approve: true })}
+                />
+              </View>
+              <View style={styles.flex}>
+                <SecondaryButton
+                  tall
+                  tone="warm"
+                  label={t('jobs.decline')}
+                  loading={answer.isPending && answer.variables?.approve === false}
+                  disabled={answer.isPending}
+                  onPress={() =>
+                    answer.mutate({ pcId: job.pendingPriceChange!.id, approve: false })
+                  }
+                />
+              </View>
+            </View>
+          </View>
         ) : null}
-        {job.guaranteeUntil ? (
-          <Text style={styles.body}>
-            {t('jobs.guaranteeUntil', { date: formatDateTime(job.guaranteeUntil).split(' ')[0] })}
-          </Text>
+        {isMaster && job.pendingPriceChange ? (
+          <Notice
+            tone="warning"
+            text={t('jobs.priceChangeWaiting', {
+              price: formatSum(job.pendingPriceChange.newPrice),
+            })}
+          />
         ) : null}
-      </View>
 
-      {/* Master's main action: the next status. */}
-      {isMaster && job.status === 'ACCEPTED' ? (
-        <>
-          <Text style={styles.label}>{t('jobs.etaLabel')}</Text>
-          <Chips
-            label={t('jobs.etaLabel')}
-            options={ETA_OPTIONS.map((m) => ({
-              value: m,
-              label: t('jobs.minutes', { count: Number(m) }),
-            }))}
-            value={eta}
-            onChange={setEta}
+        {job.status === 'CANCELLED' ? (
+          <Notice
+            tone="warning"
+            text={job.cancelledByMe ? t('jobs.cancelledByMe') : t('jobs.cancelledByOther')}
           />
-          <BigButton
-            label={t('jobs.onTheWay')}
-            loading={setStatus.isPending}
-            onPress={() => setStatus.mutate({ status: 'ON_THE_WAY', etaMinutes: Number(eta) })}
-          />
-        </>
-      ) : null}
-      {isMaster && (job.status === 'ACCEPTED' || job.status === 'ON_THE_WAY') ? (
-        <BigButton
-          label={t('jobs.start')}
-          variant={job.status === 'ON_THE_WAY' ? 'primary' : 'outline'}
-          loading={setStatus.isPending}
-          onPress={() => setStatus.mutate({ status: 'IN_PROGRESS' })}
-        />
-      ) : null}
-      {job.status === 'IN_PROGRESS' ? (
-        <BigButton
-          label={isMaster ? t('jobs.finish') : t('jobs.confirmDone')}
-          loading={setStatus.isPending}
-          disabled={Boolean(job.pendingPriceChange)}
-          onPress={() => setStatus.mutate({ status: 'DONE' })}
-        />
-      ) : null}
-
-      {/* Contact and address: shared only now that the master is chosen. */}
-      <Text style={styles.label}>{other.title}</Text>
-      {isMaster ? (
-        <Text style={styles.body}>{other.name ?? formatUzPhone(other.phone)}</Text>
-      ) : (
-        <MasterInfo master={job.master} />
-      )}
-      {active ? (
-        <BigButton
-          label={t('jobs.call', { phone: formatUzPhone(other.phone) })}
-          variant="outline"
-          onPress={() => void callPhone(other.phone)}
-        />
-      ) : null}
-
-      <Text style={styles.label}>{t('request.where')}</Text>
-      <Text style={styles.body}>
-        {districtName}, {regionName}
-        {job.request.address ? `\n${job.request.address}` : ''}
-        {job.request.landmark ? `\n${job.request.landmark}` : ''}
-      </Text>
-      {isMaster && active ? (
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <BigButton
-              label="Yandex"
-              variant="outline"
-              onPress={() =>
-                void Linking.openURL(yandexMapsUrl(job.request, regionName, districtName))
-              }
-            />
-          </View>
-          <View style={styles.flex}>
-            <BigButton
-              label="Google"
-              variant="outline"
-              onPress={() =>
-                void Linking.openURL(googleMapsUrl(job.request, regionName, districtName))
-              }
-            />
-          </View>
-        </View>
-      ) : null}
-
-      <Text style={styles.label}>{t('jobs.arrival')}</Text>
-      <Text style={styles.body}>
-        {formatDateTime(job.arrivalAt)} ({describeDesiredTime(t, job.request)})
-      </Text>
-      {job.request.description ? (
-        <>
-          <Text style={styles.label}>{t('request.describe')}</Text>
-          <Text style={styles.body}>{job.request.description}</Text>
-        </>
-      ) : null}
-
-      {/* Master: propose a new price (customer must approve it in the app). */}
-      {isMaster && active && !job.pendingPriceChange ? (
-        showPriceForm ? (
-          <View style={styles.box}>
-            <TextField
-              label={t('jobs.newPrice')}
-              value={newPrice}
-              onChangeText={(text) => setNewPrice(text.replace(/\D/g, ''))}
-              keyboardType="number-pad"
-            />
-            <TextField
-              label={t('jobs.reason')}
-              value={reason}
-              onChangeText={setReason}
-              placeholder={t('jobs.reasonPlaceholder')}
-              maxLength={300}
-            />
-            {formError ? <Notice tone="error" text={formError} /> : null}
-            <BigButton
-              label={t('jobs.sendPriceChange')}
-              loading={propose.isPending}
-              onPress={submitPriceChange}
-            />
-            <BigButton
-              label={t('common.back')}
-              variant="outline"
-              onPress={() => setShowPriceForm(false)}
-            />
-          </View>
         ) : (
-          <BigButton
-            label={t('jobs.changePrice')}
-            variant="outline"
-            onPress={() => setShowPriceForm(true)}
+          <StatusTimeline job={job} />
+        )}
+
+        {/* The other side: name, agreed price, call */}
+        <Card style={styles.person}>
+          <Avatar
+            id={other.id}
+            name={other.name ?? formatUzPhone(other.phone)}
+            photoUrl={other.photoUrl}
+            verified={!isMaster && job.master.verified}
           />
-        )
-      ) : null}
+          <View style={styles.flex}>
+            <AppText variant="bodyStrong">
+              {other.name ?? (isMaster ? t('jobs.customer') : t('offers.master'))}
+            </AppText>
+            <AppText variant="caption" color="textSecondary">
+              {t('jobs.agreedPrice')}{' '}
+              <AppText variant="caption" style={styles.bold}>
+                {formatSum(price)} {t('common.sum')}
+              </AppText>
+            </AppText>
+          </View>
+          {active ? (
+            <Pressable
+              onPress={() => void callPhone(other.phone)}
+              accessibilityRole="button"
+              accessibilityLabel={t('jobs.call', { phone: formatUzPhone(other.phone) })}
+              style={styles.call}
+            >
+              <Phone size={24} color={colors.onPrimary} strokeWidth={2} />
+            </Pressable>
+          ) : null}
+        </Card>
 
-      {/* Trust: review, guarantee and complaints (M6). */}
-      {job.review ? (
-        <>
-          <Text style={styles.label}>{t('review.yourReview')}</Text>
-          <ReviewCard review={job.review} />
-        </>
-      ) : null}
-      {job.canReview ? (
-        <BigButton
-          label={t('review.leave')}
-          onPress={() => router.push({ pathname: '/review/[jobId]', params: { jobId: job.id } })}
-        />
-      ) : null}
-      {job.guaranteeClaims.map((claim) => (
-        <Notice
-          key={claim.id}
-          tone={claim.status === 'OPEN' ? 'warning' : 'info'}
-          text={[
-            `${t('guarantee.claim')}: ${t(`guarantee.status.${claim.status}`)}`,
-            claim.description,
-            claim.adminNote ? `${t('complaint.answer')}: ${claim.adminNote}` : null,
-          ]
-            .filter(Boolean)
-            .join('\n')}
-        />
-      ))}
-      {job.canClaimGuarantee ? (
-        <BigButton
-          label={t('guarantee.button')}
-          variant="outline"
-          onPress={() => router.push({ pathname: '/guarantee/[jobId]', params: { jobId: job.id } })}
-        />
-      ) : null}
-      <BigButton
-        label={t('complaint.button')}
-        variant="outline"
-        onPress={() => router.push({ pathname: '/complaint/[jobId]', params: { jobId: job.id } })}
-      />
+        {/* Money and guarantee once done */}
+        {job.status === 'DONE' ? (
+          <Notice
+            tone="safe"
+            title={`${formatSum(price)} ${t('common.sum')}`}
+            text={[
+              isMaster ? t('jobs.collectCash') : t('jobs.payCash'),
+              job.guaranteeUntil
+                ? t('jobs.guaranteeUntil', {
+                    date: formatDateTime(job.guaranteeUntil).split(' ')[0],
+                  })
+                : null,
+            ]
+              .filter(Boolean)
+              .join('\n')}
+          />
+        ) : null}
 
-      {canCancel ? (
-        <BigButton
-          label={t('jobs.cancel')}
-          variant="danger"
-          loading={cancel.isPending}
-          onPress={() => cancel.mutate(undefined)}
+        {/* Address (both sides see it now) */}
+        <Card style={styles.address}>
+          <View style={styles.addressRow}>
+            <MapPin size={22} color={colors.primary} strokeWidth={2} />
+            <View style={styles.flex}>
+              <AppText style={styles.semibold}>
+                {job.request.address ?? `${districtName}, ${regionName}`}
+              </AppText>
+              <AppText variant="caption" color="textMuted">
+                {[job.request.landmark, districtName].filter(Boolean).join(' · ')}
+              </AppText>
+            </View>
+          </View>
+          {isMaster && active ? (
+            <View style={styles.row}>
+              <View style={styles.flex}>
+                <SecondaryButton
+                  label="Yandex"
+                  onPress={() =>
+                    void Linking.openURL(yandexMapsUrl(job.request, regionName, districtName))
+                  }
+                />
+              </View>
+              <View style={styles.flex}>
+                <SecondaryButton
+                  label="Google"
+                  onPress={() =>
+                    void Linking.openURL(googleMapsUrl(job.request, regionName, districtName))
+                  }
+                />
+              </View>
+            </View>
+          ) : null}
+          <AppText variant="caption" color="textSecondary">
+            {t('jobs.arrival')}: {formatDateTime(job.arrivalAt)}
+          </AppText>
+          {job.request.description ? (
+            <AppText variant="caption" color="textSecondary">
+              {job.request.description}
+            </AppText>
+          ) : null}
+        </Card>
+
+        {/* Master: how soon, before tapping "On the way" */}
+        {isMaster && job.status === 'ACCEPTED' ? (
+          <View style={styles.section}>
+            <AppText variant="label">{t('jobs.etaLabel')}</AppText>
+            <Chips
+              label={t('jobs.etaLabel')}
+              options={ETA_OPTIONS.map((m) => ({
+                value: m,
+                label: t('jobs.minutes', { count: Number(m) }),
+              }))}
+              value={eta}
+              onChange={setEta}
+            />
+          </View>
+        ) : null}
+        {isMaster && job.status === 'ACCEPTED' ? (
+          <SecondaryButton
+            tone="warm"
+            label={t('jobs.start')}
+            onPress={() => setStatus.mutate({ status: 'IN_PROGRESS' })}
+          />
+        ) : null}
+
+        {/* Master: propose a new price (the customer approves it in the app). */}
+        {isMaster && active && !job.pendingPriceChange ? (
+          showPriceForm ? (
+            <Card>
+              <TextField
+                label={t('jobs.newPrice')}
+                value={newPrice}
+                onChangeText={(text) => setNewPrice(text.replace(/\D/g, ''))}
+                keyboardType="number-pad"
+              />
+              <TextField
+                label={t('jobs.reason')}
+                value={reason}
+                onChangeText={setReason}
+                placeholder={t('jobs.reasonPlaceholder')}
+                maxLength={300}
+              />
+              {formError ? <Notice tone="error" text={formError} /> : null}
+              <PrimaryButton
+                label={t('jobs.sendPriceChange')}
+                loading={propose.isPending}
+                onPress={submitPriceChange}
+              />
+              <SecondaryButton
+                tone="warm"
+                label={t('common.cancel')}
+                onPress={() => setShowPriceForm(false)}
+              />
+            </Card>
+          ) : (
+            <SecondaryButton
+              tone="warm"
+              label={t('jobs.changePrice')}
+              onPress={() => setShowPriceForm(true)}
+            />
+          )
+        ) : null}
+
+        {/* Trust: review, guarantee, complaints */}
+        {job.review ? (
+          <View style={styles.section}>
+            <AppText variant="label">{t('review.yourReview')}</AppText>
+            <ReviewCard review={job.review} />
+          </View>
+        ) : null}
+        {job.guaranteeClaims.map((claim) => (
+          <Notice
+            key={claim.id}
+            tone={claim.status === 'OPEN' ? 'warning' : 'info'}
+            text={[
+              `${t('guarantee.claim')}: ${t(`guarantee.status.${claim.status}`)}`,
+              claim.description,
+              claim.adminNote ? `${t('complaint.answer')}: ${claim.adminNote}` : null,
+            ]
+              .filter(Boolean)
+              .join('\n')}
+          />
+        ))}
+        {job.canClaimGuarantee ? (
+          <SecondaryButton
+            label={t('guarantee.button')}
+            onPress={() =>
+              router.push({ pathname: '/guarantee/[jobId]', params: { jobId: job.id } })
+            }
+          />
+        ) : null}
+        <SecondaryButton
+          tone="warm"
+          label={t('complaint.button')}
+          onPress={() => router.push({ pathname: '/complaint/[jobId]', params: { jobId: job.id } })}
         />
+        {canCancel ? (
+          <SecondaryButton
+            tone="danger"
+            label={t('jobs.cancel')}
+            loading={cancel.isPending}
+            onPress={() => cancel.mutate(undefined)}
+          />
+        ) : null}
+      </ScrollView>
+
+      {mainAction ? (
+        <SafeAreaView edges={['bottom']} style={styles.footer}>
+          <PrimaryButton
+            label={mainAction.label}
+            onPress={mainAction.onPress}
+            loading={setStatus.isPending}
+            disabled={mainAction.disabled}
+          />
+        </SafeAreaView>
       ) : null}
-    </Screen>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  box: {
-    borderWidth: 2,
-    borderColor: colors.border,
-    borderRadius: 12,
-    padding: spacing.md,
+  safe: { flex: 1, backgroundColor: colors.bg },
+  hero: { backgroundColor: colors.primary },
+  heroDone: { backgroundColor: colors.primaryDark },
+  heroInner: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
+    paddingBottom: 28,
+    gap: 6,
+  },
+  heroBack: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    marginLeft: -10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroKicker: { color: '#CFE8E2', fontFamily: fonts.semibold, fontSize: 14 },
+  heroHint: { color: colors.primarySoft, fontSize: 17, lineHeight: 24 },
+  content: { padding: spacing.xl, gap: spacing.lg },
+  priceChange: {
+    backgroundColor: colors.urgentSoft,
+    borderWidth: 1.5,
+    borderColor: '#F2C7A5',
+    borderRadius: radius.xxl,
+    padding: spacing.lg,
     gap: spacing.sm,
   },
-  boxTitle: { fontSize: fontSize.subtitle, fontWeight: '700', color: colors.text },
-  label: { fontSize: fontSize.small, fontWeight: '700', color: colors.textMuted, marginTop: 4 },
-  body: { fontSize: fontSize.body, color: colors.text, lineHeight: 26 },
-  price: { fontSize: fontSize.title, fontWeight: '700', color: colors.text },
   row: { flexDirection: 'row', gap: spacing.sm },
-  flex: { flex: 1 },
+  flex: { flex: 1, gap: 2 },
+  person: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
+  bold: { fontFamily: fonts.bold, color: colors.text },
+  semibold: { fontFamily: fonts.semibold },
+  call: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  address: { gap: 10 },
+  addressRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
+  section: { gap: 10 },
+  footer: {
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.lg,
+    backgroundColor: colors.bg,
+  },
 });

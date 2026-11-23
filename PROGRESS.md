@@ -4,10 +4,12 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**Phone test of M1–M4 (2026-11-23), then M5 Jobs: restyle Offers, MasterProfile, JobStatus.**
+**M6 Trust + admin: Review (tags), Dispute/complaint, MasterEarnings from the design.**
 
-M4 done (2026-11-23): MasterFeed.html (availability card with trades and districts, feed cards with
-voice + photo, pull to refresh, master tab bar), MasterOffer.html (big price field, ETA chips, message).
+M5 done (2026-11-23): Offers.html (offer cards: avatar, rating, price/arrival boxes, choose),
+MasterProfile.html (badges, stats, about, typical prices, work photos, reviews, choose from offer),
+JobStatus.html (teal header, timeline with times, person card with call, price-change card,
+main action pinned at the bottom).
 
 ## Status by milestone
 
@@ -32,6 +34,10 @@ voice + photo, pull to refresh, master tab bar), MasterOffer.html (big price fie
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: The design canvas (claude.ai artifact) has a broken JobStatus: its body was pasted into Chat.dc.html. The app follows the intact copy in design/ (design.zip). Botir can fix the canvas or ask Claude to.
+- 2026-11-23: MasterProfile "Prices" = the price list of the master's trades (region prices), not personal prices; "years of experience" and "reply time" are not collected, so the stats show rating, jobs done and reviews.
+- 2026-11-23: TOP badge = rating ≥ 4.8 with ≥ 10 reviews (until admin-managed badges in M6.9).
 
 - 2026-11-23: Feed cards show the district, not the distance in km: the exact address stays hidden until the offer is accepted. Distance needs the master's live location (Phase 2).
 - 2026-11-23: Master tab bar: Orders, My jobs, Settings. The "Earnings" tab (MasterFeed.html) replaces Settings in M6.

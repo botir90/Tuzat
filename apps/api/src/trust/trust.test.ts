@@ -61,6 +61,9 @@ describe('trust', () => {
       const page = masterPublicDtoSchema.parse(res.json());
       expect(page.master).toMatchObject({ name: 'Akmal Karimov', ratingAvg: 1, ratingCount: 1 });
       expect(page.reviews[0]).toMatchObject({ stars: 1, comment: 'Kechikdi' });
+      // Where the master works and the typical prices of their trades.
+      expect(page.districts.length).toBeGreaterThan(0);
+      expect(page.prices.length).toBeLessThanOrEqual(5);
     });
 
     it('hides unverified masters', async () => {

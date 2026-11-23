@@ -16,3 +16,10 @@ export function formatDateTime(iso: string): string {
   const pad = (n: number) => String(n).padStart(2, '0');
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
+
+/** "14:05" today, otherwise "15.11 14:05" (phone's local time). */
+export function formatTime(iso: string, now: Date = new Date()): string {
+  const d = new Date(iso);
+  if (d.toDateString() !== now.toDateString()) return formatDateTime(iso);
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}

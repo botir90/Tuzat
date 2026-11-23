@@ -287,7 +287,19 @@
     "jobsDone": "{{count}} та иш бажарган",
     "verified": "Текширилган уста",
     "master": "Уста",
-    "viewMaster": "Шарҳлар ва ишларини кўриш"
+    "viewMaster": "Шарҳлар ва ишларини кўриш",
+    "countTitle": "{{count}} та уста таклиф берди",
+    "moreMayCome": "Яна таклифлар келиши мумкин",
+    "waitingTitle": "Таклифлар кутилмоқда",
+    "viewMasterNamed": "{{name}}: профил ва шарҳлар",
+    "new": "Янги",
+    "stats": "{{jobs}} та иш · {{reviews}} та шарҳ",
+    "priceLabel": "Нарх",
+    "arrivesLabel": "Келади",
+    "arriveNow": "Ҳозир",
+    "inMinutes": "{{count}} дақиқа",
+    "inHours": "{{count}} соат",
+    "inHoursMinutes": "{{hours}} соат {{minutes}} дақ"
   },
   "jobStatus": {
     "ACCEPTED": "Қабул қилинди",
@@ -345,7 +357,8 @@
     "decline": "Рад этаман",
     "cancel": "Ишни бекор қилиш",
     "cancelledByMe": "Сиз ишни бекор қилдингиз.",
-    "cancelledByOther": "Иш иккинчи томон томонидан бекор қилинди."
+    "cancelledByOther": "Иш иккинчи томон томонидан бекор қилинди.",
+    "agreedPrice": "Келишилган нарх:"
   },
   "map": {
     "pickOnMap": "Харитада белгилаш",
@@ -421,7 +434,16 @@
     "title": "Уста ҳақида",
     "workPhotos": "Бажарган ишлари",
     "reviews": "Шарҳлар ({{count}})",
-    "noReviews": "Ҳали шарҳлар йўқ."
+    "noReviews": "Ҳали шарҳлар йўқ.",
+    "rating": "рейтинг",
+    "jobsDone": "бажарилган иш",
+    "reviewsCount": "шарҳ",
+    "about": "Ўзи ҳақида",
+    "prices": "Нархлар",
+    "photosCount": "{{count}} та расм",
+    "reviewsTitle": "Шарҳлар",
+    "onlyReal": "{{count}} та, фақат ҳақиқий мижозлардан",
+    "chooseFor": "Танлаш · {{price}} сўм"
   },
   "tabs": {
     "home": "Асосий",
@@ -443,5 +465,17 @@
     "minutesAgo": "{{count}} дақиқа олдин",
     "hoursAgo": "{{count}} соат олдин",
     "daysAgo": "{{count}} кун олдин"
+  },
+  "badges": {
+    "top": "ТОП УСТА",
+    "verified": "Текширилган",
+    "onTime": "Вақтида келади"
+  },
+  "timeline": {
+    "ACCEPTED": "Уста қабул қилди",
+    "ON_THE_WAY": "Уста йўлда",
+    "IN_PROGRESS": "Иш бошланди",
+    "DONE": "Иш тугади, баҳо қўйинг",
+    "now": "Ҳозир"
   }
 }

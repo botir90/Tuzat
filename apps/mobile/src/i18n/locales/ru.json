@@ -287,7 +287,19 @@
     "jobsDone": "Выполнено работ: {{count}}",
     "verified": "Проверенный мастер",
     "master": "Мастер",
-    "viewMaster": "Отзывы и работы мастера"
+    "viewMaster": "Отзывы и работы мастера",
+    "countTitle": "Предложений от мастеров: {{count}}",
+    "moreMayCome": "Могут прийти ещё предложения",
+    "waitingTitle": "Ждём предложения",
+    "viewMasterNamed": "{{name}}: профиль и отзывы",
+    "new": "Новый",
+    "stats": "работ: {{jobs}} · отзывов: {{reviews}}",
+    "priceLabel": "Цена",
+    "arrivesLabel": "Приедет",
+    "arriveNow": "Сейчас",
+    "inMinutes": "через {{count}} мин",
+    "inHours": "через {{count}} ч",
+    "inHoursMinutes": "через {{hours}} ч {{minutes}} мин"
   },
   "jobStatus": {
     "ACCEPTED": "Принято",
@@ -345,7 +357,8 @@
     "decline": "Отклоняю",
     "cancel": "Отменить работу",
     "cancelledByMe": "Вы отменили работу.",
-    "cancelledByOther": "Работа отменена другой стороной."
+    "cancelledByOther": "Работа отменена другой стороной.",
+    "agreedPrice": "Согласованная цена:"
   },
   "map": {
     "pickOnMap": "Отметить на карте",
@@ -421,7 +434,16 @@
     "title": "О мастере",
     "workPhotos": "Выполненные работы",
     "reviews": "Отзывы ({{count}})",
-    "noReviews": "Пока нет отзывов."
+    "noReviews": "Пока нет отзывов.",
+    "rating": "рейтинг",
+    "jobsDone": "работ выполнено",
+    "reviewsCount": "отзывов",
+    "about": "О себе",
+    "prices": "Цены",
+    "photosCount": "фото: {{count}}",
+    "reviewsTitle": "Отзывы",
+    "onlyReal": "{{count}}, только от реальных клиентов",
+    "chooseFor": "Выбрать · {{price}} сум"
   },
   "tabs": {
     "home": "Главная",
@@ -443,5 +465,17 @@
     "minutesAgo": "{{count}} мин назад",
     "hoursAgo": "{{count}} ч назад",
     "daysAgo": "{{count}} дн назад"
+  },
+  "badges": {
+    "top": "ТОП МАСТЕР",
+    "verified": "Проверен",
+    "onTime": "Приходит вовремя"
+  },
+  "timeline": {
+    "ACCEPTED": "Мастер принял заказ",
+    "ON_THE_WAY": "Мастер в пути",
+    "IN_PROGRESS": "Работа началась",
+    "DONE": "Работа закончена, оцените",
+    "now": "Сейчас"
   }
 }

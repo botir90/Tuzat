@@ -40,6 +40,12 @@ export const masterPublicDtoSchema = z.object({
   master: masterCardSchema,
   bio: z.string().nullable(),
   categories: z.array(z.object({ id: z.string(), name: localizedTextSchema })),
+  /** Where the master works (district names). */
+  districts: z.array(localizedTextSchema),
+  /** Typical prices of the master's trades (price list, region prices where set), max 5. */
+  prices: z.array(
+    z.object({ id: z.string(), name: localizedTextSchema, minPrice: z.number().int() }),
+  ),
   workPhotoUrls: z.array(z.string()),
   reviews: z.array(reviewDtoSchema),
 });

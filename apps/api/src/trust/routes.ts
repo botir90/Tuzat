@@ -24,6 +24,8 @@ const idParams = z.object({ id: z.string().min(1) });
 /** A user may have at most this many open complaints about one job (stops spamming). */
 const MAX_OPEN_COMPLAINTS_PER_JOB = 3;
 const PUBLIC_REVIEWS_LIMIT = 50;
+/** Prices shown on a master's page. */
+const MASTER_PRICES_LIMIT = 5;
 
 /**
  * Recomputes a master's rating from all their reviews.
@@ -115,7 +117,14 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
     const { id } = idParams.parse(request.params);
     const master = await prisma.user.findUnique({
       where: { id },
-      include: { masterProfile: { include: { categories: true } } },
+      include: {
+        masterProfile: {
+          include: {
+            categories: { orderBy: { sortOrder: 'asc' } },
+            districts: { orderBy: { sortOrder: 'asc' } },
+          },
+        },
+      },
     });
     const profile = master?.masterProfile;
     if (!master || !profile || profile.verificationStatus !== 'VERIFIED' || master.isBlocked) {
@@ -128,11 +137,25 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
       take: PUBLIC_REVIEWS_LIMIT,
       include: reviewInclude,
     });
+    // Region prices of the region the master works in (the first district's).
+    const regionId = profile.districts[0]?.regionId ?? '';
+    const priceItems = await prisma.priceItem.findMany({
+      where: { categoryId: { in: profile.categories.map((c) => c.id) } },
+      orderBy: [{ category: { sortOrder: 'asc' } }, { sortOrder: 'asc' }],
+      take: MASTER_PRICES_LIMIT,
+      include: { regionOverrides: { where: { regionId } } },
+    });
     const publicEndpoint = endpoint(request);
     return {
       master: await toMasterCard(master, storage, publicEndpoint),
       bio: profile.bio,
       categories: profile.categories.map((c) => ({ id: c.id, name: names(c) })),
+      districts: profile.districts.map((d) => names(d)),
+      prices: priceItems.map((p) => ({
+        id: p.id,
+        name: names(p),
+        minPrice: p.regionOverrides[0]?.minPrice ?? p.minPrice,
+      })),
       workPhotoUrls: await Promise.all(
         profile.workPhotoKeys.map((key) => storage.presignDownload(key, publicEndpoint)),
       ),
