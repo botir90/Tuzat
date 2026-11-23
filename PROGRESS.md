@@ -65,6 +65,7 @@ Dispute.html (4 reasons, text, photo, voice, what happens next), MasterEarnings.
 ## Botir must do
 
 - [x] Put the `design/` folder into the repo root.
-- [ ] Before M6.5: create a LiveKit Cloud account (free tier) — exact steps will follow.
+- [x] LiveKit Cloud account + project `usta`; keys in apps/api/.env (checked: API answers 200).
+- [ ] Before the Play Store release: delete the LiveKit key APIBo4kQyx5ws4X and create a new one (it was shown in a chat screenshot). Also delete the unused key APIkgKgktjQMetu.
 - [ ] Before M6.7 real payments: MChJ, bank account, Click/Payme marketplace contract, lawyer check.
 - [ ] **Urgent:** free disk space on `C:` (0.4 GB left; Docker hangs when it is full). Move Docker's disk to `D:` (Docker Desktop → Settings → Resources → Disk image location). Optional: limit WSL memory.
