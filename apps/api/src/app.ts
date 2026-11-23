@@ -12,6 +12,7 @@ import { registerJobRoutes } from './jobs/routes';
 import { registerMasterRoutes } from './master/routes';
 import { registerRequestRoutes } from './requests/routes';
 import { registerHealthRoute, type DatabaseCheck } from './routes/health';
+import { registerChatRoutes } from './chat/routes';
 import { registerTrustRoutes } from './trust/routes';
 import { registerUserRoutes } from './users/routes';
 
@@ -53,6 +54,7 @@ export function buildApp(ctx: AppContext, options: BuildAppOptions = {}): Fastif
   registerMasterRoutes(app, ctx);
   registerJobRoutes(app, ctx);
   registerTrustRoutes(app, ctx);
+  registerChatRoutes(app, ctx);
 
   // Admin panel API (separate login, see src/admin/auth.ts)
   registerAdminAuthRoutes(app, ctx);

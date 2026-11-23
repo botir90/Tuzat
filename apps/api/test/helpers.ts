@@ -102,6 +102,10 @@ export function useTestApp(options: BuildAppOptions = {}): TestApp {
       S3_BUCKET: 'test',
       S3_ACCESS_KEY: 'test',
       S3_SECRET_KEY: 'test',
+      // Tokens are signed offline; nothing is sent to LiveKit in tests.
+      LIVEKIT_URL: 'wss://test.livekit.cloud',
+      LIVEKIT_API_KEY: 'APItestkey',
+      LIVEKIT_API_SECRET: 'test-livekit-secret-that-is-long-enough-12345',
     });
     const ctx = createContext({
       prisma,

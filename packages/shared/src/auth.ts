@@ -97,6 +97,10 @@ export const API_ERROR_CODES = [
   'GUARANTEE_EXPIRED',
   'CLAIM_ALREADY_OPEN',
   'ADMIN_LOGIN_FAILED',
+  'CHAT_CLOSED',
+  'CALLS_DISABLED',
+  'JOB_NOT_ACTIVE',
+  'CALL_NOT_RINGING',
   'INTERNAL_ERROR',
 ] as const;
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

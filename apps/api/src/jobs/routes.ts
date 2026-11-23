@@ -13,6 +13,7 @@ import {
   type Language,
 } from '@usta/shared';
 import { requireUser } from '../auth/authenticate';
+import { addSystemMessage } from '../chat/system';
 import { names } from '../catalog/dto';
 import type { AppContext } from '../context';
 import type { User } from '../generated/prisma/client';
@@ -115,7 +116,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
         where: { requestId: id, id: { not: offerId }, status: 'SENT' },
         data: { status: 'REJECTED' },
       });
-      return tx.job.create({
+      const created = await tx.job.create({
         data: {
           requestId: id,
           offerId,
@@ -126,6 +127,9 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
         },
         include: jobInclude,
       });
+      // The chat starts with the deal: who and for how much.
+      await addSystemMessage(tx, created.id, 'JOB_ACCEPTED', { price: String(offer.price) }, now);
+      return created;
     });
 
     notifyInBackground(
@@ -203,6 +207,13 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     // The status in the filter protects against two quick taps / both sides at once.
     const { count } = await prisma.job.updateMany({ where: { id, status: job.status }, data });
     if (count === 0) throw conflict();
+    await addSystemMessage(
+      prisma,
+      id,
+      status === 'ON_THE_WAY' ? 'ON_THE_WAY' : status === 'IN_PROGRESS' ? 'STARTED' : 'DONE',
+      status === 'ON_THE_WAY' && etaMinutes ? { eta: String(etaMinutes) } : {},
+      now,
+    );
     if (status === 'DONE') {
       await prisma.masterProfile.updateMany({
         where: { userId: job.masterId },
@@ -253,6 +264,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       } else {
         await tx.request.update({ where: { id: job.requestId }, data: { status: 'CANCELLED' } });
       }
+      await addSystemMessage(tx, id, 'CANCELLED', {}, now);
     });
 
     notifyStatus(job, isMaster ? job.customerId : job.masterId, 'CANCELLED');
@@ -278,6 +290,13 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     await prisma.priceChange.create({
       data: { jobId: id, newPrice: body.newPrice, reason: body.reason, createdAt: ctx.now() },
     });
+    await addSystemMessage(
+      prisma,
+      id,
+      'PRICE_CHANGE_REQUESTED',
+      { price: String(body.newPrice) },
+      ctx.now(),
+    );
     notifyInBackground(
       ctx,
       notifyUsers(
@@ -311,6 +330,13 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       data: { status: approve ? 'APPROVED' : 'DECLINED', answeredAt: ctx.now() },
     });
     if (count === 0) throw conflict();
+    await addSystemMessage(
+      prisma,
+      id,
+      approve ? 'PRICE_APPROVED' : 'PRICE_DECLINED',
+      { price: String(pc.newPrice) },
+      ctx.now(),
+    );
 
     const answer: Record<Language, string> = approve
       ? {

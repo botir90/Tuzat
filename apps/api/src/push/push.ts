@@ -5,6 +5,10 @@ export interface PushMessage {
   body: string;
   /** The app uses this to open the right screen when the notification is tapped. */
   data?: Record<string, string>;
+  /** "high" wakes the phone right away (incoming calls). */
+  priority?: 'default' | 'high';
+  /** Android notification channel ("calls" rings louder; created by the app). */
+  channelId?: string;
 }
 
 export interface PushSender {
@@ -20,7 +24,7 @@ export class ExpoPushSender implements PushSender {
 
   async send(messages: PushMessage[]): Promise<void> {
     for (let i = 0; i < messages.length; i += BATCH_SIZE) {
-      const batch = messages.slice(i, i + BATCH_SIZE).map((m) => ({ ...m, sound: 'default' }));
+      const batch = messages.slice(i, i + BATCH_SIZE).map((m) => ({ sound: 'default', ...m }));
       try {
         const response = await fetch(EXPO_PUSH_URL, {
           method: 'POST',

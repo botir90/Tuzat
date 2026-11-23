@@ -37,6 +37,11 @@ const envSchema = z.object({
   S3_BUCKET: z.string().min(1),
   S3_ACCESS_KEY: z.string().min(1),
   S3_SECRET_KEY: z.string().min(1),
+
+  /** LiveKit Cloud (in-app voice calls). Without these, calls are switched off (503). */
+  LIVEKIT_URL: z.string().startsWith('wss://').optional(),
+  LIVEKIT_API_KEY: z.string().min(1).optional(),
+  LIVEKIT_API_SECRET: z.string().min(1).optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

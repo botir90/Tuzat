@@ -44,6 +44,9 @@ model User {
   reviewsGiven    Review[]       @relation("ReviewsGiven")
   reviewsReceived Review[]       @relation("ReviewsReceived")
   complaintsSent  Complaint[]    @relation("ComplaintsSent")
+  chatMessages    ChatMessage[]  @relation("ChatMessagesSent")
+  callsMade       Call[]         @relation("CallsMade")
+  callsReceived   Call[]         @relation("CallsReceived")
 }
 
 // ---------- Catalog (M2) ----------
@@ -319,6 +322,8 @@ model Job {
   review          Review?
   guaranteeClaims GuaranteeClaim[]
   complaints      Complaint[]
+  messages        ChatMessage[]
+  calls           Call[]
 
   @@index([customerId, status])
   @@index([masterId, status])
@@ -411,6 +416,63 @@ model Complaint {
 
   @@index([status, createdAt])
   @@index([jobId])
+}
+
+enum ChatMessageType {
+  TEXT
+  PHOTO
+  VOICE
+  /// Written by the app ("Price approved: 120 000"). text = event code, params = JSON values.
+  SYSTEM
+}
+
+/// Chat between the customer and the master of one job.
+model ChatMessage {
+  id         String          @id @default(cuid())
+  /// Strict order of messages (several can share the same createdAt).
+  seq        Int             @unique @default(autoincrement())
+  jobId      String
+  job        Job             @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  /// null for SYSTEM messages.
+  senderId   String?
+  sender     User?           @relation("ChatMessagesSent", fields: [senderId], references: [id], onDelete: SetNull)
+  type       ChatMessageType
+  text       String?
+  /// Storage key of a photo or voice message.
+  mediaKey   String?
+  /// Voice length in milliseconds.
+  durationMs Int?
+  /// SYSTEM only: values for the event text, e.g. {"price":"120000"}.
+  params     Json?
+  createdAt  DateTime        @default(now())
+
+  @@index([jobId, seq])
+}
+
+enum CallStatus {
+  RINGING
+  ANSWERED
+  DECLINED
+  MISSED
+  ENDED
+}
+
+/// In-app voice call between the two sides of a job (LiveKit). Audio is never recorded.
+model Call {
+  id         String     @id @default(cuid())
+  jobId      String
+  job        Job        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  callerId   String
+  caller     User       @relation("CallsMade", fields: [callerId], references: [id], onDelete: Cascade)
+  calleeId   String
+  callee     User       @relation("CallsReceived", fields: [calleeId], references: [id], onDelete: Cascade)
+  status     CallStatus @default(RINGING)
+  createdAt  DateTime   @default(now())
+  answeredAt DateTime?
+  endedAt    DateTime?
+
+  @@index([jobId, createdAt])
+  @@index([calleeId, status])
 }
 
 /// Admin panel accounts. Separate from app users: they log in with a password, not SMS.

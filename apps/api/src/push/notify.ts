@@ -1,6 +1,7 @@
 import type { Language } from '@usta/shared';
 import type { Language as DbLanguage } from '../generated/prisma/client';
 import type { AppContext } from '../context';
+import type { PushMessage } from './push';
 import { languageFromDb } from '../users/dto';
 
 /** Notification texts in the three app languages. {{name}} placeholders are filled in. */
@@ -82,6 +83,21 @@ const TEXTS = {
       body: '{{category}}. Свяжитесь с клиентом и договоритесь о бесплатном визите.',
     },
   },
+  chatMessage: {
+    'uz-Latn': { title: '{{name}}', body: '{{preview}}' },
+    'uz-Cyrl': { title: '{{name}}', body: '{{preview}}' },
+    ru: { title: '{{name}}', body: '{{preview}}' },
+  },
+  incomingCall: {
+    'uz-Latn': { title: "Qo'ng'iroq: {{name}}", body: 'Javob berish uchun bosing' },
+    'uz-Cyrl': { title: 'Қўнғироқ: {{name}}', body: 'Жавоб бериш учун босинг' },
+    ru: { title: 'Звонок: {{name}}', body: 'Нажмите, чтобы ответить' },
+  },
+  missedCall: {
+    'uz-Latn': { title: "O'tkazib yuborilgan qo'ng'iroq", body: '{{name}}' },
+    'uz-Cyrl': { title: 'Ўтказиб юборилган қўнғироқ', body: '{{name}}' },
+    ru: { title: 'Пропущенный звонок', body: '{{name}}' },
+  },
 } satisfies Record<string, Record<Language, { title: string; body: string }>>;
 
 export type NotificationKind = keyof typeof TEXTS;
@@ -100,6 +116,7 @@ export async function notifyUsers(
   kind: NotificationKind,
   values: (language: Language) => Record<string, string>,
   data: Record<string, string>,
+  delivery: Pick<PushMessage, 'priority' | 'channelId'> = {},
 ): Promise<void> {
   if (userIds.length === 0) return;
   const tokens = await ctx.prisma.pushToken.findMany({
@@ -110,7 +127,13 @@ export async function notifyUsers(
     const language = languageFromDb((user.language ?? 'uz_Latn') as DbLanguage);
     const text = TEXTS[kind][language];
     const filled = values(language);
-    return { to: token, title: fill(text.title, filled), body: fill(text.body, filled), data };
+    return {
+      to: token,
+      title: fill(text.title, filled),
+      body: fill(text.body, filled),
+      data,
+      ...delivery,
+    };
   });
   await ctx.push.send(messages);
 }
