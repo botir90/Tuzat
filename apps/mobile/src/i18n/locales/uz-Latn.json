@@ -49,7 +49,12 @@
     "PAYMENT_LOCKED": "Pul allaqachon ushlab turilibdi, to'lov usulini o'zgartirib bo'lmaydi.",
     "PARTS_TOO_EXPENSIVE": "Ehtiyot qism summasi umumiy narxdan oshmasligi kerak.",
     "RECEIPT_NOT_PENDING": "Bu chekka allaqachon javob berilgan.",
-    "NOTHING_TO_CONFIRM": "Tasdiqlanadigan to'lov yo'q."
+    "NOTHING_TO_CONFIRM": "Tasdiqlanadigan to'lov yo'q.",
+    "PROMO_NOT_FOUND": "Bunday promokod yo'q yoki muddati tugagan.",
+    "PROMO_ALREADY_USED": "Bu promokoddan allaqachon foydalangansiz.",
+    "PROMO_FIRST_ORDER_ONLY": "Bu promokod faqat birinchi buyurtma uchun.",
+    "DISCOUNT_ALREADY_APPLIED": "Bu buyurtmaga chegirma allaqachon qo'llangan.",
+    "REFERRAL_NOT_ALLOWED": "Bu kodni kiritib bo'lmaydi: o'z kodingiz yoki birinchi buyurtmangiz allaqachon bo'lgan."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -95,7 +100,12 @@
     "jobsCount": "{{count}} ish",
     "trustVerified": "Tasdiqlangan ustalar",
     "trustGuarantee": "14 kun kafolat",
-    "trustPayAfter": "Ish tugagach to'lov"
+    "trustPayAfter": "Ish tugagach to'lov",
+    "promoNewCustomers": "YANGI MIJOZLARGA",
+    "promoTag": "AKSIYA",
+    "promoCode": "Promokod: {{code}}",
+    "callMaster": "Usta chaqirish",
+    "inviteTitle": "Do'stingizni taklif qiling"
   },
   "master": {
     "title": "Usta paneli",
@@ -473,7 +483,8 @@
     "feed": "Buyurtmalar",
     "myJobs": "Ishlarim",
     "settings": "Sozlamalar",
-    "earnings": "Daromad"
+    "earnings": "Daromad",
+    "bonus": "Bonuslar"
   },
   "services": {
     "title": "Barcha xizmatlar",
@@ -603,7 +614,12 @@
     "onlineLater": "Click va Payme orqali himoyalangan to'lov tez orada qo'shiladi. Hozircha ustaga ish tugagach naqd to'laysiz.",
     "continueCash": "Naqd to'lash bilan davom etish",
     "payOnline": "{{price}} so'm to'lash",
-    "change": "To'lov usulini o'zgartirish"
+    "change": "To'lov usulini o'zgartirish",
+    "promoLabel": "Promokod bormi?",
+    "promoRow": "Chegirma ({{code}})",
+    "bonusRow": "Bonus bilan",
+    "useBonus": "Bonus bilan to'lash",
+    "bonusHint": "{{amount}} so'mgacha (hisobingizda {{balance}} so'm)"
   },
   "paymentStatus": {
     "CASH": "Naqd pul: ish tugagach ustaga",
@@ -656,5 +672,34 @@
     "youGet": "Sizga tushadi",
     "cashCommissionNote": "Naqd ishda komissiya balansingizga yoziladi, keyin to'laysiz.",
     "freeMonths": "Hozir komissiyasiz davr: ishning hammasi sizniki."
+  },
+  "bonus": {
+    "title": "Bonuslar",
+    "loginFirst": "Bonus yig'ish va do'stlarni taklif qilish uchun telefon raqamingiz bilan kiring.",
+    "login": "Kirish",
+    "balance": "Bonus hisobingiz",
+    "levels": {
+      "BRONZE": "BRONZA",
+      "SILVER": "KUMUSH",
+      "GOLD": "OLTIN"
+    },
+    "toNextLevel": "{{level}} darajaga yana {{count}} ta buyurtma: har buyurtmadan {{percent}}% bonus",
+    "topLevel": "Eng yuqori daraja: har buyurtmadan {{percent}}% bonus",
+    "inviteTitle": "Do'stingizni taklif qiling",
+    "inviteText": "Do'stingiz birinchi buyurtmasini bersa, ikkalangizga {{amount}} so'mdan bonus beriladi.",
+    "copy": "Nusxa olish",
+    "copied": "Nusxalandi",
+    "shareTelegram": "Telegram orqali yuborish",
+    "shareText": "{{app}} ilovasida ishonchli usta chaqiring. Mening kodim: {{code}}, ikkalamizga {{amount}} so'mdan bonus!",
+    "referredSummary": "{{count}} ta do'stingiz qo'shildi · {{amount}} so'm topdingiz",
+    "haveCode": "Do'stingiz kodi bormi?",
+    "applyCode": "Kodni kiritish",
+    "codeSaved": "Kod saqlandi. Birinchi buyurtmangizdan keyin bonus tushadi.",
+    "waysTitle": "Bonus qanday yig'iladi",
+    "wayOrder": "Har bir onlayn to'langan buyurtmadan",
+    "wayPhoto": "Rasm bilan sharh uchun",
+    "wayFriend": "Taklif qilingan do'st uchun",
+    "halfNote": "Bonus bilan keyingi buyurtmaning 50% gacha qismini to'lash mumkin.",
+    "cashbackOnlineNote": "Buyurtma uchun bonus Click yoki Payme orqali to'langanda beriladi."
   }
 }

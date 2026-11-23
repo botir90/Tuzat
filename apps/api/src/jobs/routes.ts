@@ -14,6 +14,7 @@ import {
 } from '@usta/shared';
 import { requireUser } from '../auth/authenticate';
 import { addSystemMessage } from '../chat/system';
+import { rewardReferral } from '../growth/service';
 import {
   createPaymentForJob,
   onJobCancelled,
@@ -224,6 +225,8 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
     if (status === 'DONE') {
       // Cash: commission to the master's balance. Online: 24 h to confirm, then release.
       await onJobDone(ctx, id, !isMaster);
+      // A friend invited this customer: both get the referral bonus after the first order.
+      await rewardReferral(ctx, job.customerId, id);
       await prisma.masterProfile.updateMany({
         where: { userId: job.masterId },
         data: { completedJobsCount: { increment: 1 } },

@@ -13,6 +13,7 @@ import { registerMasterRoutes } from './master/routes';
 import { registerRequestRoutes } from './requests/routes';
 import { registerHealthRoute, type DatabaseCheck } from './routes/health';
 import { registerChatRoutes } from './chat/routes';
+import { registerGrowthRoutes } from './growth/routes';
 import { registerPaymentRoutes } from './payments/routes';
 import { registerTrustRoutes } from './trust/routes';
 import { registerUserRoutes } from './users/routes';
@@ -57,6 +58,7 @@ export function buildApp(ctx: AppContext, options: BuildAppOptions = {}): Fastif
   registerTrustRoutes(app, ctx);
   registerChatRoutes(app, ctx);
   registerPaymentRoutes(app, ctx);
+  registerGrowthRoutes(app, ctx);
 
   // Admin panel API (separate login, see src/admin/auth.ts)
   registerAdminAuthRoutes(app, ctx);

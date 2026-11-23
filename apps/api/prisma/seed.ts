@@ -80,6 +80,23 @@ export async function seedCatalog(prisma: PrismaClient): Promise<void> {
   }
   // "Other / can't find a master" is always last and in no group.
   await seedCategory(prisma, OTHER_CATEGORY, null, 1000);
+
+  // First-order promotion shown on the home screen (design/screens/Home.html).
+  // Created once; after that admins change it in the admin panel.
+  await prisma.promoCode.upsert({
+    where: { code: 'BIRINCHI' },
+    update: {},
+    create: {
+      code: 'BIRINCHI',
+      titleUzLatn: 'Birinchi buyurtmaga 20% chegirma',
+      titleUzCyrl: 'Биринчи буюртмага 20% чегирма',
+      titleRu: 'Скидка 20% на первый заказ',
+      percent: 20,
+      maxDiscount: 50_000,
+      firstOrderOnly: true,
+      showOnHome: true,
+    },
+  });
 }
 
 /** Creates or updates one category and its price items. isActive is never overwritten. */

@@ -26,7 +26,13 @@ export type DisputeStatus = (typeof DISPUTE_STATUSES)[number];
 /** Hours the customer has to confirm or complain before held money goes to the master. */
 export const AUTO_RELEASE_HOURS = 24;
 
-export const choosePaymentSchema = z.object({ method: z.enum(PAYMENT_METHODS) });
+export const choosePaymentSchema = z.object({
+  method: z.enum(PAYMENT_METHODS),
+  /** Optional discount code (applied once per order). */
+  promoCode: z.string().trim().toUpperCase().max(20).optional(),
+  /** Pay up to half of the order with bonus. */
+  useBonus: z.boolean().optional(),
+});
 export type ChoosePaymentBody = z.infer<typeof choosePaymentSchema>;
 
 export const createPartsReceiptSchema = z.object({
@@ -57,6 +63,14 @@ export const paymentDtoSchema = z.object({
   labor: z.number().int(),
   /** Parts expected in the offer. */
   partsEstimate: z.number().int(),
+  promoCode: z.string().nullable(),
+  promoDiscount: z.number().int(),
+  bonusUsed: z.number().int(),
+  /** What the customer pays (total − promo − bonus). The platform pays the discount. */
+  customerPays: z.number().int(),
+  /** Customer only: bonus available now and how much of it this order may use. */
+  bonusBalance: z.number().int(),
+  bonusAllowed: z.number().int(),
   /** Online: what the provider holds right now. */
   held: z.number().int(),
   /** Platform commission of this job (0 during the master's free months). */
@@ -82,7 +96,7 @@ export const masterBalanceDtoSchema = z.object({
   entries: z.array(
     z.object({
       id: z.string(),
-      kind: z.enum(['CASH_COMMISSION', 'SETTLEMENT']),
+      kind: z.enum(['CASH_COMMISSION', 'SETTLEMENT', 'DISCOUNT_CREDIT']),
       amount: z.number().int(),
       jobId: z.string().nullable(),
       note: z.string().nullable(),

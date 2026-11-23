@@ -4,11 +4,11 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M6.9 Growth: promo codes, 24/7 emergency, badges, bonuses + referral, "My home" (Bonus.html, Profile.html).**
+**M6.9 part B: 24/7 emergency, badges (on time), before/after photos, "My home" (Profile.html).**
 
-M6.7 done (2026-11-23): cash now (commission to the master balance, 90 free days), online escrow
-behind ONLINE_PAYMENTS_ENABLED with a fake provider; Payment.html, ConfirmJob.html, MasterPayout
-(job payment card), parts receipts, 24 h auto-release, disputes freeze money, admin API.
+M6.9 part A done (2026-11-23): bonuses (levels, cashback for online, +3 000 photo review), referral
+(30 000 both, Telegram share), promo codes (BIRINCHI seeded, admin API, home banner), promo and
+bonus (up to 50%) on the Payment screen; Bonuses tab.
 
 ## Status by milestone
 
@@ -33,6 +33,10 @@ behind ONLINE_PAYMENTS_ENABLED with a fake provider; Payment.html, ConfirmJob.ht
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: Levels by finished orders: Bronze 0–4 (3%), Silver 5–14 (5%), Gold 15+ (7%). Order cashback only for online payments (CLAUDE.md 7a); in the cash pilot bonus comes from referrals (30 000) and photo reviews (+3 000).
+- 2026-11-23: Promo and bonus discounts are paid by the platform: the master still earns the full price; the discount is credited to the master's balance (negative owed = we owe the master). Commission is counted on the full labor.
+- 2026-11-23: A friend's referral code can be entered once, on the Bonuses screen, before the first finished order.
 
 - 2026-11-23: Commission = COMMISSION_PERCENT (5%) of labor only (parts are not charged); first 90 days free. Cash jobs: commission is recorded as the master's debt; an admin records when it is paid.
 - 2026-11-23: Guarantee stays for cash jobs during the pilot (open question answered by default: we keep it until online payment is on). Payment.html shows cash as "to the master after the job", not "no guarantee".

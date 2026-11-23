@@ -2,7 +2,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { ShieldCheck } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Switch, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { formatSum, type PaymentMethod } from '@usta/shared';
 import { errorMessage } from '@/api/errors';
@@ -36,17 +36,34 @@ export default function PaymentScreen() {
   const data = payment.data;
   const [method, setMethod] = useState<PaymentMethod | null>(null);
   const selected = method ?? (data?.onlineAvailable ? 'CLICK' : 'CASH');
+  const [promoCode, setPromoCode] = useState('');
+  const [useBonus, setUseBonus] = useState(false);
+  // Discounts can be added once per order.
+  const discountsOpen = data ? data.promoDiscount === 0 && data.bonusUsed === 0 : false;
 
   const goToJob = () => router.replace({ pathname: '/jobs/[id]', params: { id: jobId } });
 
   function submit() {
     if (!data) return;
-    if (selected === data.method && data.status !== 'PENDING') {
+    const code = promoCode.trim();
+    const wantsDiscount = discountsOpen && (code.length > 0 || useBonus);
+    if (selected === data.method && data.status !== 'PENDING' && !wantsDiscount) {
       goToJob();
       return;
     }
-    choose.mutate(selected, { onSuccess: goToJob });
+    choose.mutate(
+      {
+        method: selected,
+        promoCode: wantsDiscount && code ? code : undefined,
+        useBonus: wantsDiscount && useBonus ? true : undefined,
+      },
+      { onSuccess: goToJob },
+    );
   }
+
+  // What the customer will pay, shown before the discounts are sent.
+  const previewBonus = data && discountsOpen && useBonus ? data.bonusAllowed : 0;
+  const toPay = data ? data.customerPays - previewBonus : 0;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -105,13 +122,68 @@ export default function PaymentScreen() {
                       },
                     ]
                   : []),
+                ...(data.promoDiscount > 0
+                  ? [
+                      {
+                        label: t('payment.promoRow', { code: data.promoCode ?? '' }),
+                        value: `−${formatSum(data.promoDiscount)} ${t('common.sum')}`,
+                        negative: true,
+                      },
+                    ]
+                  : []),
+                ...(data.bonusUsed + previewBonus > 0
+                  ? [
+                      {
+                        label: t('payment.bonusRow'),
+                        value: `−${formatSum(data.bonusUsed + previewBonus)} ${t('common.sum')}`,
+                        negative: true,
+                      },
+                    ]
+                  : []),
                 {
                   label: t('payment.total'),
-                  value: `${formatSum(data.total)} ${t('common.sum')}`,
+                  value: `${formatSum(toPay)} ${t('common.sum')}`,
                   strong: true,
                 },
               ]}
             />
+          </Card>
+        ) : null}
+
+        {/* Promo code and bonus (once per order) */}
+        {data && discountsOpen ? (
+          <Card>
+            <AppText variant="label">{t('payment.promoLabel')}</AppText>
+            <TextInput
+              value={promoCode}
+              onChangeText={(v) => setPromoCode(v.toUpperCase())}
+              placeholder="BIRINCHI"
+              placeholderTextColor={colors.textMuted}
+              autoCapitalize="characters"
+              accessibilityLabel={t('payment.promoLabel')}
+              maxLength={20}
+              style={styles.input}
+            />
+            {data.bonusAllowed > 0 ? (
+              <View style={styles.bonusRow}>
+                <View style={styles.flex}>
+                  <AppText variant="label">{t('payment.useBonus')}</AppText>
+                  <AppText variant="caption" color="textSecondary">
+                    {t('payment.bonusHint', {
+                      amount: formatSum(data.bonusAllowed),
+                      balance: formatSum(data.bonusBalance),
+                    })}
+                  </AppText>
+                </View>
+                <Switch
+                  value={useBonus}
+                  onValueChange={setUseBonus}
+                  trackColor={{ true: colors.primary, false: colors.border }}
+                  thumbColor={colors.surface}
+                  accessibilityLabel={t('payment.useBonus')}
+                />
+              </View>
+            ) : null}
           </Card>
         ) : null}
 
@@ -170,7 +242,7 @@ export default function PaymentScreen() {
             label={
               selected === 'CASH'
                 ? t('payment.continueCash')
-                : t('payment.payOnline', { price: formatSum(data.total) })
+                : t('payment.payOnline', { price: formatSum(toPay) })
             }
             loading={choose.isPending}
             onPress={submit}
@@ -201,6 +273,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   flex: { flex: 1 },
+  input: {
+    minHeight: 52,
+    borderRadius: radius.lg,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    paddingHorizontal: 14,
+    fontSize: 17,
+    fontFamily: fonts.bold,
+    letterSpacing: 1.5,
+    color: colors.text,
+  },
+  bonusRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   who: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   section: { gap: 10 },
   methods: { gap: spacing.sm },

@@ -24,32 +24,38 @@ enum Language {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  phone     String    @unique
-  name      String?
+  id           String    @id @default(cuid())
+  phone        String    @unique
+  name         String?
   /// null until the user picks "I need a master" / "I am a master".
-  role      UserRole?
-  language  Language?
-  isBlocked Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  role         UserRole?
+  language     Language?
+  isBlocked    Boolean   @default(false)
+  /// Customer's own code to invite friends (e.g. BOTIR30). Created on first use.
+  referralCode String?   @unique
+  /// Who invited this user (their code was entered once).
+  referredById String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  refreshTokens   RefreshToken[]
-  requests        Request[]      @relation("CustomerRequests")
-  masterProfile   MasterProfile?
-  offers          Offer[]        @relation("MasterOffers")
-  pushTokens      PushToken[]
-  customerJobs    Job[]          @relation("CustomerJobs")
-  masterJobs      Job[]          @relation("MasterJobs")
-  reviewsGiven    Review[]       @relation("ReviewsGiven")
-  reviewsReceived Review[]       @relation("ReviewsReceived")
-  complaintsSent  Complaint[]    @relation("ComplaintsSent")
-  chatMessages    ChatMessage[]  @relation("ChatMessagesSent")
-  callsMade       Call[]         @relation("CallsMade")
-  callsReceived   Call[]         @relation("CallsReceived")
-  balance         MasterBalance?
-  balanceEntries  BalanceEntry[]
-  payouts         Payout[]
+  refreshTokens    RefreshToken[]
+  requests         Request[]         @relation("CustomerRequests")
+  masterProfile    MasterProfile?
+  offers           Offer[]           @relation("MasterOffers")
+  pushTokens       PushToken[]
+  customerJobs     Job[]             @relation("CustomerJobs")
+  masterJobs       Job[]             @relation("MasterJobs")
+  reviewsGiven     Review[]          @relation("ReviewsGiven")
+  reviewsReceived  Review[]          @relation("ReviewsReceived")
+  complaintsSent   Complaint[]       @relation("ComplaintsSent")
+  chatMessages     ChatMessage[]     @relation("ChatMessagesSent")
+  callsMade        Call[]            @relation("CallsMade")
+  callsReceived    Call[]            @relation("CallsReceived")
+  balance          MasterBalance?
+  balanceEntries   BalanceEntry[]
+  payouts          Payout[]
+  bonusEntries     BonusEntry[]
+  promoRedemptions PromoRedemption[]
 }
 
 // ---------- Catalog (M2) ----------
@@ -526,6 +532,10 @@ model Payment {
   createdAt      DateTime      @default(now())
   heldAt         DateTime?
   releasedAt     DateTime?
+  /// Discounts paid by the platform (the master still gets the full price).
+  promoCodeId    String?
+  promoDiscount  Int           @default(0)
+  bonusUsed      Int           @default(0)
   holds          Hold[]
 
   @@index([status, releaseDueAt])
@@ -641,6 +651,8 @@ enum BalanceEntryKind {
   CASH_COMMISSION
   /// The master paid what they owed (admin records it).
   SETTLEMENT
+  /// A promo code or bonus discount the platform pays for (the customer paid the master less).
+  DISCOUNT_CREDIT
 }
 
 /// Every change of a master's balance, so it can always be explained.
@@ -656,6 +668,78 @@ model BalanceEntry {
   createdAt DateTime         @default(now())
 
   @@index([masterId, createdAt])
+}
+
+// ---------- Growth (M6.9): bonuses, referrals, promo codes ----------
+
+enum BonusKind {
+  /// Online payment cashback (level percent of what the customer paid).
+  CASHBACK
+  /// A review with a photo.
+  REVIEW_PHOTO
+  /// Invited a friend / was invited (both get it after the friend's first finished job).
+  REFERRAL
+  /// Paid part of an order with bonus (negative).
+  SPENT
+  /// Spent bonus given back (cancelled job).
+  REFUND
+}
+
+/// Every bonus change. The balance is the sum of a user's entries.
+model BonusEntry {
+  id           String    @id @default(cuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind         BonusKind
+  /// So'm; negative for SPENT.
+  amount       Int
+  jobId        String?
+  /// REFERRAL: the friend who was invited (so each friend pays out once).
+  sourceUserId String?
+  createdAt    DateTime  @default(now())
+
+  @@index([userId, createdAt])
+  @@index([kind, sourceUserId])
+}
+
+/// A discount code (first order, seasonal promotions). Managed from the admin panel.
+model PromoCode {
+  id             String            @id @default(cuid())
+  /// Upper case, e.g. BIRINCHI.
+  code           String            @unique
+  titleUzLatn    String
+  titleUzCyrl    String
+  titleRu        String
+  /// Either a percent of the order or a fixed amount (so'm).
+  percent        Int?
+  amount         Int?
+  /// Upper limit of the discount (so'm).
+  maxDiscount    Int?
+  /// Only for a customer's first order.
+  firstOrderOnly Boolean           @default(false)
+  /// Show as a banner on the customer home screen.
+  showOnHome     Boolean           @default(false)
+  isActive       Boolean           @default(true)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  /// How many customers may use it in total (null = no limit).
+  usageLimit     Int?
+  createdAt      DateTime          @default(now())
+  redemptions    PromoRedemption[]
+}
+
+/// One use of a promo code: one per customer per code.
+model PromoRedemption {
+  id          String    @id @default(cuid())
+  promoCodeId String
+  promoCode   PromoCode @relation(fields: [promoCodeId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId       String
+  discount    Int
+  createdAt   DateTime  @default(now())
+
+  @@unique([promoCodeId, userId])
 }
 
 /// Admin panel accounts. Separate from app users: they log in with a password, not SMS.

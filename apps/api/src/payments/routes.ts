@@ -1,6 +1,7 @@
 import type { FastifyInstance, FastifyRequest } from 'fastify';
 import { z } from 'zod';
 import {
+  bonusAllowed,
   choosePaymentSchema,
   createPartsReceiptSchema,
   resolveDisputeSchema,
@@ -10,6 +11,7 @@ import {
 } from '@usta/shared';
 import { requireAdmin } from '../admin/auth';
 import { requireUser } from '../auth/authenticate';
+import { bonusBalance } from '../growth/service';
 import type { AppContext } from '../context';
 import type { User } from '../generated/prisma/client';
 import { AppError, notFound } from '../lib/errors';
@@ -64,6 +66,12 @@ export function registerPaymentRoutes(app: FastifyInstance, ctx: AppContext): vo
     const labor = total - partsEstimate;
     const { percent } = await commissionRate(ctx, job.masterId, job.doneAt ?? ctx.now());
     const commission = commissionOf(labor, percent);
+    const isCustomer = job.customerId === user.id;
+    const bonusNow = isCustomer ? await bonusBalance(prisma, user.id) : 0;
+    const promo = payment.promoCodeId
+      ? await prisma.promoCode.findUnique({ where: { id: payment.promoCodeId } })
+      : null;
+    const customerPays = total - payment.promoDiscount - payment.bonusUsed;
     const held = payment.holds.filter((h) => h.status === 'HELD').reduce((s, h) => s + h.amount, 0);
     const ep = endpoint(request);
     return {
@@ -71,6 +79,13 @@ export function registerPaymentRoutes(app: FastifyInstance, ctx: AppContext): vo
       status: payment.status,
       onlineAvailable: ctx.env.ONLINE_PAYMENTS_ENABLED,
       total,
+      promoCode: promo?.code ?? null,
+      promoDiscount: payment.promoDiscount,
+      bonusUsed: payment.bonusUsed,
+      customerPays,
+      bonusBalance: bonusNow,
+      bonusAllowed:
+        payment.promoDiscount + payment.bonusUsed > 0 ? 0 : bonusAllowed(total, bonusNow),
       labor,
       partsEstimate,
       held,
@@ -105,10 +120,10 @@ export function registerPaymentRoutes(app: FastifyInstance, ctx: AppContext): vo
   app.post('/jobs/:id/payment', async (request): Promise<PaymentDto> => {
     const user = await requireUser(ctx, request);
     const { id } = idParams.parse(request.params);
-    const { method } = choosePaymentSchema.parse(request.body);
+    const { method, promoCode, useBonus } = choosePaymentSchema.parse(request.body);
     const job = await loadJob(id, user);
     if (job.customerId !== user.id) throw new AppError('FORBIDDEN', 403);
-    await choosePaymentMethod(ctx, id, method);
+    await choosePaymentMethod(ctx, id, method, { promoCode, useBonus });
     return toPaymentDto(id, user, request);
   });
 

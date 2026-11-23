@@ -1,6 +1,12 @@
 import { AUTO_RELEASE_HOURS, type PaymentMethod } from '@usta/shared';
 import type { AppContext } from '../context';
 import type { Hold, Prisma, PrismaClient } from '../generated/prisma/client';
+import {
+  applyDiscounts,
+  creditDiscountToMaster,
+  giveCashback,
+  undoDiscounts,
+} from '../growth/service';
 import { AppError } from '../lib/errors';
 import { notifyInBackground, notifyUsers } from '../push/notify';
 
@@ -66,12 +72,24 @@ export async function choosePaymentMethod(
   ctx: AppContext,
   jobId: string,
   method: PaymentMethod,
+  discounts: { promoCode?: string; useBonus?: boolean } = {},
 ): Promise<void> {
-  const payment = await loadPayment(ctx, jobId);
+  let payment = await loadPayment(ctx, jobId);
   const job = payment.job;
   if (!ACTIVE_JOB.includes(job.status)) throw new AppError('JOB_NOT_ACTIVE', 409);
   if (payment.status !== 'CASH' && payment.status !== 'PENDING') {
     throw new AppError('PAYMENT_LOCKED', 409);
+  }
+  // Promo code and bonus first: online holds only what the customer really pays.
+  if (discounts.promoCode || discounts.useBonus) {
+    await applyDiscounts(ctx, {
+      paymentId: payment.id,
+      jobId,
+      customerId: job.customerId,
+      total: priceNow(job),
+      ...discounts,
+    });
+    payment = await loadPayment(ctx, jobId);
   }
   if (method === 'CASH') {
     await ctx.prisma.payment.updateMany({
@@ -82,7 +100,7 @@ export async function choosePaymentMethod(
   }
   if (!ctx.env.ONLINE_PAYMENTS_ENABLED) throw new AppError('ONLINE_PAYMENTS_DISABLED', 409);
 
-  const total = priceNow(job);
+  const total = priceNow(job) - payment.promoDiscount - payment.bonusUsed;
   const parts = Math.min(job.offer.partsPrice, total);
   const { providerRef, paid } = await ctx.payments.createHold({
     paymentId: payment.id,
@@ -191,6 +209,12 @@ export async function onJobDone(ctx: AppContext, jobId: string, byCustomer: bool
   const now = ctx.now();
 
   if (payment.status === 'CASH') {
+    // The customer paid the master less by the platform-paid discount: we owe it to the master.
+    await creditDiscountToMaster(ctx, {
+      masterId: job.masterId,
+      jobId,
+      amount: payment.promoDiscount + payment.bonusUsed,
+    });
     const final = job.finalPrice ?? job.agreedPrice;
     const labor = final - Math.min(job.offer.partsPrice, final);
     const { percent } = await commissionRate(ctx, job.masterId, now);
@@ -247,7 +271,9 @@ export async function releasePayment(ctx: AppContext, jobId: string, masterShare
   const toCustomer = heldTotal - toMaster;
   const partsHeld = sum(held.filter((h) => h.kind === 'PARTS'));
   const { percent } = await commissionRate(ctx, job.masterId, now);
-  const commission = commissionOf(toMaster - partsHeld, percent);
+  // Discounts are paid by the platform: commission counts on the full labor.
+  const discounts = masterShare === undefined ? payment.promoDiscount + payment.bonusUsed : 0;
+  const commission = commissionOf(toMaster + discounts - partsHeld, percent);
 
   // Lock the payment first, so a second call (auto-release + tap) does nothing.
   const { count } = await ctx.prisma.payment.updateMany({
@@ -282,6 +308,10 @@ export async function releasePayment(ctx: AppContext, jobId: string, masterShare
         sentAt: now,
       },
     });
+    if (masterShare === undefined) {
+      await creditDiscountToMaster(ctx, { masterId: job.masterId, jobId, amount: discounts });
+      await giveCashback(ctx, job.customerId, jobId, toMaster);
+    }
   }
 }
 
@@ -302,6 +332,7 @@ export async function freezePayment(ctx: AppContext, jobId: string, complaintId:
 
 /** The job was cancelled: give back everything that is held. */
 export async function onJobCancelled(ctx: AppContext, jobId: string) {
+  await undoDiscounts(ctx, jobId);
   const payment = await ctx.prisma.payment.findUnique({
     where: { jobId },
     include: { holds: true },

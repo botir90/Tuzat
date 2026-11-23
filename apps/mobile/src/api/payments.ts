@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
+  ChoosePaymentBody,
   CreatePartsReceiptBody,
   MasterBalanceDto,
   PaymentDto,
-  PaymentMethod,
 } from '@usta/shared';
 import { api } from './client';
 
@@ -31,8 +31,8 @@ function usePaymentAction<TVars>(jobId: string, run: (vars: TVars) => Promise<Pa
 }
 
 export const useChoosePayment = (jobId: string) =>
-  usePaymentAction(jobId, (method: PaymentMethod) =>
-    api<PaymentDto>(`/jobs/${jobId}/payment`, { method: 'POST', body: { method } }),
+  usePaymentAction(jobId, (body: ChoosePaymentBody) =>
+    api<PaymentDto>(`/jobs/${jobId}/payment`, { method: 'POST', body }),
   );
 
 export const useConfirmJob = (jobId: string) =>

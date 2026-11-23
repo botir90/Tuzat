@@ -1,10 +1,11 @@
 import { router } from 'expo-router';
-import { ChevronDown, Mic, Search, ShieldCheck, Clock, Wallet } from 'lucide-react-native';
+import { ChevronDown, Gift, Mic, Search, ShieldCheck, Clock, Wallet } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { formatSum, type CategoryDto } from '@usta/shared';
+import { REFERRAL_BONUS, formatSum, type CategoryDto } from '@usta/shared';
 import { useCategories, usePopularServices, useTopMasters } from '@/api/catalog';
+import { useHomePromos } from '@/api/growth';
 import { AppText } from '@/components/AppText';
 import { Card } from '@/components/Card';
 import { CategoryTile } from '@/components/CategoryTile';
@@ -33,6 +34,7 @@ export default function CustomerHome() {
   const categories = useCategories();
   const popular = usePopularServices(regionId);
   const topMasters = useTopMasters(regionId);
+  const promo = useHomePromos().data?.[0];
 
   function openCategory(category: Pick<CategoryDto, 'id'>) {
     // A price list needs a place: ask for the district first.
@@ -84,6 +86,34 @@ export default function CustomerHome() {
             <Mic size={20} color={colors.onPrimary} strokeWidth={2} />
           </View>
         </Pressable>
+
+        {/* Promotion (admin-managed) */}
+        {promo ? (
+          <View style={styles.promo}>
+            <View style={styles.promoCircleBig} />
+            <View style={styles.promoCircleGold} />
+            <View style={styles.promoTag}>
+              <AppText variant="tiny" style={styles.promoTagText}>
+                {promo.firstOrderOnly ? t('home.promoNewCustomers') : t('home.promoTag')}
+              </AppText>
+            </View>
+            <AppText variant="h1" color="onPrimary" style={styles.promoTitle}>
+              {localized(promo.title)}
+            </AppText>
+            <AppText variant="caption" style={styles.promoCode}>
+              {t('home.promoCode', { code: promo.code })}
+            </AppText>
+            <Pressable
+              onPress={() => router.push('/customer/services')}
+              accessibilityRole="button"
+              style={styles.promoButton}
+            >
+              <AppText variant="label" color="primary" style={styles.extrabold}>
+                {t('home.callMaster')}
+              </AppText>
+            </Pressable>
+          </View>
+        ) : null}
 
         {/* Trades */}
         <View style={styles.section}>
@@ -157,6 +187,25 @@ export default function CustomerHome() {
           </View>
         ) : null}
 
+        {/* Invite a friend */}
+        <Pressable
+          onPress={() => router.push('/customer/bonus')}
+          accessibilityRole="button"
+          style={styles.referral}
+        >
+          <View style={styles.flex}>
+            <AppText variant="h3" color="onPrimary">
+              {t('home.inviteTitle')}
+            </AppText>
+            <AppText variant="caption" style={styles.indigoText}>
+              {t('bonus.inviteText', { amount: formatSum(REFERRAL_BONUS) })}
+            </AppText>
+          </View>
+          <View style={styles.giftBox}>
+            <Gift size={30} color={colors.indigo} strokeWidth={2} />
+          </View>
+        </Pressable>
+
         {/* Trust row: our three promises */}
         <View style={styles.trust}>
           {[
@@ -179,6 +228,70 @@ export default function CustomerHome() {
 }
 
 const styles = StyleSheet.create({
+  flex: { flex: 1, gap: 6 },
+  extrabold: { fontFamily: fonts.extrabold },
+  promo: {
+    borderRadius: radius.hero,
+    backgroundColor: colors.primary,
+    padding: 22,
+    gap: 10,
+    overflow: 'hidden',
+  },
+  promoCircleBig: {
+    position: 'absolute',
+    right: -40,
+    top: -40,
+    width: 180,
+    height: 180,
+    borderRadius: 90,
+    backgroundColor: '#15806E',
+  },
+  promoCircleGold: {
+    position: 'absolute',
+    right: 24,
+    bottom: -30,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: colors.gold,
+  },
+  promoTag: {
+    alignSelf: 'flex-start',
+    backgroundColor: colors.gold,
+    borderRadius: radius.sm,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
+  promoTagText: { color: '#3A2600', fontFamily: fonts.extrabold, letterSpacing: 0.4 },
+  promoTitle: { fontSize: 26, lineHeight: 30, maxWidth: 230 },
+  promoCode: { color: '#D7EEE9', maxWidth: 220 },
+  promoButton: {
+    alignSelf: 'flex-start',
+    marginTop: 4,
+    minHeight: 44,
+    borderRadius: 22,
+    backgroundColor: colors.surface,
+    paddingHorizontal: spacing.xl,
+    justifyContent: 'center',
+  },
+  referral: {
+    borderRadius: radius.hero,
+    backgroundColor: colors.indigo,
+    padding: spacing.xl,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.lg,
+    marginTop: spacing.sm,
+  },
+  indigoText: { color: colors.indigoText },
+  giftBox: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.xxxl,
+    backgroundColor: colors.gold,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   safe: { flex: 1, backgroundColor: colors.bg },
   content: {
     paddingHorizontal: spacing.xl,

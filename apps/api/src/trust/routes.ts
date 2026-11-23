@@ -9,6 +9,7 @@ import {
   type MasterPublicDto,
 } from '@usta/shared';
 import { requireUser } from '../auth/authenticate';
+import { giveReviewPhotoBonus } from '../growth/service';
 import { freezePayment } from '../payments/service';
 import { names } from '../catalog/dto';
 import type { AppContext } from '../context';
@@ -94,6 +95,7 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
         });
         await refreshMasterRating(tx, job.masterId);
       });
+      if (body.photoKeys.length > 0) await giveReviewPhotoBonus(ctx, user.id, id);
     } catch (error) {
       // Two quick taps: the unique jobId constraint stops the second review.
       if ((error as { code?: string }).code === 'P2002') {

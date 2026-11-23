@@ -2,6 +2,7 @@ import { router, type Href } from 'expo-router';
 import {
   BriefcaseBusiness,
   ClipboardList,
+  Gift,
   House,
   Inbox,
   User,
@@ -15,7 +16,13 @@ import { colors, sizes } from '@/theme';
 import { AppText } from './AppText';
 
 type LabelKey =
-  'tabs.home' | 'tabs.orders' | 'tabs.profile' | 'tabs.feed' | 'tabs.myJobs' | 'tabs.earnings';
+  | 'tabs.home'
+  | 'tabs.orders'
+  | 'tabs.bonus'
+  | 'tabs.profile'
+  | 'tabs.feed'
+  | 'tabs.myJobs'
+  | 'tabs.earnings';
 
 interface Tab<Id extends string> {
   id: Id;
@@ -24,14 +31,15 @@ interface Tab<Id extends string> {
   Icon: LucideIcon;
 }
 
-export type CustomerTab = 'home' | 'orders' | 'profile';
+export type CustomerTab = 'home' | 'orders' | 'bonus' | 'profile';
 export type MasterTab = 'feed' | 'jobs' | 'earnings';
 export type TabId = CustomerTab | MasterTab;
 
-/** Customer: Home, Orders, Profile. "Bonuses" (Home.html) arrives with M6.9. */
+/** Customer (Home.html): Home, Orders, Bonuses, My home. */
 const CUSTOMER_TABS: Tab<CustomerTab>[] = [
   { id: 'home', labelKey: 'tabs.home', href: '/customer', Icon: House },
   { id: 'orders', labelKey: 'tabs.orders', href: '/customer/requests', Icon: ClipboardList },
+  { id: 'bonus', labelKey: 'tabs.bonus', href: '/customer/bonus', Icon: Gift },
   { id: 'profile', labelKey: 'tabs.profile', href: '/settings', Icon: User },
 ];
 
