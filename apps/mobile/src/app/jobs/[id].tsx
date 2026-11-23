@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { ChevronLeft, MapPin, Phone } from 'lucide-react-native';
+import { ChevronLeft, MapPin, MessageSquare, Phone } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
@@ -19,7 +19,7 @@ import { ScreenHeader } from '@/components/ScreenHeader';
 import { StatusTimeline } from '@/components/StatusTimeline';
 import { TextField } from '@/components/TextField';
 import { useLocalized } from '@/i18n/useLocalized';
-import { callPhone, googleMapsUrl, yandexMapsUrl } from '@/jobs/links';
+import { googleMapsUrl, yandexMapsUrl } from '@/jobs/links';
 import { formatDateTime } from '@/requests/schedule';
 import { colors, fonts, radius, spacing } from '@/theme';
 
@@ -245,11 +245,20 @@ function JobView({
               </AppText>
             </AppText>
           </View>
+          <Pressable
+            onPress={() => router.push({ pathname: '/chat/[jobId]', params: { jobId: job.id } })}
+            accessibilityRole="button"
+            accessibilityLabel={t('call.chat')}
+            style={[styles.call, styles.chat]}
+          >
+            <MessageSquare size={24} color={colors.primary} strokeWidth={2} />
+          </Pressable>
           {active ? (
             <Pressable
-              onPress={() => void callPhone(other.phone)}
+              // In-app call (numbers hidden); the call screen offers a normal call as fallback.
+              onPress={() => router.push({ pathname: '/call/[jobId]', params: { jobId: job.id } })}
               accessibilityRole="button"
-              accessibilityLabel={t('jobs.call', { phone: formatUzPhone(other.phone) })}
+              accessibilityLabel={t('call.start')}
               style={styles.call}
             >
               <Phone size={24} color={colors.onPrimary} strokeWidth={2} />
@@ -478,6 +487,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  chat: { backgroundColor: colors.primarySoft },
   address: { gap: 10 },
   addressRow: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md },
   section: { gap: 10 },

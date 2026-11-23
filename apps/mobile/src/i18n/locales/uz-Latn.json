@@ -40,7 +40,11 @@
     "REVIEW_ALREADY_EXISTS": "Siz bu ishga allaqachon baho qo'ygansiz.",
     "GUARANTEE_EXPIRED": "Kafolat muddati tugagan. Yordam kerak bo'lsa, shikoyat yozing.",
     "CLAIM_ALREADY_OPEN": "Sizda bu ish bo'yicha ochiq kafolat so'rovi bor. Javobni kuting.",
-    "ADMIN_LOGIN_FAILED": "Login yoki parol noto'g'ri."
+    "ADMIN_LOGIN_FAILED": "Login yoki parol noto'g'ri.",
+    "CHAT_CLOSED": "Bu ish tugaganiga ko'p bo'ldi, chat yopilgan.",
+    "CALLS_DISABLED": "Ilova ichidagi qo'ng'iroq hozir ishlamayapti. Oddiy qo'ng'iroq qiling.",
+    "JOB_NOT_ACTIVE": "Ish tugagan yoki bekor qilingan.",
+    "CALL_NOT_RINGING": "Qo'ng'iroq allaqachon tugagan."
   },
   "language": {
     "title": "Tilni tanlang",
@@ -522,5 +526,51 @@
       "sat": "Sh",
       "sun": "Ya"
     }
+  },
+  "chat": {
+    "placeholder": "Xabar yozing",
+    "send": "Yuborish",
+    "sendPhoto": "Rasm yuborish",
+    "recordVoice": "Ovozli xabar yozish",
+    "photo": "Rasm",
+    "empty": "Hali xabar yo'q. Savolingizni yozing yoki ovozli xabar yuboring.",
+    "closed": "Ish tugaganiga bir haftadan oshdi, chat faqat o'qish uchun.",
+    "quick": {
+      "whenComing": "Qachon kelasiz?",
+      "gateColor": "Lokatsiyamni yuboraman",
+      "thanks": "Rahmat!",
+      "onMyWay": "Yo'ldaman",
+      "arrived": "Yetib keldim",
+      "bringingParts": "Ehtiyot qismni olib kelaman"
+    },
+    "system": {
+      "JOB_ACCEPTED": "Usta buyurtmani qabul qildi · {{price}} so'm",
+      "ON_THE_WAY": "Usta yo'lga chiqdi",
+      "STARTED": "Ish boshlandi",
+      "DONE": "Ish tugadi",
+      "CANCELLED": "Ish bekor qilindi",
+      "PRICE_CHANGE_REQUESTED": "Usta yangi narx so'radi: {{price}} so'm",
+      "PRICE_APPROVED": "Narx tasdiqlandi: {{price}} so'm",
+      "PRICE_DECLINED": "Yangi narx rad etildi",
+      "CALL_MISSED": "O'tkazib yuborilgan qo'ng'iroq"
+    }
+  },
+  "call": {
+    "start": "Qo'ng'iroq qilish",
+    "privacy": "Raqamlar yashirin · Bepul qo'ng'iroq",
+    "connecting": "Ulanmoqda…",
+    "ringing": "Jiringlayapti…",
+    "incoming": "Kiruvchi qo'ng'iroq",
+    "ended": "Qo'ng'iroq tugadi",
+    "needsDevBuild": "Ilova ichidagi qo'ng'iroq bu versiyada ishlamaydi. Oddiy qo'ng'iroq qiling.",
+    "qualityGood": "Aloqa yaxshi",
+    "qualityPoor": "Aloqa yomon",
+    "mute": "Ovozsiz",
+    "speaker": "Karnay",
+    "chat": "Chat",
+    "end": "Qo'ng'iroqni tugatish",
+    "answer": "Javob berish",
+    "decline": "Rad etish",
+    "fallback": "Ovoz yomonmi? Oddiy qo'ng'iroqqa o'tish"
   }
 }

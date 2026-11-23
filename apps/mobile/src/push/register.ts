@@ -31,6 +31,15 @@ export async function registerForPush(): Promise<void> {
         name: 'default',
         importance: Notifications.AndroidImportance.HIGH,
       });
+      // Incoming in-app calls: the loudest channel, shown over the lock screen.
+      await Notifications.setNotificationChannelAsync('calls', {
+        name: 'Calls',
+        importance: Notifications.AndroidImportance.MAX,
+        sound: 'default',
+        vibrationPattern: [0, 800, 400, 800, 400, 800],
+        lockscreenVisibility: Notifications.AndroidNotificationVisibility.PUBLIC,
+        bypassDnd: false,
+      });
     }
     const permission = await Notifications.requestPermissionsAsync();
     if (!permission.granted) return;
@@ -58,7 +67,12 @@ export async function unregisterPush(): Promise<void> {
 export function openFromNotification(data: Record<string, unknown> | undefined): void {
   const id = typeof data?.requestId === 'string' ? data.requestId : null;
   const jobId = typeof data?.jobId === 'string' ? data.jobId : null;
-  if (data?.type === 'job' && jobId) {
+  const callId = typeof data?.callId === 'string' ? data.callId : null;
+  if (data?.type === 'call' && jobId && callId) {
+    router.push({ pathname: '/call/[jobId]', params: { jobId, callId } });
+  } else if (data?.type === 'chat' && jobId) {
+    router.push({ pathname: '/chat/[jobId]', params: { jobId } });
+  } else if (data?.type === 'job' && jobId) {
     router.push({ pathname: '/jobs/[id]', params: { id: jobId } });
   } else if (data?.type === 'feed' && id) {
     router.push({ pathname: '/master/request/[id]', params: { id } });
@@ -68,8 +82,20 @@ export function openFromNotification(data: Record<string, unknown> | undefined):
 }
 
 export function listenForNotificationTaps(): () => void {
-  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+  const taps = Notifications.addNotificationResponseReceivedListener((response) => {
     openFromNotification(response.notification.request.content.data);
   });
-  return () => subscription.remove();
+  // An incoming call while the app is open: show the call screen right away.
+  const received = Notifications.addNotificationReceivedListener((notification) => {
+    const data = notification.request.content.data;
+    if (data?.type === 'call') openFromNotification(data);
+  });
+  // The app was opened by tapping a notification while it was closed.
+  void Notifications.getLastNotificationResponseAsync().then((response) => {
+    if (response) openFromNotification(response.notification.request.content.data);
+  });
+  return () => {
+    taps.remove();
+    received.remove();
+  };
 }

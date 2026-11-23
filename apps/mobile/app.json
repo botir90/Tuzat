@@ -22,7 +22,15 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["expo-router", "expo-localization", "expo-secure-store", "expo-audio", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      "expo-audio",
+      "expo-font",
+      "@livekit/react-native-expo-plugin",
+      "@config-plugins/react-native-webrtc"
+    ],
     "scheme": "usta-app",
     "experiments": {
       "typedRoutes": true

@@ -4,27 +4,27 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M6.7 Payments backend (cash + fake provider), then M6.9 Growth, M7 Release prep. M6.5 waits for a LiveKit account.**
+**M6.5 chat + calls: code done; Botir builds the development APK and tests calls on two phones. Next: M6.7 Payments.**
 
-M6 done (2026-11-23): Review.html (stars, 5 tags, comment, photo, price summary, guarantee),
-Dispute.html (4 reasons, text, photo, voice, what happens next), MasterEarnings.html
-(week chart in Tashkent time, month, rating, recent jobs); master tab bar Orders / My jobs / Earnings.
+M6.5 (2026-11-23): Chat.html (text, photo, voice, quick replies, system events, 4 s polling, push),
+Call.html (LiveKit voice, hidden numbers, mute / speaker / chat / end, normal-call fallback,
+incoming call via high-priority push on a "calls" channel, history, no recording).
 
 ## Status by milestone
 
-| Milestone           | Status                         | What is missing                                                                                        |
-| ------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| M0 Setup            | ✅ done                        | —                                                                                                      |
-| M1 Auth and roles   | 🟡 logic done                  | Language picker rebuilt from `design/screens/Main.html` + `theme.ts` + Inter font (needs design files) |
-| M2 Catalog          | 🟡 logic done                  | Customer Home rebuilt from `design/screens/Home.html` (needs design files)                             |
-| M3 Requests         | ✅ done (incl. Yandex map pin) | Restyle to the design when it arrives                                                                  |
-| M4 Master side      | ✅ done                        | Restyle to the design                                                                                  |
-| M5 Jobs             | 🟡 mostly done                 | Master profile: "prices" block; restyle                                                                |
-| M6 Trust + admin    | 🟡 mostly done                 | Review **tags**; **master earnings** screen                                                            |
-| M6.5 Chat and calls | ⬜ not started                 | Needs a LiveKit account (Botir) and an Expo dev build                                                  |
-| M6.7 Payments       | ⬜ not started                 | Backend can be built now (fake provider); screens need design                                          |
-| M6.9 Growth         | ⬜ not started                 | —                                                                                                      |
-| M7 Release prep     | ⬜ not started                 | —                                                                                                      |
+| Milestone           | Status                             | What is missing                                                                                                          |
+| ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| M0 Setup            | ✅ done                            | —                                                                                                                        |
+| M1 Auth and roles   | 🟡 logic done                      | Language picker rebuilt from `design/screens/Main.html` + `theme.ts` + Inter font (needs design files)                   |
+| M2 Catalog          | 🟡 logic done                      | Customer Home rebuilt from `design/screens/Home.html` (needs design files)                                               |
+| M3 Requests         | ✅ done (incl. Yandex map pin)     | Restyle to the design when it arrives                                                                                    |
+| M4 Master side      | ✅ done                            | Restyle to the design                                                                                                    |
+| M5 Jobs             | 🟡 mostly done                     | Master profile: "prices" block; restyle                                                                                  |
+| M6 Trust + admin    | 🟡 mostly done                     | Review **tags**; **master earnings** screen                                                                              |
+| M6.5 Chat and calls | 🟡 code done, needs dev build test | Full-screen ringing when the app is closed (CallKit / ConnectionService) is a follow-up; now a loud "calls" notification |
+| M6.7 Payments       | ⬜ not started                     | Backend can be built now (fake provider); screens need design                                                            |
+| M6.9 Growth         | ⬜ not started                     | —                                                                                                                        |
+| M7 Release prep     | ⬜ not started                     | —                                                                                                                        |
 
 ## Next
 
@@ -33,6 +33,10 @@ Dispute.html (4 reasons, text, photo, voice, what happens next), MasterEarnings.
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: Chat uses simple polling (every 4 s while open) + push, not websockets. Boring and works on 3G; switch later if needed.
+- 2026-11-23: In Expo Go the call screen offers a normal phone call (no native WebRTC there). In-app calls work in the development build / store app.
+- 2026-11-23: An incoming call rings as a MAX-importance notification on the "calls" channel; when the app is open, the call screen opens by itself. Native full-screen call UI is a follow-up.
 
 - 2026-11-23: Dispute.html "money frozen" banner is shown only after online payments exist (M6.7); with cash there is nothing to freeze.
 - 2026-11-23: Master settings open from the gear button on the Earnings screen (the Earnings tab replaced Settings).
