@@ -4,8 +4,8 @@ import {
   ClipboardList,
   House,
   Inbox,
-  Settings,
   User,
+  Wallet,
   type LucideIcon,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import { colors, sizes } from '@/theme';
 import { AppText } from './AppText';
 
 type LabelKey =
-  'tabs.home' | 'tabs.orders' | 'tabs.profile' | 'tabs.feed' | 'tabs.myJobs' | 'tabs.settings';
+  'tabs.home' | 'tabs.orders' | 'tabs.profile' | 'tabs.feed' | 'tabs.myJobs' | 'tabs.earnings';
 
 interface Tab<Id extends string> {
   id: Id;
@@ -25,7 +25,7 @@ interface Tab<Id extends string> {
 }
 
 export type CustomerTab = 'home' | 'orders' | 'profile';
-export type MasterTab = 'feed' | 'jobs' | 'settings';
+export type MasterTab = 'feed' | 'jobs' | 'earnings';
 export type TabId = CustomerTab | MasterTab;
 
 /** Customer: Home, Orders, Profile. "Bonuses" (Home.html) arrives with M6.9. */
@@ -35,11 +35,11 @@ const CUSTOMER_TABS: Tab<CustomerTab>[] = [
   { id: 'profile', labelKey: 'tabs.profile', href: '/settings', Icon: User },
 ];
 
-/** Master (MasterFeed.html): Orders, My jobs, and Earnings (M6; Settings until then). */
+/** Master (MasterFeed.html): Orders, My jobs, Earnings. Settings open from Earnings. */
 const MASTER_TABS: Tab<MasterTab>[] = [
   { id: 'feed', labelKey: 'tabs.feed', href: '/master', Icon: Inbox },
   { id: 'jobs', labelKey: 'tabs.myJobs', href: '/jobs', Icon: BriefcaseBusiness },
-  { id: 'settings', labelKey: 'tabs.settings', href: '/settings', Icon: Settings },
+  { id: 'earnings', labelKey: 'tabs.earnings', href: '/master/earnings', Icon: Wallet },
 ];
 
 const isMasterTab = (id: TabId): id is MasterTab => MASTER_TABS.some((tab) => tab.id === id);

@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   CreateOfferBody,
   FeedItemDto,
+  MasterEarningsDto,
   MasterProfileBody,
   MasterProfileDto,
   OfferDto,
@@ -83,5 +84,13 @@ export function useWithdrawOffer() {
     mutationFn: (offerId: string) =>
       api<OfferDto>(`/master/offers/${offerId}/withdraw`, { method: 'POST' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['master'] }),
+  });
+}
+
+/** Earnings screen data (this week, month, recent jobs). */
+export function useMasterEarnings() {
+  return useQuery({
+    queryKey: ['master', 'earnings'],
+    queryFn: () => api<MasterEarningsDto>('/master/earnings'),
   });
 }

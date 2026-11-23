@@ -31,6 +31,34 @@ const caseJobInclude = {
   },
 } as const;
 
+/** Admin panel language is Uzbek. */
+const COMPLAINT_REASON_UZ: Record<string, string> = {
+  NOT_FIXED: 'Muammo tuzalmadi',
+  POOR_QUALITY: 'Ish sifatsiz bajarildi',
+  ASKED_MORE_MONEY: "Usta ko'p pul so'radi",
+  OTHER: 'Boshqa sabab',
+};
+
+/** "[Reason] text (2 ta rasm, ovozli xabar)" for the cases table. */
+function complaintSummary(c: {
+  reason: string | null;
+  text: string;
+  photoKeys: string[];
+  voiceKey: string | null;
+}): string {
+  const attachments = [
+    c.photoKeys.length > 0 ? `${c.photoKeys.length} ta rasm` : null,
+    c.voiceKey ? 'ovozli xabar' : null,
+  ].filter(Boolean);
+  return [
+    c.reason ? `[${COMPLAINT_REASON_UZ[c.reason] ?? c.reason}]` : null,
+    c.text || null,
+    attachments.length > 0 ? `(${attachments.join(', ')})` : null,
+  ]
+    .filter(Boolean)
+    .join(' ');
+}
+
 /** Orders overview, guarantee claims, complaints, waitlist and the dashboard numbers. */
 export function registerAdminCaseRoutes(app: FastifyInstance, ctx: AppContext): void {
   const { prisma } = ctx;
@@ -145,7 +173,7 @@ export function registerAdminCaseRoutes(app: FastifyInstance, ctx: AppContext): 
       limit,
       (c) => ({
         id: c.id,
-        text: c.text,
+        text: complaintSummary(c),
         status: c.status,
         adminNote: c.adminNote,
         jobId: c.jobId,

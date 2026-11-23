@@ -396,7 +396,13 @@
     "submit": "Bahoni yuborish",
     "leave": "Ustaga baho qo'yish",
     "yourReview": "Sizning bahongiz",
-    "anonymous": "Mijoz"
+    "anonymous": "Mijoz",
+    "doneTitle": "Ish tugadi!",
+    "rateMaster": "Ustaga baho bering",
+    "payment": "To'lov",
+    "jobPrice": "Ish narxi",
+    "total": "Jami",
+    "payCashNote": "Hozircha to'lov naqd pulda, ustaga to'g'ridan-to'g'ri. Click va Payme tez orada."
   },
   "guarantee": {
     "title": "Muammo qaytdimi?",
@@ -428,7 +434,11 @@
     "status": {
       "OPEN": "ko'rib chiqilmoqda",
       "RESOLVED": "hal qilindi"
-    }
+    },
+    "whatHappened": "Nima bo'ldi?",
+    "reasonRequired": "Sababni tanlang.",
+    "nextTitle": "Keyin nima bo'ladi?",
+    "nextText": "1. Usta muammoni bepul tuzatish uchun qaytib keladi.\n2. Kelishilmasa, operator 24 soat ichida rasm va xabarlarni ko'rib, adolatli qaror qiladi."
   },
   "masterPage": {
     "title": "Usta haqida",
@@ -451,7 +461,8 @@
     "profile": "Profil",
     "feed": "Buyurtmalar",
     "myJobs": "Ishlarim",
-    "settings": "Sozlamalar"
+    "settings": "Sozlamalar",
+    "earnings": "Daromad"
   },
   "services": {
     "title": "Barcha xizmatlar",
@@ -477,5 +488,39 @@
     "IN_PROGRESS": "Ish boshlandi",
     "DONE": "Ish tugadi, baho qo'ying",
     "now": "Hozir"
+  },
+  "reviewTags": {
+    "ON_TIME": "Vaqtida keldi",
+    "CLEAN": "Toza ishladi",
+    "POLITE": "Muloyim",
+    "FAIR_PRICE": "Narxi adolatli",
+    "FAST": "Tez tuzatdi"
+  },
+  "complaintReasons": {
+    "NOT_FIXED": "Muammo tuzalmadi",
+    "POOR_QUALITY": "Ish sifatsiz bajarildi",
+    "ASKED_MORE_MONEY": "Usta kelishilganidan ko'p pul so'radi",
+    "OTHER": "Boshqa sabab"
+  },
+  "earnings": {
+    "title": "Daromad",
+    "thisWeek": "Shu hafta",
+    "jobsDone": "{{count}} ta ish bajarildi",
+    "thisMonth": "Shu oy",
+    "rating": "Reyting",
+    "reviews": "{{count}} ta sharh",
+    "commissionNote": "Dastlabki 3 oy komissiyasiz. Keyin faqat bajarilgan ishdan 5–10%.",
+    "recent": "Oxirgi ishlar",
+    "empty": "Hali bajarilgan ish yo'q. Birinchi ishingiz shu yerda ko'rinadi.",
+    "stars": "{{count}} yulduz",
+    "days": {
+      "mon": "Du",
+      "tue": "Se",
+      "wed": "Ch",
+      "thu": "Pa",
+      "fri": "Ju",
+      "sat": "Sh",
+      "sun": "Ya"
+    }
   }
 }

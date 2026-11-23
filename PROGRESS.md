@@ -4,12 +4,11 @@ _Updated after every step. After a restarted conversation: read `CLAUDE.md`, `de
 
 ## Current milestone
 
-**M6 Trust + admin: Review (tags), Dispute/complaint, MasterEarnings from the design.**
+**M6.7 Payments backend (cash + fake provider), then M6.9 Growth, M7 Release prep. M6.5 waits for a LiveKit account.**
 
-M5 done (2026-11-23): Offers.html (offer cards: avatar, rating, price/arrival boxes, choose),
-MasterProfile.html (badges, stats, about, typical prices, work photos, reviews, choose from offer),
-JobStatus.html (teal header, timeline with times, person card with call, price-change card,
-main action pinned at the bottom).
+M6 done (2026-11-23): Review.html (stars, 5 tags, comment, photo, price summary, guarantee),
+Dispute.html (4 reasons, text, photo, voice, what happens next), MasterEarnings.html
+(week chart in Tashkent time, month, rating, recent jobs); master tab bar Orders / My jobs / Earnings.
 
 ## Status by milestone
 
@@ -34,6 +33,10 @@ main action pinned at the bottom).
 3. When the design arrives: rebuild screens M1 → M6 to match it, then continue M6.5.
 
 ## Decisions
+
+- 2026-11-23: Dispute.html "money frozen" banner is shown only after online payments exist (M6.7); with cash there is nothing to freeze.
+- 2026-11-23: Master settings open from the gear button on the Earnings screen (the Earnings tab replaced Settings).
+- 2026-11-23: Admin cases table shows the complaint reason and attachment count inside the text column (no admin UI change needed).
 
 - 2026-11-23: The design canvas (claude.ai artifact) has a broken JobStatus: its body was pasted into Chat.dc.html. The app follows the intact copy in design/ (design.zip). Botir can fix the canvas or ask Claude to.
 - 2026-11-23: MasterProfile "Prices" = the price list of the master's trades (region prices), not personal prices; "years of experience" and "reply time" are not collected, so the stats show rating, jobs done and reviews.
