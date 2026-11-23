@@ -9,6 +9,7 @@ import {
   type MasterPublicDto,
 } from '@usta/shared';
 import { requireUser } from '../auth/authenticate';
+import { freezePayment } from '../payments/service';
 import { names } from '../catalog/dto';
 import type { AppContext } from '../context';
 import type { Prisma, User } from '../generated/prisma/client';
@@ -205,7 +206,7 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
     const user = await requireUser(ctx, request);
     const { id } = idParams.parse(request.params);
     const body = createComplaintSchema.parse(request.body);
-    await loadJob(id, user);
+    const job = await loadJob(id, user);
     await Promise.all([
       ...body.photoKeys.map((key) => assertUpload(storage, user.id, 'complaint-photo', key)),
       ...(body.voiceKey ? [assertUpload(storage, user.id, 'complaint-voice', body.voiceKey)] : []),
@@ -227,6 +228,8 @@ export function registerTrustRoutes(app: FastifyInstance, ctx: AppContext): void
         createdAt: ctx.now(),
       },
     });
+    // The customer reports a problem while money is held: freeze it (Dispute.html).
+    if (job.customerId === user.id) await freezePayment(ctx, id, complaint.id);
     return reply.code(201).send(toComplaintDto(complaint));
   });
 

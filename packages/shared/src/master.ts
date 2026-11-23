@@ -43,15 +43,18 @@ export const availabilityBodySchema = z.object({ isAvailable: z.boolean() });
 
 export const createOfferSchema = z.object({
   price: z.number().int().min(1000).max(100_000_000),
+  /** Parts expected inside the price (0 = labor only). */
+  partsPrice: z.number().int().min(0).max(100_000_000).default(0),
   arrivalAt: z.iso.datetime(),
   message: z.string().trim().max(MAX_OFFER_MESSAGE_LENGTH).optional(),
 });
-export type CreateOfferBody = z.infer<typeof createOfferSchema>;
+export type CreateOfferBody = z.input<typeof createOfferSchema>;
 
 export const offerDtoSchema = z.object({
   id: z.string(),
   requestId: z.string(),
   price: z.number().int(),
+  partsPrice: z.number().int(),
   arrivalAt: z.string(),
   message: z.string().nullable(),
   status: z.enum(OFFER_STATUSES),

@@ -23,6 +23,7 @@ export const UPLOAD_KINDS = [
   'complaint-voice',
   'chat-photo',
   'chat-voice',
+  'parts-receipt',
 ] as const;
 export type UploadKind = (typeof UPLOAD_KINDS)[number];
 
@@ -47,6 +48,10 @@ export const UPLOAD_RULES: Record<
     maxBytes: 5 * 1024 * 1024,
   },
   'complaint-photo': {
+    contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxBytes: 5 * 1024 * 1024,
+  },
+  'parts-receipt': {
     contentTypes: ['image/jpeg', 'image/png', 'image/webp'],
     maxBytes: 5 * 1024 * 1024,
   },

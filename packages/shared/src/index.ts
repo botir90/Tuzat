@@ -12,3 +12,4 @@ export * from './jobs';
 export * from './trust';
 export * from './admin';
 export * from './chat';
+export * from './payments';

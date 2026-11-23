@@ -1,6 +1,7 @@
 import { APP_NAME } from '@usta/shared';
 import { buildApp } from './app';
 import { createContext } from './context';
+import { sweepPayments } from './payments/service';
 import { createPrismaClient } from './db';
 import { loadEnv } from './env';
 import { expireOldRequests } from './requests/expire';
@@ -32,10 +33,12 @@ const ctx = createContext({ prisma, env, sms: new ConsoleSmsSender(), storage, p
 
 const app = buildApp(ctx, { logger: true });
 
-// Every 5 minutes: mark requests older than 24 h as EXPIRED.
+// Every 5 minutes: expire old requests, release due payments.
 const expiryTimer = setInterval(
   () => {
     expireOldRequests(prisma, new Date()).catch((error: unknown) => app.log.error(error));
+    // Online payments: reminders and the automatic release after 24 h.
+    sweepPayments(ctx).catch((error: unknown) => app.log.error(error));
   },
   5 * 60 * 1000,
 );

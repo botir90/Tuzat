@@ -44,6 +44,7 @@ export const toOfferDto = (offer: Offer): OfferDto => ({
   id: offer.id,
   requestId: offer.requestId,
   price: offer.price,
+  partsPrice: offer.partsPrice,
   arrivalAt: offer.arrivalAt.toISOString(),
   message: offer.message,
   status: offer.status,

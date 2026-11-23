@@ -98,6 +98,20 @@ const TEXTS = {
     'uz-Cyrl': { title: 'Ўтказиб юборилган қўнғироқ', body: '{{name}}' },
     ru: { title: 'Пропущенный звонок', body: '{{name}}' },
   },
+  paymentReminder: {
+    'uz-Latn': {
+      title: 'Ish yaxshi bajarildimi?',
+      body: "Tasdiqlang yoki muammo haqida yozing. Javob bo'lmasa, pul tez orada ustaga o'tadi.",
+    },
+    'uz-Cyrl': {
+      title: 'Иш яхши бажарилдими?',
+      body: 'Тасдиқланг ёки муаммо ҳақида ёзинг. Жавоб бўлмаса, пул тез орада устага ўтади.',
+    },
+    ru: {
+      title: 'Работа выполнена хорошо?',
+      body: 'Подтвердите или сообщите о проблеме. Без ответа деньги скоро уйдут мастеру.',
+    },
+  },
 } satisfies Record<string, Record<Language, { title: string; body: string }>>;
 
 export type NotificationKind = keyof typeof TEXTS;

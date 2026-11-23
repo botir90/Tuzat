@@ -14,6 +14,12 @@ import {
 } from '@usta/shared';
 import { requireUser } from '../auth/authenticate';
 import { addSystemMessage } from '../chat/system';
+import {
+  createPaymentForJob,
+  onJobCancelled,
+  onJobDone,
+  onPriceApproved,
+} from '../payments/service';
 import { names } from '../catalog/dto';
 import type { AppContext } from '../context';
 import type { User } from '../generated/prisma/client';
@@ -129,6 +135,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       });
       // The chat starts with the deal: who and for how much.
       await addSystemMessage(tx, created.id, 'JOB_ACCEPTED', { price: String(offer.price) }, now);
+      await createPaymentForJob(tx, created.id, now);
       return created;
     });
 
@@ -215,6 +222,8 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       now,
     );
     if (status === 'DONE') {
+      // Cash: commission to the master's balance. Online: 24 h to confirm, then release.
+      await onJobDone(ctx, id, !isMaster);
       await prisma.masterProfile.updateMany({
         where: { userId: job.masterId },
         data: { completedJobsCount: { increment: 1 } },
@@ -266,6 +275,7 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       }
       await addSystemMessage(tx, id, 'CANCELLED', {}, now);
     });
+    await onJobCancelled(ctx, id);
 
     notifyStatus(job, isMaster ? job.customerId : job.masterId, 'CANCELLED');
     return toJobDto(await loadJob(id, user), user.id, storage, endpoint(request), ctx.now());
@@ -337,6 +347,8 @@ export function registerJobRoutes(app: FastifyInstance, ctx: AppContext): void {
       { price: String(pc.newPrice) },
       ctx.now(),
     );
+    // Online: only the difference is charged.
+    if (approve) await onPriceApproved(ctx, id, pc.newPrice - currentPrice(job));
 
     const answer: Record<Language, string> = approve
       ? {

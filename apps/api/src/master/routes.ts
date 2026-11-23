@@ -281,6 +281,8 @@ export function registerMasterRoutes(app: FastifyInstance, ctx: AppContext): voi
     const { user, profile } = await requireWorkingMaster(request);
     const { id } = idParams.parse(request.params);
     const body = createOfferSchema.parse(request.body);
+    // Parts are part of the price, never more than all of it.
+    if (body.partsPrice > body.price) throw new AppError('PARTS_TOO_EXPENSIVE', 400);
     const now = ctx.now();
     await expireOldRequests(prisma, now);
 
@@ -317,6 +319,7 @@ export function registerMasterRoutes(app: FastifyInstance, ctx: AppContext): voi
 
       const data = {
         price: body.price,
+        partsPrice: body.partsPrice,
         arrivalAt,
         message: body.message || null,
         status: 'SENT' as const,

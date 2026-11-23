@@ -47,6 +47,9 @@ model User {
   chatMessages    ChatMessage[]  @relation("ChatMessagesSent")
   callsMade       Call[]         @relation("CallsMade")
   callsReceived   Call[]         @relation("CallsReceived")
+  balance         MasterBalance?
+  balanceEntries  BalanceEntry[]
+  payouts         Payout[]
 }
 
 // ---------- Catalog (M2) ----------
@@ -260,20 +263,22 @@ enum OfferStatus {
 
 /// A master's price and arrival time for a request.
 model Offer {
-  id        String      @id @default(cuid())
-  requestId String
-  request   Request     @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  masterId  String
-  master    User        @relation("MasterOffers", fields: [masterId], references: [id], onDelete: Cascade)
-  /// So'm.
-  price     Int
+  id         String      @id @default(cuid())
+  requestId  String
+  request    Request     @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  masterId   String
+  master     User        @relation("MasterOffers", fields: [masterId], references: [id], onDelete: Cascade)
+  /// So'm, everything included.
+  price      Int
+  /// Expected parts cost inside the price (0 = labor only). Labor = price - partsPrice.
+  partsPrice Int         @default(0)
   /// When the master can be at the address.
-  arrivalAt DateTime
-  message   String?
-  status    OfferStatus @default(SENT)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  job       Job?
+  arrivalAt  DateTime
+  message    String?
+  status     OfferStatus @default(SENT)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  job        Job?
 
   /// One offer per master per request.
   @@unique([requestId, masterId])
@@ -324,6 +329,9 @@ model Job {
   complaints      Complaint[]
   messages        ChatMessage[]
   calls           Call[]
+  payment         Payment?
+  partsReceipts   PartsReceipt[]
+  dispute         Dispute?
 
   @@index([customerId, status])
   @@index([masterId, status])
@@ -473,6 +481,181 @@ model Call {
 
   @@index([jobId, createdAt])
   @@index([calleeId, status])
+}
+
+// ---------- Payments (CLAUDE.md 7a) ----------
+// Cash works now. Online escrow (Click/Payme) is behind ONLINE_PAYMENTS_ENABLED and a
+// provider interface: the provider holds the money, never us.
+
+enum PaymentMethod {
+  CASH
+  CLICK
+  PAYME
+}
+
+enum PaymentStatus {
+  /// Cash: the customer pays the master directly when the job is done.
+  CASH
+  /// Online: waiting for the customer to pay at the provider.
+  PENDING
+  /// Online: the provider holds the money.
+  HELD
+  /// A dispute is open: nothing moves until an admin decides.
+  FROZEN
+  /// Done: the money went to the master (and any rest back to the customer).
+  RELEASED
+  /// The whole amount went back to the customer.
+  REFUNDED
+  /// The job was cancelled before anything was paid.
+  CANCELLED
+}
+
+/// One per job: how it is paid and where the money is.
+model Payment {
+  id             String        @id @default(cuid())
+  jobId          String        @unique
+  job            Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  method         PaymentMethod @default(CASH)
+  status         PaymentStatus @default(CASH)
+  /// Payment provider name and its id for this payment (online only).
+  provider       String?
+  providerRef    String?
+  /// Customer must confirm or complain before this, else the money is released (online).
+  releaseDueAt   DateTime?
+  reminderSentAt DateTime?
+  createdAt      DateTime      @default(now())
+  heldAt         DateTime?
+  releasedAt     DateTime?
+  holds          Hold[]
+
+  @@index([status, releaseDueAt])
+}
+
+enum HoldKind {
+  LABOR
+  PARTS
+  /// The difference of an approved price change.
+  EXTRA
+}
+
+enum HoldStatus {
+  HELD
+  RELEASED
+  REFUNDED
+}
+
+/// A part of the held money (labor, parts, extra). Parts can be released early.
+model Hold {
+  id        String     @id @default(cuid())
+  paymentId String
+  payment   Payment    @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  kind      HoldKind
+  amount    Int
+  status    HoldStatus @default(HELD)
+  createdAt DateTime   @default(now())
+  settledAt DateTime?
+
+  @@index([paymentId])
+}
+
+enum ReceiptStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+/// Master's receipt photo for bought parts. The customer approves it in the app.
+model PartsReceipt {
+  id          String        @id @default(cuid())
+  jobId       String
+  job         Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  photoKey    String
+  description String
+  amount      Int
+  status      ReceiptStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+  answeredAt  DateTime?
+
+  @@index([jobId])
+}
+
+enum DisputeStatus {
+  OPEN
+  /// Admin decision: money to the master.
+  RELEASED
+  /// Admin decision: money back to the customer.
+  REFUNDED
+  /// Admin decision: split between both.
+  SPLIT
+}
+
+/// A problem reported while money is held: it freezes the payment until an admin decides.
+model Dispute {
+  id           String        @id @default(cuid())
+  jobId        String        @unique
+  job          Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  complaintId  String?
+  status       DisputeStatus @default(OPEN)
+  /// For SPLIT: how much goes to the master (before commission).
+  masterAmount Int?
+  adminNote    String?
+  createdAt    DateTime      @default(now())
+  decidedAt    DateTime?
+
+  @@index([status, createdAt])
+}
+
+enum PayoutStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+/// Money sent to a master's card by the provider (online jobs; same day).
+model Payout {
+  id          String       @id @default(cuid())
+  masterId    String
+  master      User         @relation(fields: [masterId], references: [id], onDelete: Cascade)
+  jobId       String
+  /// What the master gets after commission.
+  amount      Int
+  commission  Int
+  status      PayoutStatus @default(PENDING)
+  providerRef String?
+  createdAt   DateTime     @default(now())
+  sentAt      DateTime?
+
+  @@index([masterId, createdAt])
+}
+
+/// What a master owes the platform (commission of cash jobs). Positive = owes us.
+model MasterBalance {
+  masterId  String   @id
+  master    User     @relation(fields: [masterId], references: [id], onDelete: Cascade)
+  owed      Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+enum BalanceEntryKind {
+  /// Commission of a cash job (adds to what the master owes).
+  CASH_COMMISSION
+  /// The master paid what they owed (admin records it).
+  SETTLEMENT
+}
+
+/// Every change of a master's balance, so it can always be explained.
+model BalanceEntry {
+  id        String           @id @default(cuid())
+  masterId  String
+  master    User             @relation(fields: [masterId], references: [id], onDelete: Cascade)
+  jobId     String?
+  kind      BalanceEntryKind
+  /// + adds to the debt, - reduces it.
+  amount    Int
+  note      String?
+  createdAt DateTime         @default(now())
+
+  @@index([masterId, createdAt])
 }
 
 /// Admin panel accounts. Separate from app users: they log in with a password, not SMS.

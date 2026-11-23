@@ -42,6 +42,18 @@ const envSchema = z.object({
   LIVEKIT_URL: z.string().startsWith('wss://').optional(),
   LIVEKIT_API_KEY: z.string().min(1).optional(),
   LIVEKIT_API_SECRET: z.string().min(1).optional(),
+
+  /** Online escrow (Click/Payme). Off until we have an MChJ and a marketplace contract. */
+  ONLINE_PAYMENTS_ENABLED: z
+    .enum(['true', 'false'])
+    .default('false')
+    .transform((v) => v === 'true'),
+  /** 'fake' = development provider that pays instantly; real providers come later. */
+  PAYMENT_PROVIDER: z.enum(['fake']).default('fake'),
+  /** Platform commission on labor (parts are not charged), percent. */
+  COMMISSION_PERCENT: z.coerce.number().min(0).max(30).default(5),
+  /** New masters pay no commission for this many days. */
+  COMMISSION_FREE_DAYS: z.coerce.number().int().min(0).default(90),
 });
 
 export type Env = z.infer<typeof envSchema>;

@@ -7,6 +7,7 @@ import type { SmsSender } from './sms/sms';
 import type { FileStorage } from './storage/storage';
 import type { PushSender } from './push/push';
 import { BackgroundTasks } from './lib/background';
+import { FakePaymentProvider, type PaymentProvider } from './payments/provider';
 
 /** Everything the routes need. Built once at startup; tests build it with fakes. */
 export interface AppContext {
@@ -18,6 +19,7 @@ export interface AppContext {
   storage: FileStorage;
   push: PushSender;
   background: BackgroundTasks;
+  payments: PaymentProvider;
 }
 
 export interface ContextDeps {
@@ -26,6 +28,8 @@ export interface ContextDeps {
   sms: SmsSender;
   storage: FileStorage;
   push: PushSender;
+  /** Default: the fake provider (no real money). */
+  payments?: PaymentProvider;
   now?: () => Date;
   generateOtpCode?: () => string;
 }
@@ -38,6 +42,7 @@ export function createContext(deps: ContextDeps): AppContext {
     now,
     storage: deps.storage,
     push: deps.push,
+    payments: deps.payments ?? new FakePaymentProvider(),
     background: new BackgroundTasks((error) => console.error('Background task failed', error)),
     otp: new OtpService({
       prisma: deps.prisma,
